@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>FlashBnB - {% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
@@ -16,8 +17,11 @@
 
         <div class="collapse navbar-collapse" id="navbarColor03">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('home') }}">Acceuil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('ads_index') }}">Annonces</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -28,7 +32,7 @@
         </div>
     </nav>
         {% block body %}{% endblock %}
-        <script src="{{ asset('js/jquery-3.4.1.slim.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
         <script src="{{ asset('js/popper.min.js') }}"></script>
         <script src="{{ asset('js/boostrap.min.js') }}"></script>
         {% block javascripts %}{% endblock %}
