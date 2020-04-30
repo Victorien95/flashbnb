@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Ad;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,28 +17,32 @@ class AdType extends AbstractType
 {
     /**
      * Permet d'avoir la configuration de base d'un champ
-     * @param  $label
-     * @param $placeholder
+     * @param string $placeholder
+     * @param array $options
      * @return array
      */
-    private function getConfiguration($label, $placeholder){
-        return [
-            'label' => $label,
+    private function getConfiguration($placeholder, $options = ['required' => true]){
+        return array_merge([
             'attr' => [
                 'placeholder' => $placeholder
             ]
-        ];
+        ], $options);
     }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, $this->getConfiguration('Titre', 'Tapez votre titre'))
-            ->add('slug', TextType::class, $this->getConfiguration('Message d\'introduction', 'Tapez votre message de présentation'))
-            ->add('coverImage', UrlType::class, $this->getConfiguration('Url de l\'image principale', 'Donnez l\'adresse d\'une image qui donne vraiment envie'))
-            ->add('introduction', TextType::class, $this->getConfiguration('Message d\'introduction', 'Tapez votre message de présentation'))
-            ->add('content', TextareaType::class, $this->getConfiguration('Description détaillée', 'Tapez votre message de présentation'))
-            ->add('price', MoneyType::class, $this->getConfiguration('Prix par nuit', 'Indiquez le prix pour une nuit'))
-            ->add('rooms', IntegerType::class, $this->getConfiguration('Nombre de chambres', 'Le nombre de chambres disponible'))
+            ->add('title', TextType::class, $this->getConfiguration('Renseignez le titre de votre annonce'))
+            ->add('coverImage', UrlType::class, $this->getConfiguration('Donnez l\'adresse d\'une image qui donne vraiment envie'))
+            ->add('introduction', TextType::class, $this->getConfiguration('Renseignez votre message de présentation'))
+            ->add('content', TextareaType::class, $this->getConfiguration('Renseignez une description détaillée de votre bien'))
+            ->add('price', MoneyType::class, $this->getConfiguration('Indiquez le prix pour une nuit'))
+            ->add('rooms', IntegerType::class, $this->getConfiguration('Indiquez le nombre de chambres disponible'))
+            ->add('images', CollectionType::class,
+                [
+                    'entry_type' => ImageType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true
+                ])
         ;
     }
 
@@ -45,6 +50,7 @@ class AdType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Ad::class,
+            'translation_domain' => 'forms'
         ]);
     }
 }

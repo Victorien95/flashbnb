@@ -6,10 +6,15 @@ use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields={"title", "slug"},
+ *     message="Une autre annonce possède déjà ce titre. Merci de le modifier")
  */
 class Ad
 {
@@ -22,6 +27,9 @@ class Ad
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="10", max="255",
+     *     minMessage="Le titre doit faire plus de 10 caractères",
+     *     maxMessage="Le tite ne peut pas faire plus de 50 caractères")
      */
     private $title;
 
@@ -32,31 +40,38 @@ class Ad
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\Positive(message="Le prix ne peut pas être négatif")
+     * @Assert\GreaterThan(value="50" ,message="Le prix ne peut pas être inférieur à 50€ par nuits")
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min="10", minMessage="Votre introduction ne peut pas faire moin de 20 caractères")
      */
     private $introduction;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min="100", minMessage="Votre description détaillée ne peut pas faire moin de 100 caractères")
      */
     private $content;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url()
      */
     private $coverImage;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Positive(message="Le nombre de chambre ne peut pas être négatif")
      */
     private $rooms;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="ad", orphanRemoval=true)
+     * @Assert\Valid()
      */
     private $images;
 
