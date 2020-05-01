@@ -26,6 +26,7 @@ final class Version20200427130615 extends AbstractMigration
     }
 
     public function down(Schema $schema) : void
+
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');

@@ -7,10 +7,15 @@
             <div class="container">
                 <h1>{{ ad.title }}</h1>
                 <p>{{ ad.introduction }}</p>
-                <p class="h2">
+                <p class="h2 mb-4">
                     <strong>{{ ad.rooms }} chambres</strong> pour <strong>{{ ad.price }}&euro;</strong> par nuits
                 </p>
-                <a href="#" class="btn btn-primary">Réserver</a>
+                {% if app.user and app.user == ad.author %}
+                    <a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning">Modifier l'annonce</a>
+                    <a href="{{ path('ads_delete', {'slug': ad.slug}) }}" class="btn btn-danger ml-2" onclick="return confirm(`Êtes vous sur de vouloir supprimer l'annonce {{ ad.title }} ?`)">Supprimer l'annonce</a>
+                {% else %}
+                    <a href="#" class="btn btn-primary">Réserver</a>
+                {% endif %}
             </div>
         </div>
 
