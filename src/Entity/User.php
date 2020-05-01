@@ -267,5 +267,10 @@ class User implements UserInterface
     {
     }
 
+    public function getFullName()
+    {
+        return "{$this->firstName} {$this->lastName}";
+    }
+
 
 }
