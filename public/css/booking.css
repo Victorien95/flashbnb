@@ -1,0 +1,8 @@
+.form-control{
+    min-width: 100px;
+    background-color: white;
+}
+.myControl{
+    background-color: #f8f9fa;
+    padding: 20px;
+}

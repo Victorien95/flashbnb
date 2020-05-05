@@ -9,6 +9,7 @@ use App\Form\PasswordUpdateType;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Twig\ErrorRenderer\TwigErrorRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,7 +127,7 @@ class AccountController extends AbstractController
                 $manager->flush();
 
                 $this->addFlash('success', 'Votre mot de passe a bien été modifié');
-                
+
                 return $this->redirectToRoute('home');
             }
         }
@@ -150,5 +151,16 @@ class AccountController extends AbstractController
                 'user' => $this->getUser()
             ]);
 
+    }
+
+    /**
+     * Permet d'afficher la liste des réservations de l'utilisateur
+     *
+     * @Route("/account/bookings", name="account_bookings")
+     * @return Response
+     */
+    public function bookings()
+    {
+        return $this->render('account/bookings.html.twig');
     }
 }

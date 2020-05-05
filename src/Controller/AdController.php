@@ -54,7 +54,6 @@ class AdController extends AbstractController
             $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> à bien été enregistrée !");
             return $this->redirectToRoute('ads_show',
                 [
-                    'id' => $ad->getId(),
                     'slug' => $ad->getSlug()
                 ]);
         }
@@ -88,7 +87,6 @@ class AdController extends AbstractController
             $this->addFlash('success', "Les modifications de l'annonce <strong>{$ad->getTitle()}</strong> ont bien été enregistrée!");
             return $this->redirectToRoute('ads_show',
                 [
-                    'id' => $ad->getId(),
                     'slug' => $ad->getSlug()
                 ]);
         }
@@ -102,16 +100,15 @@ class AdController extends AbstractController
     /**
      * Permet d'afficher une seul annonce
      *
-     * @Route("ads/{slug}-{id}", name="ads_show", requirements={"slug": "[a-z0-9\-]*"})
+     * @Route("ads/{slug}", name="ads_show", requirements={"slug": "[a-z0-9\-]*"})
      * @return Response
      */
-    public function show(Ad $ad, $slug, $id)
+    public function show(Ad $ad, $slug)
     {
-        if ($ad->getSlug() != $slug || $ad->getId() != $id)
+        if ($ad->getSlug() != $slug)
         {
             return $this->redirectToRoute('ads_show', [
                 'slug' => $ad->getSlug(),
-                'id' => $ad->getId(),
             ]);
         }
         // Récupération de l'annonce en fonction du slug
@@ -125,7 +122,7 @@ class AdController extends AbstractController
     /**
      * Permet de supprimer une annonce
      * @Route("ads/{slug}/delete", name="ads_delete", requirements={"slug": "[a-z0-9\-]*"})
-     * @Security("is_granted('ROLE_USER') and user == ad.getAuthor()", message="Vous n'avez pas le droit d'accèder à cette ressource")
+     * @Security("is_granted('ROLE_USER') and user === ad.getAuthor()", message="Vous n'avez pas le droit d'accéder à cette ressource")
      *
      * @param Ad $ad
      * @param EntityManagerInterface $manager
