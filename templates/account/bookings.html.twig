@@ -12,6 +12,17 @@
             <div class="row mb-4">
                 <div class="col-4">
                     <img src="{{ ad.coverImage }}" class="img-fluid" alt="Photo de {{ ad.title }}">
+
+                    <div class="mt-3">
+                        {% set comment = ad.commentFromAuthor(app.user) %}
+                        {% if comment is not null %}
+                            <strong>Note:</strong> {% include 'common/rating.html.twig' with {'rating': comment.rating} %}
+                        {% else %}
+                            Vous n'avez pas encore donné de note...
+                            <br>
+                            <a href="{{ path('booking_show', {'id': booking.id })}}#comment">Je donne mon avis</a>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="col-8">
                     <div class="row align-items-center">
@@ -25,7 +36,7 @@
                             <a href="{{ path('booking_show', {'id': booking.id}) }}" class="btn btn-info">Plus d'informations</a>
                         </div>
                         <div class="col-2 align-middle">
-                                <i class="fas fa-circle text-{% if booking.endDate < date()  %}danger{% else %}success"{% endif %}></i>
+                                <i class="fas fa-circle text-{% if booking.endDate < date()  %}{{ 'danger' }}{% else %}{{ 'success' }}{% endif %}"></i>
                         </div>
                     </div>
                 </div>

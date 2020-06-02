@@ -28,10 +28,37 @@ div.carousel-caption{
     max-width: 44px;
     max-height: 44px;
 }
+.avatar-micro{
+    max-width: 32px;
+    max-height: 32px;
+}
 
 .datepicker table tr td.day{
     color: darkgreen;
 }
 .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover{
     color: firebrick!important;
+}
+
+span.rating i{
+    color: gold;
+}
+
+#comments_for_ads{
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.form-control{
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+#admin_comment{
+    max-width: 600px;
+    min-width: 200px;
+}
+#admin_user_description{
+    max-width: 600px;
+    min-width: 300px;
 }

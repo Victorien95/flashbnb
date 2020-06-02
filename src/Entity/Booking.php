@@ -33,7 +33,7 @@ class Booking
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Type("DateTime", message="Attention, le format renseigné n'est pas valide !")
-     * @Assert\GreaterThan("today", message="La date d'arrivée doit être ultérieur à la date d'aujourd'hui")
+     * @Assert\GreaterThan("today", message="La date d'arrivée doit être ultérieur à la date d'aujourd'hui", groups={"Front"})
      */
     private $startDate;
 
@@ -63,6 +63,7 @@ class Booking
      * Appelé à chaque création de réservation // Calcul le montant et initialise la date de création
      *
      * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
     public function prePersist()
     {
@@ -169,6 +170,7 @@ class Booking
 
         return $this;
     }
+
 // FONCTIONS MANIPULATION DE DATE POUR LES RESERVATIONS
     public function isBookableDates()
     {

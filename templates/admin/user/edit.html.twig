@@ -1,0 +1,39 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Modification du l'utilisateur n°{{ user.id }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="my-5">Modification du l'utilisateur n°{{ user.id }}</h1>
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+                    <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.email) }}</div>
+                    <div class="col-md-6">{{ form_row(form.introduction) }}</div>
+                </div>
+            </div>
+            <div class="col-12 my-5">
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_label(form.picture) }}<img class="avatar avatar-mini ml-1" src="{{ user.picture }}" alt="Image de {{ user.fullName }}">
+                        {{ form_widget(form.picture) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.description) }}
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-check mr-1"></i>Enregistrer les modifications
+            </button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+

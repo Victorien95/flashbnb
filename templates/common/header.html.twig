@@ -16,6 +16,13 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
+                {% if 'ROLE_ADMIN' in app.user.roles %}
+                    <li class="nav-item d-flex align-items-center">
+                        <a href="{{ path('admin_ads_index') }}" class="nav-link">
+                            <i class="fas fa-tasks mr-1"></i>Administration
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
                         <img src="{{ app.user.picture }}" class="avatar avatar-mini" alt="Avatar de {{ app.user.fullName }}"> {{ app.user.fullName }}
@@ -30,6 +37,7 @@
                         <a href="{{ path('account_logout') }}" class="dropdown-item">Déconnexion</a>
                     </div>
                 </li>
+
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('account_register') }}">Inscription</a>

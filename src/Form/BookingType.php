@@ -32,7 +32,8 @@ class BookingType extends ApplicationType
     {
         $resolver->setDefaults([
             'data_class' => Booking::class,
-            'translation_domain' => 'bookingForm'
+            'translation_domain' => 'bookingForm',
+            'validation_groups' => ['Default', 'Front']
         ]);
     }
 }
