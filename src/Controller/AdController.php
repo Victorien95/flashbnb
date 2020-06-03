@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
-use App\Entity\Image;
 use App\Form\AdType;
 use App\Repository\AdRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +23,9 @@ class AdController extends AbstractController
     public function index(AdRepository $repository)
     {
         $ads = $repository->findAll();
+
+
+
         return $this->render('ad/index.html.twig', [
             'ads' => $ads,
         ]);
