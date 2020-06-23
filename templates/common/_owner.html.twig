@@ -1,0 +1,19 @@
+{% set url = path('user_show', { 'slug': user.slug } ) %}
+<div class="col">
+    <div class="card border-secondary mb-4">
+        <div class="card-body">
+            <h4 class="card-title">{{ user.FullName }}</h4>
+            <i>Note moyenne des commentaires sur <span class="badge badge-info px-1">{{ data.sumAds }} annonces</span>
+                comprenant <span class="badge badge-warning">{{ data.sumComments}} commentaires</span>
+            </i>
+            <br>
+            {% include 'common/rating.html.twig' with {'rating': data.avgRating} %}
+            <hr>
+            <div class="card-text">
+                <img class="float-left mr-3" src="{{ user.picture }}" alt="Avata de {{ user.FullName }}">
+                <p>{{ user.introduction }}</p>
+                <a href="{{ url }}" class="btn btn-success float-right">En savoir plus</a>
+            </div>
+        </div>
+    </div>
+</div>

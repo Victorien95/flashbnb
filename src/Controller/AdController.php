@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
+use App\Entity\AdSearch;
+use App\Form\AdSearchType;
 use App\Form\AdType;
 use App\Repository\AdRepository;
+use App\Service\Paginator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -18,16 +21,32 @@ class AdController extends AbstractController
     /**
      * Index des annonces
      *
-     * @Route("/ads", name="ads_index")
+     * @Route("/ads/{page<\d+>?1}", name="ads_index")
      */
-    public function index(AdRepository $repository)
+    public function index(AdRepository $repository, Request $request, Paginator $paginator, $page)
     {
-        $ads = $repository->findAll();
+        $search = new AdSearch();
+
+        $paginator->setEntityClass(Ad::class)
+                  ->setCurrentPage($page)
+                  ->setLimit(2);
+
+
+        $form = $this->createForm(AdSearchType::class, $search);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()){
+            $ads = $repository->findAllVisibleQuery($search);
+            $paginator->setQuery($ads);
+        }else{
+            $paginator->setQuery(null);
+        }
 
 
 
         return $this->render('ad/index.html.twig', [
-            'ads' => $ads,
+            'paginator' => $paginator,
+            'form' => $form->createView(),
         ]);
     }
 

@@ -3,10 +3,14 @@
         <li class="page-item {% if page == 1 %} disabled {% endif %}">
             <a class="page-link" href="{{ path(route, {'page': page - 1}) }}">&laquo;</a>
         </li>
+        {% if pages <= 0 %}
+            {% set pages = 1 %}
+        {% endif %}
+
         {% for i in 1..pages %}
-            <li class="page-item {% if page == i %} active {% endif %}">
-                <a class="page-link" href="{{ path(route, {'page': i}) }}">{{ i }}</a>
-            </li>
+                <li class="page-item {% if page == i %} active {% endif %}">
+                    <a class="page-link" href="{{ path(route, {'page': i}) }}">{{ i }}</a>
+                </li>
         {% endfor %}
         <li class="page-item {% if page == pages %} disabled {% endif %}">
             <a class="page-link" href="{{ path(route, {'page': page + 1}) }}">&raquo;</a>

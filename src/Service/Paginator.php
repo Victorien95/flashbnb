@@ -8,15 +8,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
+
 class Paginator
 {
     private $entityClass;
     private $limit = 10;
     private $currentPage = 1;
-    private  $manager;
+    private $manager;
     private $twig;
     private $route;
     private $templatePath;
+    private $query;
 
     public function __construct(EntityManagerInterface $manager, Environment $twig, RequestStack $request, $templatePath)
     {
@@ -24,6 +26,7 @@ class Paginator
         $this->manager = $manager;
         $this->twig = $twig;
         $this->templatePath = $templatePath;
+        $this->query = null;
     }
 
     public function display()
@@ -44,8 +47,12 @@ class Paginator
         $offset = $this->currentPage * $this->limit - $this->limit;
 
         $repo = $this->manager->getRepository($this->entityClass);
-        
-        $data = $repo->findBy([], [], $this->limit,  $offset);
+
+        if ($this->query === null){
+            $data = $repo->findBy([], [], $this->limit,  $offset);
+        }else{
+            $data = $this->query;
+        }
 
         return $data;
 
@@ -60,8 +67,11 @@ class Paginator
 
         $repo = $this->manager->getRepository($this->entityClass);
 
-        $total = count($repo->findAll());
-
+        if ($this->query === null){
+            $total = count($repo->findAll());
+        }else{
+            $total = count($this->query);
+        }
         $pages = ceil($total / $this->getLimit());
 
         return $pages;
@@ -158,19 +168,22 @@ class Paginator
         return $this;
     }
 
+    /**
+     * @return null
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
 
-
-
-
-
-
-
-    
-    
-
-
-
-
-
+    /**
+     * @param null $query
+     * @return Paginator
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+        return $this;
+    }
 
 }

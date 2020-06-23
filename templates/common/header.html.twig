@@ -18,7 +18,7 @@
             {% if app.user %}
                 {% if 'ROLE_ADMIN' in app.user.roles %}
                     <li class="nav-item d-flex align-items-center">
-                        <a href="{{ path('admin_ads_index') }}" class="nav-link">
+                        <a href="{{ path('admin_dashboard') }}" class="nav-link">
                             <i class="fas fa-tasks mr-1"></i>Administration
                         </a>
                     </li>

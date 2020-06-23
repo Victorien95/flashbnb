@@ -4,11 +4,29 @@
 
 {% block body %}
     <div class="container">
+        <div class="jumbotron">
+            {{ form_start(form) }}
+            <div class="form-row">
+                <div class="col">
+                    {{ form_row(form.maxPrice) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.minRooms) }}
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
         <h1 class="my-4">Voici les annonces de nos hôtes</h1>
         <div class="row">
-            {% for ad in ads %}
-                {% include 'common/_ad.html.twig' %}
+            {% for ad in paginator.data %}
+                {% include 'common/_ad.html.twig'  with {'ad': ad }%}
             {% endfor %}
         </div>
     </div>
+
+    {{ paginator.display }}
+
 {% endblock %}
