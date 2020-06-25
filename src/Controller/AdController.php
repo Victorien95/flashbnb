@@ -29,7 +29,7 @@ class AdController extends AbstractController
 
         $paginator->setEntityClass(Ad::class)
                   ->setCurrentPage($page)
-                  ->setLimit(2);
+                  ->setLimit(9);
 
 
         $form = $this->createForm(AdSearchType::class, $search);
