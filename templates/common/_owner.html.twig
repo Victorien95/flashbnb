@@ -10,7 +10,7 @@
             {% include 'common/rating.html.twig' with {'rating': data.avgRating} %}
             <hr>
             <div class="card-text">
-                <img class="float-left mr-3" src="{{ user.picture }}" alt="Avata de {{ user.FullName }}">
+                <img class="avatar avatar-large float-left mr-3" src="{{ user.picture }}" alt="Avata de {{ user.FullName }}">
                 <p>{{ user.introduction }}</p>
                 <a href="{{ url }}" class="btn btn-success float-right">En savoir plus</a>
             </div>
