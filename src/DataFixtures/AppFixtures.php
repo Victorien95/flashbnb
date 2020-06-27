@@ -81,7 +81,13 @@ class AppFixtures extends Fixture
                 ->setContent('<p>' . join('</p><p>', $faker->paragraphs(random_int(2, 6) )) . '</p>')
                 ->setPrice(random_int(20, 350))
                 ->setRooms(random_int(1, 5))
-                ->setAuthor($user);
+                ->setAuthor($user)
+                ->setCity($faker->city)
+                ->setPostalCode($faker->postcode)
+                ->setAdress($faker->address)
+                ->setStreetAddress($faker->streetAddress)
+                ->setLng($faker->longitude)
+                ->setLat($faker->latitude);
 
             for($j = 1; $j <= mt_rand(2, 5); $j++){
                 $image = new Image();

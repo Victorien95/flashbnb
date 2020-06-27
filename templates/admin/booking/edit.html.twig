@@ -1,7 +1,8 @@
 {% extends 'admin/base.html.twig' %}
 {% block title %}Modifier la réservation n°{{ booking.id }}{% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/booking.css') }}">{% endblock %}
+    {{ encore_entry_link_tags('css/booking') }}
+{% endblock %}
 
 {% block body %}
     <div class="container">

@@ -29,6 +29,12 @@ class AdType extends ApplicationType
                     'allow_add' => true,
                     'allow_delete' => true
                 ])
+            ->add('adress', TextType::class)
+            ->add('streetAddress', TextType::class)
+            ->add('city', TextType::class)
+            ->add('postalCode', TextType::class)
+            ->add('lng')
+            ->add('lat')
         ;
     }
 
