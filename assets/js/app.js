@@ -34,6 +34,9 @@ if(inputAdress !== null){
     })
 }
 
+// leaflet MAP
+import Map from './modules/map'
+Map.init()
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
