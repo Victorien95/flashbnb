@@ -7,58 +7,66 @@
     <div class="container-fluid">
         <div class="row mt-5">
             <div class="col">
-                <div class="card bg-gradient-primary text-white text-center">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4"><i class="fas fa-users fa-3x"></i></div>
-                            <div class="col-8">
-                                <h4 class="card-title">{{ stats.usersCount }} utilisateurs inscrits</h4>
+                <a class="dash-link" href="{{ path('admin_user_index') }}">
+                    <div class="card bg-gradient-primary text-white text-center">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4"><i class="fas fa-users fa-3x"></i></div>
+                                <div class="col-8">
+                                    <h4 class="card-title">{{ stats.usersCount }} utilisateurs inscrits</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col">
-                <div class="card bg-gradient-success text-white text-center">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fas fa-hotel fa-3x"></i>
-                            </div>
-                            <div class="col-8">
-                                <h4 class="card-title">{{ stats.adsCount }} annonces postées</h4>
+                <a class="dash-link" href="{{ path('admin_ads_index') }}">
+                    <div class="card bg-gradient-success text-white text-center">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <i class="fas fa-hotel fa-3x"></i>
+                                </div>
+                                <div class="col-8">
+                                    <h4 class="card-title">{{ stats.adsCount }} annonces postées</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col">
-                <div class="card bg-gradient-warning text-white text-center">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fas fa-folder fa-3x"></i>
-                            </div>
-                            <div class="col-8">
-                                <h4 class="card-title">{{ stats.bookingsCount }} réservations</h4>
+                <a class="dash-link" href="{{ path('admin_booking_index') }}">
+                    <div class="card bg-gradient-warning text-white text-center">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <i class="fas fa-folder fa-3x"></i>
+                                </div>
+                                <div class="col-8">
+                                    <h4 class="card-title">{{ stats.bookingsCount }} réservations</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col">
-                <div class="card bg-gradient-info text-white text-center">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4">
-                                <i class="fas fa-comments fa-3x"></i>
-                            </div>
-                            <div class="col-8">
-                                <h4 class="card-title">{{ stats.commentsCount }} commentaires</h4>
+                <a class="dash-link" href="{{ path('admin_comment_index') }}">
+                    <div class="card bg-gradient-info text-white text-center">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <i class="fas fa-comments fa-3x"></i>
+                                </div>
+                                <div class="col-8">
+                                    <h4 class="card-title">{{ stats.commentsCount }} commentaires</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -79,7 +87,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for ad in stats.adsStats('ASC')  %}
+                            {% for ad in stats.adsStats('DESC')  %}
                                 <tr>
                                     <td>{{ ad.title }}</td>
                                     <td>
@@ -102,7 +110,7 @@
             <div class="col">
                 <div class="alert alert-danger">
                     <h2 class="alert-heading my-3">
-                        <i class="fas fa-arrow-up mr-2"></i>Les annonces les moins biens notées
+                        <i class="fas fa-arrow-down mr-2"></i>Les annonces les moins biens notées
                     </h2>
                     <table class="table table-hover text-light">
                         <thead>
@@ -113,7 +121,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for ad in stats.adsStats('DESC')  %}
+                        {% for ad in stats.adsStats('ASC')  %}
                             <tr>
                                 <td>{{ ad.title }}</td>
                                 <td>

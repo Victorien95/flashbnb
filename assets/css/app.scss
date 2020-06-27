@@ -1,6 +1,6 @@
 @import "bootstrap.min.css";
 @import "date-picker.css";
-@import "booking.css";
+
 
 
 div.container, div.container-fluid{
@@ -76,4 +76,13 @@ span.rating i{
 #admin_user_description{
     max-width: 600px;
     min-width: 300px;
+}
+
+a{
+    &.dash-link{
+        text-decoration: none;
+        :hover{
+            opacity: 0.95;
+        }
+    }
 }

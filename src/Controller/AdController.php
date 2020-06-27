@@ -8,6 +8,7 @@ use App\Form\AdSearchType;
 use App\Form\AdType;
 use App\Repository\AdRepository;
 use App\Service\Paginator;
+use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -23,7 +24,7 @@ class AdController extends AbstractController
      *
      * @Route("/ads/{page<\d+>?1}", name="ads_index")
      */
-    public function index(AdRepository $repository, Request $request, Paginator $paginator, $page)
+    public function index(AdRepository $repository, Request $request, Paginator $paginator, $page, Stats $stats)
     {
         $search = new AdSearch();
 
@@ -47,6 +48,7 @@ class AdController extends AbstractController
         return $this->render('ad/index.html.twig', [
             'paginator' => $paginator,
             'form' => $form->createView(),
+            'stats' => $stats
         ]);
     }
 

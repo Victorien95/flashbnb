@@ -14,8 +14,9 @@ import '../css/app.scss';
 var $ = require('jquery');
 global.$ = global.jQuery = $;
 
-require('popper.js');
-require('bootstrap')
+//require('popper.js');
+require('bootstrap');
+
 
 //require('bootstrap.min.js');
 

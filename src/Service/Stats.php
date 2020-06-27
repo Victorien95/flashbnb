@@ -48,4 +48,9 @@ class Stats
         )->setMaxResults(5)->getResult();
     }
 
+    public function getMaxRooms()
+    {
+        return $this->manager->createQuery('SELECT MAX(a.rooms) FROM App\Entity\Ad a')->getSingleScalarResult();
+    }
+
 }

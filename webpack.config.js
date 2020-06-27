@@ -24,6 +24,16 @@ Encore
      * and one CSS file (e.g. app.scss) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
+
+    //add image
+    .addEntry('js/add-image', './assets/js/add-image.js')
+
+    //datepicker
+    .addEntry('js/date-picker', './assets/js/date-picker.js')
+    .addStyleEntry('css/date-picker', './assets/css/date-picker.css')
+
+
+    .addStyleEntry('css/booking', './assets/css/booking.css')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 

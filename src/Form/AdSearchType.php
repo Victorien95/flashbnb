@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Ad;
 use App\Entity\AdSearch;
+use App\Service\Stats;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +31,7 @@ class AdSearchType extends ApplicationType
                     'label' => 'Chambres',
                     'attr' =>
                         [
-                            'max' => 5
+                            'min' => 1
                         ]
                 ]))
         ;

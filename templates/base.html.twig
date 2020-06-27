@@ -11,6 +11,8 @@
     </head>
 
     <body>
+        <div id="main">
+
             {% include 'common/header.html.twig' %}
             {% include 'common/flashes.html.twig' %}
             {% block body %}{% endblock %}
@@ -21,5 +23,6 @@
             {{ encore_entry_script_tags('app') }}
 
             {% block javascripts %}{% endblock %}
+        </div>
     </body>
 </html>
