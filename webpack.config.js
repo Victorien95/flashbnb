@@ -32,6 +32,10 @@ Encore
     .addEntry('js/date-picker', './assets/js/date-picker.js')
     .addStyleEntry('css/date-picker', './assets/css/date-picker.css')
 
+    //select2
+    .addEntry('js/select2', './assets/js/modules/select2.js')
+    .addStyleEntry('css/select2', './assets/css/select2.css')
+
 
     .addStyleEntry('css/booking', './assets/css/booking.css')
     //.addEntry('page1', './assets/js/page1.js')

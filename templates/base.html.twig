@@ -5,6 +5,8 @@
         <title>FlashBnB - {% block title %}Welcome!{% endblock %}</title>
         <meta name="viewport" content="width=device-width, user-scalable=no">
         {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_link_tags('css/select2') }}
+
         <script src="https://kit.fontawesome.com/e971e3c315.js" crossorigin="anonymous"></script>
 
         {% block stylesheets %}{% endblock %}
@@ -21,6 +23,10 @@
             {% include 'common/footer.html.twig' %}
 
             {{ encore_entry_script_tags('app') }}
+            {{ encore_entry_script_tags('js/select2') }}
+            <script>
+                $('select').select2();
+            </script>
 
             {% block javascripts %}{% endblock %}
         </div>

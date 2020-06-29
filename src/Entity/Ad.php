@@ -121,11 +121,19 @@ class Ad
      */
     private $street_address;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Option", inversedBy="ads")
+     */
+    private $options;
+
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->bookings = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->y = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 
     /**
@@ -458,6 +466,34 @@ class Ad
     public function setStreetAddress(string $street_address): self
     {
         $this->street_address = $street_address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->addAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->contains($option)) {
+            $this->options->removeElement($option);
+            $option->removeAd($this);
+        }
 
         return $this;
     }

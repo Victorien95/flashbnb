@@ -8,6 +8,9 @@
 // any CSS you import will output into a single css file (app.scss in this case)
 import '../css/app.scss';
 
+import 'select2'
+
+
 // Places.js
 import Places from 'places.js'
 
@@ -15,7 +18,13 @@ let inputAdress = document.querySelector('#ad_adress')
 if(inputAdress !== null){
     let place = Places({
         container: inputAdress
+
     })
+    if (document.querySelector('#ad_streetAddress') !== null){
+        if (place.getVal("name")){
+            document.querySelector('#ad_streetAddress').value = place.getVal("name")
+        }
+    }
     place.on('change', e => {
         if (document.querySelector('#ad_city')){
             if (e.suggestion.city){

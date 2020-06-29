@@ -6,6 +6,7 @@ use App\Entity\Ad;
 use App\Entity\Booking;
 use App\Entity\Comment;
 use App\Entity\Image;
+use App\Entity\Option;
 use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;

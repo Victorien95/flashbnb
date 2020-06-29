@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Modification d'une annonce{% endblock %}
+{{ encore_entry_link_tags('css/select2') }}
+
 
 {% form_theme form 'common/Form/_collection.html.twig' %}
 
@@ -17,6 +19,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/add-image.js') }}"></script>
+    {{ encore_entry_script_tags('js/add-image') }}
+    {{ encore_entry_script_tags('js/select2') }}
+
 {% endblock %}
 

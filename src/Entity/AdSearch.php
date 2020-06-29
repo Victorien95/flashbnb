@@ -4,6 +4,8 @@ namespace App\Entity;
 
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AdSearch
 {
 
@@ -31,6 +33,16 @@ class AdSearch
      * @var integer|null
      */
     private $distance;
+
+    /**
+     * @var ArrayCollection|null
+     */
+    private $options;
+
+    public function __construct()
+    {
+        $this->options = new ArrayCollection();
+    }
 
 
     /**
@@ -123,7 +135,23 @@ class AdSearch
         return $this;
     }
 
+    /**
+     * @return ArrayCollection|null
+     */
+    public function getOptions(): ?ArrayCollection
+    {
+        return $this->options;
+    }
 
+    /**
+     * @param ArrayCollection|null $options
+     * @return AdSearch
+     */
+    public function setOptions(?ArrayCollection $options): AdSearch
+    {
+        $this->options = $options;
+        return $this;
+    }
 
 
 }

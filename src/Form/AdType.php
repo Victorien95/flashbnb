@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Ad;
+use App\Entity\Option;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -33,8 +36,15 @@ class AdType extends ApplicationType
             ->add('streetAddress', TextType::class)
             ->add('city', TextType::class)
             ->add('postalCode', TextType::class)
-            ->add('lng')
-            ->add('lat')
+            ->add('lng', HiddenType::class)
+            ->add('lat', HiddenType::class)
+            ->add('options', EntityType::class, $this->getConfiguration('Choisissez les spécificités du logement',
+                [
+                    'class' => Option::class,
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'required' => false
+                ]))
         ;
     }
 

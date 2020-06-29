@@ -66,6 +66,15 @@ class AdRepository extends ServiceEntityRepository
                 ->setParameter('lat', $search->getLat())
                 ->setParameter('distance', $search->getDistance());
         }
+        if ($search->getOptions()->count() > 0){
+            $k = 1;
+            foreach ($search->getOptions() as $option){
+                $k++;
+                $query
+                    ->andWhere(":option$k MEMBER OF a.options")
+                    ->setParameter("option$k", $option);
+            }
+        }
 
         return $query->getQuery()
                      ->getResult();

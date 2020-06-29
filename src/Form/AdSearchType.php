@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Ad;
 use App\Entity\AdSearch;
+use App\Entity\Option;
 use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -46,6 +47,13 @@ class AdSearchType extends ApplicationType
             ]))
             ->add('lat', HiddenType::class)
             ->add('lng', HiddenType::class)
+            ->add('options', EntityType::class, $this->getConfiguration('Choisissez vos options',
+                [
+                    'class' => Option::class,
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'required' => false
+                ]))
         ;
     }
 
