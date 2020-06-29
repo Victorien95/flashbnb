@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
@@ -19,6 +20,7 @@ class Paginator
     private $route;
     private $templatePath;
     private $query;
+    private $query2;
 
     public function __construct(EntityManagerInterface $manager, Environment $twig, RequestStack $request, $templatePath)
     {
@@ -34,7 +36,7 @@ class Paginator
         $this->twig->display($this->templatePath, [
             'page'=> $this->currentPage,
             'pages' => $this->getPages(),
-            'route' => $this->route
+            'route' => $this->route,
         ]);
     }
 

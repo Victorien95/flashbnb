@@ -44,22 +44,30 @@ class AdRepository extends ServiceEntityRepository
                     ->getResult();
     }
 
-    public function findAllVisibleQuery(AdSearch $search)
+    /**
+     * @param AdSearch $search
+     * @return Query
+     */
+    public function findAllVisibleQuery(AdSearch $search):Query
     {
-        $query = $this->createQueryBuilder('a')
+        /** $query = $this->createQueryBuilder('a')
                       ->select('a')
-                      ->orderBy('a.price');
+                      ->orderBy('a.price');**/
+
+        $query = $this->findVisibleQuery();
 
         if ($search->getMaxPrice() != null){
-            $query->andWhere('a.price <= :maxprice')
-                  ->setParameter('maxprice', $search->getMaxPrice());
+            $query = $query
+                ->andWhere('a.price <= :maxprice')
+                ->setParameter('maxprice', $search->getMaxPrice());
         }
         if ($search->getMinRooms() != null){
-            $query->andWhere('a.rooms >= :minrooms')
-                  ->setParameter('minrooms', $search->getMinRooms());
+            $query = $query
+                ->andWhere('a.rooms >= :minrooms')
+                ->setParameter('minrooms', $search->getMinRooms());
         }
         if($search->getLat() && $search->getLng() && $search->getDistance()){
-            $query
+            $query = $query
                 ->andWhere('(6353 * 2 * ASIN(SQRT(POWER(SIN((a.lat - :lat) * pi()/180 / 2), 2) +COS(a.lat 
                 * pi() / 180) * COS(:lat * pi()/180) * POWER(SIN((a.lng - :lng) * pi()/180 / 2), 2) ))) <= :distance')
                 ->setParameter('lng', $search->getLng())
@@ -70,14 +78,18 @@ class AdRepository extends ServiceEntityRepository
             $k = 1;
             foreach ($search->getOptions() as $option){
                 $k++;
-                $query
+                $query = $query
                     ->andWhere(":option$k MEMBER OF a.options")
                     ->setParameter("option$k", $option);
             }
         }
 
-        return $query->getQuery()
-                     ->getResult();
+        return $query->getQuery();
+    }
+
+    private function findVisibleQuery()
+    {
+        return $this->createQueryBuilder('a');
     }
 
 

@@ -33,6 +33,7 @@ class AppFixtures extends Fixture
         $adminRole = new Role();
         $adminRole->setTitle('ROLE_ADMIN');
         $manager->persist($adminRole);
+
         
         $adminUser = new User();
         $adminUser->setFirstName('Victorien')
@@ -44,6 +45,18 @@ class AppFixtures extends Fixture
             ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(random_int(2, 4) )) . '</p>')
             ->addUserRole($adminRole);
         $manager->persist($adminUser);
+
+
+        $options_names = ['Adapté PMR', 'Wifi', 'Balcon'];
+        $options = [];
+
+        for($i = 0; $i < count($options_names); $i ++){
+            $option = new Option();
+            $option->setName($options_names[$i]);
+            $manager->persist($option);
+            $options[] = $option;
+        }
+
 
         // Users
         $users = [];
@@ -74,8 +87,10 @@ class AppFixtures extends Fixture
         // Annonces
         for ($i = 1; $i < 30; $i++){
             $ad = new Ad();
+
             $title = $faker->sentence();
             $user = $users[mt_rand(0, count($users) - 1)];
+            $option = $options[mt_rand(0, count($options) - 1)];
             $ad->setTitle($title)
                 ->setCoverImage($faker->imageUrl(1000, 350))
                 ->setIntroduction($faker->paragraph(random_int(1, 3)))
@@ -88,7 +103,8 @@ class AppFixtures extends Fixture
                 ->setAdress($faker->address)
                 ->setStreetAddress($faker->streetAddress)
                 ->setLng($faker->longitude)
-                ->setLat($faker->latitude);
+                ->setLat($faker->latitude)
+                ->addOption($option);
 
             for($j = 1; $j <= mt_rand(2, 5); $j++){
                 $image = new Image();

@@ -10,6 +10,7 @@ use App\Repository\AdRepository;
 use App\Service\Paginator;
 use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,33 +23,40 @@ class AdController extends AbstractController
     /**
      * Index des annonces
      *
-     * @Route("/ads/{page<\d+>?1}", name="ads_index")
+     * @Route("/ads", name="ads_index")
      */
-    public function index(AdRepository $repository, Request $request, Paginator $paginator, $page, Stats $stats)
+    public function index(AdRepository $repository, Request $request, Paginator $paginator, Stats $stats, PaginatorInterface $knp)
     {
         $search = new AdSearch();
 
-        $paginator->setEntityClass(Ad::class)
+        /**$paginator->setEntityClass(Ad::class)
                   ->setCurrentPage($page)
-                  ->setLimit(9);
+                  ->setLimit(2);**/
+
 
 
         $form = $this->createForm(AdSearchType::class, $search);
         $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()){
-            $ads = $repository->findAllVisibleQuery($search);
-            $paginator->setQuery($ads);
-        }else{
-            $paginator->setQuery(null);
-        }
+        /**$paginator = $knp->paginate($repository->findAllVisibleQuery($search),
+                $request->query->getInt('page', 1),
+                5
+            );**/
+        $paginator = $knp->paginate($repository->findAllVisibleQuery($search),
+            $request->query->getInt('page', 1),
+            9
+        );
+
+
+
+
+
 
 
 
         return $this->render('ad/index.html.twig', [
             'paginator' => $paginator,
             'form' => $form->createView(),
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 

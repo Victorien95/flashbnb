@@ -44,13 +44,16 @@
         </div>
         <h1 class="my-4">Voici les annonces de nos hôtes</h1>
         <div class="row">
-            {% for ad in paginator.data %}
+            {% for ad in paginator %}
                 {% include 'common/_ad.html.twig'  with {'ad': ad }%}
             {% endfor %}
         </div>
     </div>
 
-    {{ paginator.display }}
+    {#{{ paginator.display }}#}
+    <div class="navigation">
+        {{ knp_pagination_render(paginator) }}
+    </div>
 
 {% endblock %}
 {% block javascripts %}
