@@ -58,8 +58,14 @@ class AdRepository extends ServiceEntityRepository
             $query->andWhere('a.rooms >= :minrooms')
                   ->setParameter('minrooms', $search->getMinRooms());
         }
-
-
+        if($search->getLat() && $search->getLng() && $search->getDistance()){
+            $query
+                ->andWhere('(6353 * 2 * ASIN(SQRT(POWER(SIN((a.lat - :lat) * pi()/180 / 2), 2) +COS(a.lat 
+                * pi() / 180) * COS(:lat * pi()/180) * POWER(SIN((a.lng - :lng) * pi()/180 / 2), 2) ))) <= :distance')
+                ->setParameter('lng', $search->getLng())
+                ->setParameter('lat', $search->getLat())
+                ->setParameter('distance', $search->getDistance());
+        }
 
         return $query->getQuery()
                      ->getResult();

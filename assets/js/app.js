@@ -17,26 +17,29 @@ if(inputAdress !== null){
         container: inputAdress
     })
     place.on('change', e => {
-        if (e.suggestion.city){
-            document.querySelector('#ad_city').value = e.suggestion.city
+        if (document.querySelector('#ad_city')){
+            if (e.suggestion.city){
+                document.querySelector('#ad_city').value = e.suggestion.city
+            }else{
+                document.querySelector('#ad_city').value = e.suggestion.name
+            }
+            if (e.suggestion.postcode){
+                document.querySelector('#ad_postalCode').value = e.suggestion.postcode
+            }else{
+                document.querySelector('#ad_postalCode').value = 'NC'
+            }
+            document.querySelector('#ad_streetAddress').value = e.suggestion.name
+
         }else{
-            document.querySelector('#ad_city').value = e.suggestion.name
+            document.querySelector('#lat').value = e.suggestion.latlng.lat
+            document.querySelector('#lng').value = e.suggestion.latlng.lng
         }
-        if (e.suggestion.postcode){
-            document.querySelector('#ad_postalCode').value = e.suggestion.postcode
-        }else{
-            document.querySelector('#ad_postalCode').value = 'NC'
-        }
-        document.querySelector('#ad_streetAddress').value = e.suggestion.name
-        document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
-        document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
-        console.log(inputAdress.value)
     })
 }
 
 // leaflet MAP
 import Map from './modules/map'
-Map.init()
+//Map.init()
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.

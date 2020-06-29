@@ -17,6 +17,21 @@ class AdSearch
      */
     private $minRooms;
 
+    /**
+     * @var float|null
+     */
+    private $lat;
+
+    /**
+     * @var float|null
+     */
+    private $lng;
+
+    /**
+     * @var integer|null
+     */
+    private $distance;
+
 
     /**
      * @return int|null
@@ -53,6 +68,62 @@ class AdSearch
         $this->minRooms = $minRooms;
         return $this;
     }
+
+    /**
+     * @return float|null
+     */
+    public function getLat(): ?float
+    {
+        return $this->lat;
+    }
+
+    /**
+     * @param float|null $lat
+     * @return AdSearch
+     */
+    public function setLat(?float $lat): AdSearch
+    {
+        $this->lat = $lat;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLng(): ?float
+    {
+        return $this->lng;
+    }
+
+    /**
+     * @param float|null $lng
+     * @return AdSearch
+     */
+    public function setLng(?float $lng): AdSearch
+    {
+        $this->lng = $lng;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDistance(): ?int
+    {
+        return $this->distance;
+    }
+
+    /**
+     * @param int|null $distance
+     * @return AdSearch
+     */
+    public function setDistance(?int $distance): AdSearch
+    {
+        $this->distance = $distance;
+        return $this;
+    }
+
+
 
 
 }

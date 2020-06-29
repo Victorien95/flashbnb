@@ -13,9 +13,28 @@
                 <div class="col">
                     {{ form_row(form.minRooms) }}
                 </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="ad_adress">Adresse</label>
+                        <input type="text" id="ad_adress">
+                    </div>
                 </div>
+                <div class="col text-center">
+
+                    <div class="form-group">
+                        <label for="{{ form.distance.vars.id }}">{{ form_label(form.distance) }}</label>
+                        {{ form_widget(form.distance) }}
+                        <span id="distance_value" class="text-center"></span>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
             </div>
             {{ form_end(form) }}
         </div>
@@ -33,7 +52,13 @@
 {% block javascripts %}
     <script>
         $(document).ready(function () {
-            $('#minRooms').attr({max:{{ stats.maxRooms }}, min: 1})
+            $('#minRooms').attr({max:{{ stats.maxRooms }}, min: 1});
+            $('#distance_value').text($("#distance").val() + ' km');
         })
+        $('#distance').mousedown(e => {
+            $(document).mousemove(e => {
+                $('#distance_value').text($("#distance").val() + ' km');
+            });
+        });
     </script>
 {% endblock %}

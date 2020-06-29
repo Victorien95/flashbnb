@@ -129,9 +129,27 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-            crossorigin=""></script>
+
+
+    <script>
+        let map = document.querySelector('#map')
+        if (map !== null){
+            let center = [map.dataset.lat, map.dataset.lng]
+            let icon = L.icon({
+
+                iconUrl: 'd',
+            });
+            map = L.map('map').setView(center, 13)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            L.marker(center, {icon: icon}).addTo(map).bindPopup("<b>{{ad.price}} &euro; / nuits</b>").openPopup();
+        }
+        $('.leaflet-popup-close-button').remove();
+        $('.leaflet-popup-content').css('margin', "5px");
+        $('.leaflet-popup-content-wrapper > div').maxWidth("20").height("30");
+    </script>
 {% endblock %}
 
 

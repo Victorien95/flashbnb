@@ -1,4 +1,6 @@
 import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import 'leaflet/dist/leaflet'
 
 export default class Map {
     static init(){
@@ -13,7 +15,7 @@ export default class Map {
                 maxZoom: 19,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-            L.marker(center, {icon: icon}).addTo(map)
+            L.marker(center, {icon: icon}).addTo(map);
         }
     }
 }

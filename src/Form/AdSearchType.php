@@ -7,7 +7,9 @@ use App\Entity\AdSearch;
 use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -34,6 +36,16 @@ class AdSearchType extends ApplicationType
                             'min' => 1
                         ]
                 ]))
+            ->add('distance', RangeType::class, $this->getConfiguration('Distance maximum', [
+                'attr' =>
+                    [
+                        'max' => 100,
+                        'min' => 10,
+                        'step' => 10
+                    ]
+            ]))
+            ->add('lat', HiddenType::class)
+            ->add('lng', HiddenType::class)
         ;
     }
 
