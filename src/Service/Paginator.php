@@ -20,7 +20,6 @@ class Paginator
     private $route;
     private $templatePath;
     private $query;
-    private $query2;
 
     public function __construct(EntityManagerInterface $manager, Environment $twig, RequestStack $request, $templatePath)
     {
