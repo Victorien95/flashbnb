@@ -1,13 +1,13 @@
 {% set url = path('ads_show', { 'slug': ad.slug }) %}
-<div class="col-md-3">
+<div class="col-8 col-sm-6 col-md-10 col-lg-5 col-xl-4 card-cell" data-mapping="{{ ad.id }}">
     <div class="card mb-3">
         <div class="row no-gutters">
-            <div class="col-md-12">
+            <div class="col-12 col-md-5 col-lg-12 img_card_container px-2 py-2">
                 <a href="{{ url }}">
-                    <img src="{{ ad.coverImage }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 200px; width: 100%; display: block">
+                    <img class="img_card rounded" src="{{ ad.coverImage }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block">
                 </a>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-md-7 col-lg-12 body_card_container">
                 <div class="card-header text-center">
                     {{ ad.rooms }} chambres, <strong>{{ ad.price }}&euro; / nuit</strong><br>
 
@@ -24,11 +24,13 @@
                     <p class="card-text">
                         {{ ad.introduction }}
                     </p>
+                    {#
                     <hr>
                     <p class="card-text">
                         {{ ad.city }} ({{ ad.postalCode|replace({' ':''}) }})
                     </p>
                     <a href="{{ url }}" class="btn btn-secondary">En savoir plus</a>
+                    #}
                     {% if app.user and app.user == ad.author %}
                         <a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning ml-2">Modifier l'annonce</a>
                     {% endif %}
@@ -37,3 +39,6 @@
         </div>
     </div>
 </div>
+
+
+

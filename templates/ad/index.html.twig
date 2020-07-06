@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin=""/>
+    {{ encore_entry_link_tags('css/flickity') }}
 
     <style>
         .leaflet-div-icon{
@@ -13,12 +14,19 @@
             background-color: white;
             border-radius: 12px;
             color: #0f0f0f;
+            border: none;
             font-size: 14px;
             text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
 
+        }
+
+        .leaflet-div-icon:hover{
+            background-color: #0f0f0f;
+            color: whitesmoke;
+            transform: scale(1.15);
         }
         .leaflet-popup-content, .leaflet-popup-content-wrapper{
             margin: 0;
@@ -28,23 +36,106 @@
             max-height: 300px;
             max-width: 274px;
         }
-        .carousel-inner{
-            margin: auto;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+        .card:hover{
+            transform: scale(1.03);
+            transition-duration: 0.5s
         }
+        .carousel-inner {
+            margin: auto;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
 
         a{
 
             vertical-align: middle;
 
         }
+        #map_button{
+            font-size: 15px;
+        }
+        #map_button:hover{
+            background-color: #0f0f0f;
+            color: whitesmoke;
+            transform: scale(1.15);
+        }
+
+
+        #map_container{
+            position: sticky;
+            top: 0;
+        }
+
+        #map{
+            position: relative;
+            top: 0;
+        }
+        #map_close{
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            z-index: 1000;
+            font-size: 30px;
+            color: black;
+            background-color: white;
+            border-radius: 8px;
+        }
+        #map_close:hover, #map_close_smart:hover{
+            color: white;
+            background-color: black;
+            transform: scale(1.15);
+            transition-duration: 0.5s
+        }
+
+        #map_close_smart{
+            cursor: pointer;
+            position: fixed;
+            bottom: 10%;
+            z-index: 10001;
+            font-size: 12px;
+            background-color: #0f0f0f;
+            color: white;
+            opacity: 0.95;
+            border-radius: 24px;
+        }
+        #map_container_active{
+            /*position: relative;
+            transform: translate3d(0, 0, 0);*/
+        }
+        #map_open{
+            cursor: pointer;
+            position: fixed;
+            z-index: 1000;
+            bottom: 10%;
+            font-size: 12px;
+            background-color: #0f0f0f;
+            color: white;
+            opacity: 0.95;
+            border-radius: 24px;
+        }
+        #map_open:hover{
+            transform: scale(1.15)
+        }
+
+
+        .flickity-viewport {
+            transition: height 0.2s;
+        }
+
+        .main-carousel{
+            min-height: 470px;
+        }
+
+
+
+
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="jumbotron">
+    <div id="body_container" class="container-fluid">
+        <div class="jumbotron mx-5">
             {{ form_start(form) }}
             <div class="form-row">
                 <div class="col">
@@ -62,18 +153,15 @@
                     </div>
                 </div>
                 <div class="col text-center">
-
                     <div class="form-group">
                         <label for="{{ form.distance.vars.id }}">{{ form_label(form.distance) }}</label>
                         {{ form_widget(form.distance) }}
                         <span id="distance_value" class="text-center"></span>
                     </div>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="col">
-                    {{ form_row(form.options) }}
+                    <label for="{{ form.options.vars.id }}">{{ form_label(form.options) }}</label>
+                    {{ form_widget(form.options) }}
                 </div>
             </div>
 
@@ -84,28 +172,63 @@
         </div>
         <h1 class="my-4">Voici les annonces de nos hôtes</h1>
         <div class="row">
-            {{ dump(paginator.items) }}
-            {% for ad in paginator %}
-                {% include 'common/_ad.html.twig'  with {'ad': ad }%}
-            {% endfor %}
+            <div class="col-12 d-flex justify-content-end pb-4">
+                <button id="map_button" class="btn d-none d-lg-block">
+                    <i class="far fa-map mr-2"></i>
+                    <span id="map_button_str">Afficher la carte</span>
+                </button>
+            </div>
+            <div id="map_container_active" class="col-12">
+                <div class="d-flex row justify-content-center mx-2">
+                    {% for ad in paginator %}
+                        {% include 'common/_ad2.html.twig'  with {'ad': ad }%}
+                    {% endfor %}
+                    <div class="navigation">
+                        {{ knp_pagination_render(paginator) }}
+                    </div>
+                    <div id="map_open" class="d-lg-none btn">
+                        <i class="far fa-map mr-1"></i>Carte
+                    </div>
+                </div>
+                <h1>Recommandations pour vous</h1>
+                <div class="main-carousel">
+                    {% for ad in suggest %}
+                        {% include 'common/_suggest.html.twig' %}
+                    {% endfor %}
+                </div>
+            </div>
+           <div id="map_container" class="col">
+               <div id="map_close" class="d-none d-lg-block px-3">
+                   <i class="fas fa-times"></i>
+               </div>
+               <div class="row justify-content-center">
+                   <div id="map_close_smart" class="d-lg-none btn ">
+                       <i class="fas fa-th-list mr-1"></i>Annonces
+                   </div>
+               </div>
+               <div class="row">
+                   <div id="map" class="vh-100 rounded" style="width: 100%;"></div>
+               </div>
+           </div>
         </div>
     </div>
 
     {#{{ paginator.display }}#}
-    <div class="navigation">
-        {{ knp_pagination_render(paginator) }}
-    </div>
-
-    <div id="map" style="width: 100%; height: 1500px"></div>
-
 
 {% endblock %}
 {% block javascripts %}
     <script>
+
+
         $(document).ready(function () {
             $('#minRooms').attr({max:{{ stats.maxRooms }}, min: 1});
             $('#distance_value').text($("#distance").val() + ' km');
+            let height1 = $(window).height()
+            $('#map_container').css('height',height1)
+            $('#map').css('height',height1)
         })
+
+
         $('#distance').mousedown(e => {
             $(document).mousemove(e => {
                 $('#distance_value').text($("#distance").val() + ' km');
@@ -113,11 +236,10 @@
         });
 
 
-
         let map1 = document.querySelector('#map')
         if (map1 !== null){
 
-            var map = L.map('map', {worldCopyJump: true}).setView([51.505, -0.09], 5)
+            var map = L.map('map', {worldCopyJump: true, scrollWheelZoom:false}).setView([51.505, -0.09], 1)
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -125,6 +247,8 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors for <a href="{{ path('home') }}">FlashBnb</a>'
             }).addTo(map);
             customOptions = {'closeButton': 'false'}
+            map.zoomControl.setPosition('topright');
+
 
 
             {% for ad in paginator.items %}
@@ -171,11 +295,188 @@
                 .setContent(card);#}
 
 
-                divIcon = L.divIcon({popupAnchor:[20, -10], html:"<b class='align-middle'>{{ ad.price }} &euro;</b>"});
+                divIcon = L.divIcon({popupAnchor:[20, -10], html:"<b data-mapping={{ ad.id }} class='align-middle'>{{ ad.price }} &euro; </b>"});
                 marker = L.marker([{{ ad.lat }}, {{ ad.lng }}], {icon:divIcon}).bindPopup(card, {closeButton:false}).addTo(map)
 
             {% endfor %}
 
         }
+
+    </script>
+
+    <script>
+        /* 1 = pas de map / 2 = map activé */
+        $(window).ready(function () {
+            if (sessionStorage.getItem('map') === null){
+                sessionStorage.setItem('map', '1')
+                console.log('error')
+            }
+            if (sessionStorage.getItem('map') === '1'){
+                $('#map_container').addClass('d-none');
+                $('#body_container').removeClass('.container-fluid').addClass('container')
+                console.log(sessionStorage)
+
+            }else{
+                $('#map_button').removeClass('d-lg-block');
+                //$('#map_container_active').removeClass('col-12').addClass('col-6');
+                if ($(window).width() > '974'){
+                    $('#map_container_active').addClass('col-lg-7 col-xl-6')
+
+                    $('.card_container').each(function () {
+                        $(this).removeClass('col-lg-4')
+                        $(this).find($('.img_card_container')).removeClass('col-md-5 col-lg-12').addClass('col-lg-5')
+
+                        $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                        $(this).find($('.body_card_container')).removeClass('col-md-7 col-lg-12').addClass('col-lg-7')
+                    })
+                }else{
+                    $('#map_container').removeClass('d-none').css({'position':'fixed', 'z-index': '1000'})
+                    console.log('BOUUUM')
+                }
+
+
+                //$('.card_container').removeClass('col-md-3').addClass('col-12')
+               // $('#img_card_container').removeClass('col-md-4').addClass('col-12')
+                //$('#img_card').css({'height':'100%', 'min-height':'260px'})
+                //$('#body_card_container').removeClass('col-12').addClass('col-md-8')
+            }
+
+            console.log(sessionStorage.getItem("map") + "pipi")
+
+        })
+
+        /* --------------------------------  FLICKITY ------------------------------- */
+        $('.main-carousel').flickity({
+            wrapAround: true,
+            groupCells: 1,
+            cellSelector: '.card-cell',
+            adaptiveHeight: true
+        })
+
+        /* --------------------------------  OPEN AND CLOSE MAP BUTTON SET ------------------------------- */
+        var button_fonction_display = function(){
+            $('#map_container').css({'position':'sticky'})
+            $('#map_container_active').addClass('col-lg-7 col-xl-6')
+
+            $('.card_container').each(function () {
+                $(this).removeClass('col-lg-4')
+                $(this).find($('.img_card_container')).removeClass('col-md-5 col-lg-12').addClass('col-lg-5')
+
+                $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                $(this).find($('.body_card_container')).removeClass('col-md-7 col-lg-12').addClass('col-lg-7')
+            });
+           /* $('.card-cell').each(function () {
+                $(this).removeClass('col-lg-4 col-xl-3').addClass('col-lg-6')
+            });*/
+        }
+        var button_fonction_close = function(){
+            $('#map_container_active').removeClass('col-lg-7 col-xl-6')
+
+            $('.card_container').each(function () {
+                $(this).addClass('col-lg-4')
+                $(this).find($('.img_card_container')).removeClass('col-lg-5').addClass('col-md-5 col-lg-12')
+
+                $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                $(this).find($('.body_card_container')).removeClass('col-lg-7').addClass('col-md-7 col-lg-12')
+            });
+            /*$('.card-cell').each(function () {
+                $(this).removeClass('col-lg-6').addClass('col-lg-4 col-xl-3')
+            });*/
+        };
+
+        var map_close = function(){
+            width = $(window).width()
+            sessionStorage.setItem('map', '1')
+            $('#body_container').removeClass('container-fluid').addClass('container')
+            $('#map_container').removeClass('d-block').addClass('d-none');
+            button_fonction_close()
+            $('#map_button').addClass('d-lg-block');
+        };
+
+
+
+        $('#map_button').click(function () {
+            width = $(window).width();
+            //map_fixed_size();
+                sessionStorage.setItem('map', '2')
+                $('#body_container').removeClass('container').addClass('container-fluid')
+                $('#map_container').removeClass('d-none').addClass('d-block');
+            button_fonction_display();
+            console.log(this);
+            $(this).removeClass('d-lg-block');
+            map.invalidateSize();
+        })
+
+
+        $('#map_open').click(function () {
+
+            sessionStorage.setItem('map', '2')
+            $('#body_container').removeClass('container').addClass('container-fluid')
+            button_fonction_display();
+
+            $('#map_container').css({'position':'fixed', 'z-index': '1000'}).removeClass('d-none').addClass('d-block');
+            map.invalidateSize();
+        })
+
+        $('#map_close_smart').click(function () {
+            map_close()
+        })
+
+        $('#map_close').click(function () {
+            map_close()
+        });
+
+
+        (function () {
+            $(window).resize(function () {
+                let height = $(window).height()
+                $('#map_container').css({'height':height})
+                $('#map').css('height',height)
+            })
+        })();
+
+            /* Fonction pour la map qui passera de smartphone à PC*/
+        (function(){
+            $(window).resize(function () {
+                let width = $(window).width()
+                if (width > '974'){
+                    console.log('GOOOOOOOOO' + sessionStorage.getItem('map'))
+                    if (sessionStorage.getItem('map') === '2'){
+                        $('#map_container').css({'position':'sticky', 'top':'0'})
+                        $('#map_container_active').addClass('col-lg-7 col-xl-6')
+                    }
+                }
+                if (sessionStorage.getItem('map') === '2'){
+                    $('.card_container').each(function () {
+                        $(this).removeClass('col-md-4')
+                        $(this).find($('.img_card_container')).addClass('col-lg-5')
+
+                        $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                        $(this).find($('.body_card_container')).addClass('col-lg-7')
+                    })
+                }
+                if (width < '975'){
+                    console.log('DOOOWWWNWNN' + sessionStorage.getItem('map'))
+                    if (sessionStorage.getItem('map') === '2' && width<='974'){
+                        $('#map_container').css({'position':'fixed', 'z-index': '1000'})
+                        $('#map_container_active').removeClass('col-lg-7 col-xl-6')
+
+                    }
+                }
+            })
+        })();
+
+    </script>
+
+    <script>
+        var cardContainer = $('.card_container');
+        cardContainer.mouseover(function () {
+            var id = $(this).data('mapping')
+            $("b[data-mapping='" + id + "']").parent().css({'background-color':'#0f0f0f', 'color': 'white'})
+        })
+        cardContainer.mouseout(function () {
+            var id = $(this).data('mapping')
+            $("b[data-mapping='" + id + "']").parent().css({'background-color':'white', 'color': 'black'})
+        })
     </script>
 {% endblock %}

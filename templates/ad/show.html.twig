@@ -107,6 +107,7 @@
     <script>
         let map = document.querySelector('#map')
         if (map !== null){
+
             let center = [map.dataset.lat, map.dataset.lng]
             let icon = L.icon({
 
@@ -114,7 +115,7 @@
                 iconSize: [35, 35],
                 popupAnchor: [0, -20]
             });
-            map = L.map('map', {worldCopyJump: true}).setView(center, 5)
+            map = L.map('map', {worldCopyJump: true}).setView(center, 12)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 minZoom: 4,
@@ -122,11 +123,12 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors for <a href="{{ path('home') }}">FlashBnb</a>'
             }).addTo(map);
             L.marker(center, {icon: icon}).addTo(map).bindPopup("<b>{{ad.price}} &euro; / nuits</b>", {closeButton: false}).openPopup();
-            L.circleMarker(center, {
+            L.circle(center, {
+                stroke:false,
                 color: 'grey',
                 fillColor: 'grey',
                 fillOpacity: '0.4',
-                radius: 50
+                radius: 100
             }).addTo(map)
         }
         /**$('.leaflet-popup-close-button').remove();

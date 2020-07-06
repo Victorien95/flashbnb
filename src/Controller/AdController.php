@@ -7,6 +7,7 @@ use App\Entity\AdSearch;
 use App\Form\AdSearchType;
 use App\Form\AdType;
 use App\Repository\AdRepository;
+use App\Service\CookieSuggestAd;
 use App\Service\Paginator;
 use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +29,7 @@ class AdController extends AbstractController
     public function index(AdRepository $repository, Request $request, Paginator $paginator, Stats $stats, PaginatorInterface $knp)
     {
         $search = new AdSearch();
+        $suggest = $repository->findSuggestQuery($request);
 
         /**$paginator->setEntityClass(Ad::class)
                   ->setCurrentPage($page)
@@ -37,6 +39,10 @@ class AdController extends AbstractController
 
         $form = $this->createForm(AdSearchType::class, $search);
         $form->handleRequest($request);
+
+
+
+
         /**$paginator = $knp->paginate($repository->findAllVisibleQuery($search),
                 $request->query->getInt('page', 1),
                 5
@@ -48,15 +54,11 @@ class AdController extends AbstractController
 
 
 
-
-
-
-
-
         return $this->render('ad/index.html.twig', [
             'paginator' => $paginator,
             'form' => $form->createView(),
             'stats' => $stats,
+            'suggest' => $suggest
         ]);
     }
 
@@ -134,8 +136,14 @@ class AdController extends AbstractController
      * @Route("ads/{slug}", name="ads_show", requirements={"slug": "[a-z0-9\-]*"})
      * @return Response
      */
-    public function show(Ad $ad, $slug)
+    public function show(Ad $ad, $slug, CookieSuggestAd $suggestAds, Request $request)
     {
+        $suggestAds->CookieSuggestSet($request, $ad);
+        //$suggestAds->CookieRemove();
+        //dump($request->cookies->get('suggest'));
+        //die();
+       // $suggestAds->CookieSuggestSet($request, $ad);
+
         if ($ad->getSlug() != $slug)
         {
             return $this->redirectToRoute('ads_show', [
@@ -149,6 +157,8 @@ class AdController extends AbstractController
                 'ad' => $ad
             ]);
     }
+
+
 
     /**
      * Permet de supprimer une annonce
@@ -165,6 +175,15 @@ class AdController extends AbstractController
         $manager->flush();
         $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été supprimée !");
         return $this->redirectToRoute("ads_index");
+
+    }
+
+    /**
+     * @Route("/carousel", name="ads_carousel")
+     */
+    public function carousel()
+    {
+        return $this->render('common/_suggest.html.twig');
 
     }
 

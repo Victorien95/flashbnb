@@ -36,6 +36,8 @@ Encore
     .addEntry('js/select2', './assets/js/modules/select2.js')
     .addStyleEntry('css/select2', './assets/css/select2.css')
 
+    .addStyleEntry('css/flickity', './assets/css/flickity.css')
+
 
     .addStyleEntry('css/booking', './assets/css/booking.css')
     //.addEntry('page1', './assets/js/page1.js')
@@ -47,6 +49,8 @@ Encore
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
+
+
 
     /*
      * FEATURE CONFIG

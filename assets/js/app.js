@@ -10,7 +10,6 @@ import '../css/app.scss';
 
 import 'select2'
 
-
 // Places.js
 import Places from 'places.js'
 
@@ -57,6 +56,19 @@ global.$ = global.jQuery = $;
 
 //require('popper.js');
 require('bootstrap');
+
+import stickybits from 'stickybits'
+var teststicky = require('stickybits')
+
+
+// Flickity
+
+var jQueryBridget = require('jquery-bridget');
+var Flickity = require('flickity');
+
+// make Flickity a jQuery plugin
+Flickity.setJQuery( $ );
+jQueryBridget( 'flickity', Flickity, $ );
 
 
 //require('bootstrap.min.js');

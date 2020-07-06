@@ -9,7 +9,6 @@ use App\Form\PasswordUpdateType;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bridge\Twig\ErrorRenderer\TwigErrorRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;

@@ -30,3 +30,7 @@ services:
     App\Service\Paginator:
         arguments:
             $templatePath: 'common/pagination.html.twig'
+
+    #App\Service\ExceptionEventListener:
+     #   tags:
+      #      - { name: kernel.event_listener, event: kernel.exception, method: test}

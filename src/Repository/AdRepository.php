@@ -8,6 +8,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @method Ad|null find($id, $lockMode = null, $lockVersion = null)
@@ -94,6 +96,45 @@ class AdRepository extends ServiceEntityRepository
 
 
 
+    // SUGGESTION
+
+    // SUGGESTION
+
+
+
+    public function findSuggestQuery($request)
+    {
+        $array = unserialize($request->cookies->get('suggest'));
+        $minPrice = 1000;
+        $maxPrice = 0;
+        $minRooms = 100;
+        $maxRooms = 0;
+
+        foreach ($array as $value){
+            if ($value[1] > $maxPrice){
+                $maxPrice = $value[1];
+            }
+            if ($value[1] < $minPrice){
+                $minPrice = $value[1];
+            }
+            if ($value[2] > $maxRooms){
+                $maxRooms = $value[2];
+            }
+            if ($value[2] < $minRooms){
+                $minRooms = $value[2];
+            }
+        }
+
+
+        $query = $this->findVisibleQuery()
+            ->andWhere("a.price BETWEEN $minPrice AND $maxPrice")
+            ->andWhere("a.rooms BETWEEN $minRooms AND $maxRooms")
+            ->orderBy('RAND()')
+            ->setMaxResults(9)
+            ->getQuery();
+
+        return $query->getResult();
+    }
 
 
     // /**

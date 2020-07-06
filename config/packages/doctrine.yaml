@@ -23,3 +23,4 @@ doctrine:
                 SIN: DoctrineExtensions\Query\Mysql\Sin
                 PI: DoctrineExtensions\Query\Mysql\Pi
                 COS: DoctrineExtensions\Query\Mysql\Cos
+                RAND: DoctrineExtensions\Query\Mysql\Rand
