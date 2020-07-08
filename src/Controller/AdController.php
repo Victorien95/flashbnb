@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Ad;
 use App\Entity\AdSearch;
+use App\Entity\Option;
 use App\Form\AdSearchType;
 use App\Form\AdType;
 use App\Repository\AdRepository;
@@ -11,7 +12,9 @@ use App\Service\CookieSuggestAd;
 use App\Service\Paginator;
 use App\Service\Stats;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Component\Pager\PaginatorInterface;
+use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -178,14 +181,25 @@ class AdController extends AbstractController
 
     }
 
+
     /**
-     * @Route("/carousel", name="ads_carousel")
+     * @Route("ads/{slug}/pdf", name="ads_pdf")
      */
-    public function carousel()
+    public function pdf(Ad $ad)
     {
-        return $this->render('common/_suggest.html.twig');
+        $snappy = new Pdf('C:\wamp64\www\symbnb\vendor\wemersonjanuario\wkhtmltopdf-windows\bin\64bit\wkhtmltopdf.exe');
+        $snappy->setTemporaryFolder("C:\mytemp");
+
+        /*$html = $this->generateUrl('ads_show',
+            [
+                'slug' => $ad->getSlug()
+            ]);
+        dump($html);
+        die();*/
+
+        $html = 'https://scantrad.net/mangas/one-piece/982#19';
+        return new PdfResponse($snappy->getOutput($html), 'file.pdf');
 
     }
-
 
 }

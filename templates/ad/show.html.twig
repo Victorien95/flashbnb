@@ -4,6 +4,33 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin=""/>
+
+    <style>
+        a[data-toggle="modal"]{
+            font-size: 0.8125rem;
+        }
+        .fab, .far{
+            margin-right: 1rem;
+            color: #3B5998;
+        }
+        div.modal-body>div.row>div.col-12{
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1rem;
+            padding-top: 1rem;
+        }
+        div.modal-body>div.row>div.col-12:last-child{
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        div.modal-body>div.row>div.col-12:first-child{
+            padding-top: 0;
+        }
+        .socialNetwork{
+            font-size: 1.5rem;
+            padding-left: 1.2rem;
+        }
+    </style>
+
 {% endblock %}
 
 {% block title %}{{ ad.title }}{% endblock %}
@@ -24,12 +51,15 @@
             {% else %}
                 <a href="{{ path('booking_create', {'slug': ad.slug}) }}" class="btn btn-primary">Réserver</a>
             {% endif %}
+            <a href="#" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#exampleModalCenter">
+                <i class="fas fa-share-alt mr-2"></i>Partager
+            </a>
         </div>
     </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-md-8 mb-4">
+            <div class="col-md-7 mb-4">
                 {{ ad.content|raw }}
 
                 {% include 'common/carousel.html.twig' %}
@@ -88,6 +118,7 @@
                         <span class="badge badge-primary">{{ a.ads|length }} annonces</span>
                     </div>
                 </div>
+
                 <div>
                     {{ a.description |raw }}
                 </div>
@@ -95,8 +126,53 @@
 
                 <div class="table-active text-center p-2">L'adresse exacte vous sera communiqué après la réservation</div>
             </div>
-
         </div>
+    </div>
+
+
+
+
+
+    {# MODAL #}
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle">Partager vos envies avec vos proches</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <a class="socialNetwork" href=""><i class="fab fa-twitter" style="color: #00B6F1;"></i>Twitter</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork" href=""><i class="fab fa-facebook" style="color: #3B5998;"></i>Facebook</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork" href=""><i class="fab fa-whatsapp" style="color: #25d366;"></i>WhatsApp</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork" href=""><i class="fab fa-linkedin-in" style="color: #04669A;"></i>Linkedin</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork" href=""><i class="fab fa-instagram" style="color: #c13584"></i>Instagram</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork"><i class="fab fa-snapchat" style="color: #fffc00;"></i>SnapChat</a>
+                        </div>
+                        <div class="col-12">
+                            <a class="socialNetwork"><i class="far fa-file-pdf" style="color: #ff0000;"></i>Télécharger en PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
 
 {% endblock %}

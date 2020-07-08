@@ -66,7 +66,7 @@ class CookieSuggestAd
         }
 
         if (!$this->ad){
-            throw new \Exception("Vous n'avez pas spécifié l'entité d'annonce");
+            throw new \Exception("Vous n'avez pas spécifié l'annonce sur laquelle travailler");
         }
 
         $this->SuggestCookieInit($request);
