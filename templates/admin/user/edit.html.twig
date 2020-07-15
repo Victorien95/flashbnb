@@ -27,6 +27,7 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ user.id ) }}">
             <button class="btn btn-primary" type="submit">
                 <i class="fas fa-check mr-1"></i>Enregistrer les modifications
             </button>

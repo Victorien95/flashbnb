@@ -16,6 +16,10 @@
                     {% else %}
                         <small>Pas encore noté</small>
                     {% endif %}
+                    {% if ad.likes|length > 0 %}
+                        <span class="js-likes">10</span>
+                        <i class="fas fa-heart" style="color: darkred"></i>
+                    {% endif %}
                 </div>
                 <div class="card-body">
                     <a href="{{ url }}">

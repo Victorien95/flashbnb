@@ -6,6 +6,7 @@ use App\Entity\Ad;
 use App\Entity\Booking;
 use App\Entity\Comment;
 use App\Entity\Image;
+use App\Entity\Like;
 use App\Entity\Option;
 use App\Entity\Role;
 use App\Entity\User;
@@ -112,6 +113,15 @@ class AppFixtures extends Fixture
                     ->setCaption($faker->sentence)
                     ->setAd($ad);
                 $manager->persist($image);
+
+            }
+            // Likes
+            for($j = 1; $j <= mt_rand(7, 20); $j++){
+                $like = new Like();
+                $like->setAd($ad)
+                    ->setUser($faker->randomElement($users));
+                $manager->persist($like);
+
             }
 
             // Réservations

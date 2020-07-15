@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AdType;
 use App\Service\Paginator;
+use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
 
 class AdminAdController extends AbstractController
 {
@@ -33,24 +35,35 @@ class AdminAdController extends AbstractController
      * @param Ad $ad
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Ad $ad, Request $request, EntityManagerInterface $manager)
+    public function edit(Ad $ad, Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
-        $form = $this->createForm(AdType::class, $ad);
+        $tokens = $request->getSession()->all();
+        $id = $ad->getId();
 
-        $form->handleRequest($request);
+        if ($this->isCsrfTokenValid('edit' . $id, $tokens['_csrf/edit' . $id])) {
+            $form = $this->createForm(AdType::class, $ad);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            $manager->persist($ad);
-            $manager->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été enregistrée !");
-        }
-
-        return $this->render('admin/ad/edit.html.twig', [
+                /*dump($request->getSession()->all());
+                dump($test['_csrf/save' . $id]);
+                dump($request->get('_token_save'));*/
+                if ($this->isCsrfTokenValid('save' . $ad->getId(), $request->get('_token_save'))) {
+                    $manager->persist($ad);
+                    $manager->flush();
+                    $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été enregistrée !");
+                }
+            }
+            return $this->render('admin/ad/edit.html.twig', [
                 'ad' => $ad,
                 'form' => $form->createView()
             ]);
 
+        }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute('admin_ads_index');
     }
 
     /**
@@ -60,16 +73,21 @@ class AdminAdController extends AbstractController
      * @param Ad $ad
      * @param EntityManagerInterface $manager
      */
-    public function delete(Ad $ad, EntityManagerInterface $manager)
+    public function delete(Ad $ad, EntityManagerInterface $manager, Request $request, TokenError $tokenError)
     {
-        if (count($ad->getBookings()) > 0){
-            $this->addFlash('warning',
-                "Vous ne pouvez pas supprimer l'annonce <strong>{$ad->getTitle()}</strong> car elle possède déjà des réservations");
-        }else{
-            $manager->remove($ad);
-            $manager->flush();
-            $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été supprimée !");
+        if ($this->isCsrfTokenValid('delete' . $ad->getId(), $request->get('_token'))){
+            if (count($ad->getBookings()) > 0){
+                $this->addFlash('warning',
+                    "Vous ne pouvez pas supprimer l'annonce <strong>{$ad->getTitle()}</strong> car elle possède déjà des réservations");
+            }else{
+                $manager->remove($ad);
+                $manager->flush();
+                $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été supprimée !");
+            }
+            return $this->redirectToRoute('admin_ads_index');
         }
-        return $this->redirectToRoute('admin_ads_index');
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirect("admin_ads_index");
     }
 }

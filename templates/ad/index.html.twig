@@ -46,7 +46,6 @@
             border-top-right-radius: 5px;
         }
 
-
         a{
 
             vertical-align: middle;
@@ -217,6 +216,8 @@
 
 {% endblock %}
 {% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
 
 
@@ -479,4 +480,11 @@
             $("b[data-mapping='" + id + "']").parent().css({'background-color':'white', 'color': 'black'})
         })
     </script>
+
+
+
+
+
+
+
 {% endblock %}

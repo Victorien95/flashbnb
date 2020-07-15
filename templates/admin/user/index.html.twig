@@ -39,9 +39,15 @@
                     <td class="align-middle text-center h5">
                         <span class="badge badge-warning">{{ user.comments|length  }}</span>
                     </td>
-                    <td class="align-middle text-center">
-                        <a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="btn btn-primary my-1 mx-1"><i class="fas fa-edit"></i></a>
-                        <a href="{{ path('admin_user_delete', {'id': user.id}) }}" class="btn btn-danger my-1 mx-1"><i class="fas fa-trash"></i></a>
+                    <td class="align-middle">
+                        {% include 'admin/common/_editButton.html.twig' with {
+                            'route': 'admin_user_edit',
+                            'id': user.id,
+                        } %}
+                        {% include 'admin/common/_deleteButton.html.twig' with {
+                            'route': 'admin_user_delete',
+                            'id': user.id,
+                        } %}
                     </td>
                 </tr>
             {% endfor %}

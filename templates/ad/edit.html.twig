@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Modification d'une annonce{% endblock %}
-{{ encore_entry_link_tags('css/select2') }}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('css/select2') }}
+    {% endblock %}
 
 
 {% form_theme form 'common/Form/_collection.html.twig' %}
@@ -11,6 +13,7 @@
 
         {{ form_start(form) }}
         {{ form_widget(form) }}
+        <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ ad.id ) }}">
         <div class="form-group">
             <button class="btn btn-primary">Enregistrer les modifications</button>
         </div>

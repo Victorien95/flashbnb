@@ -21,6 +21,7 @@
                 {{ form_row(form.comment) }}
             </div>
         </div>
+        <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ booking.id ) }}">
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-check mr-1"></i>Enregistrer les modifications
         </button>

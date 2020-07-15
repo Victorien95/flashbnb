@@ -70,10 +70,17 @@ class Ad
     private $rooms;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="ad", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="ad", orphanRemoval=true, cascade={"persist"})
      * @Assert\Valid()
      */
     private $images;
+
+    /**
+     * @Assert\All({
+     *     @Assert\Image(mimeTypes="image/jpeg")
+     * })
+     */
+    private $imageFiles;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="ads")
@@ -126,6 +133,11 @@ class Ad
      */
     private $options;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="ad", orphanRemoval=true)
+     */
+    private $likes;
+
 
     public function __construct()
     {
@@ -134,6 +146,7 @@ class Ad
         $this->comments = new ArrayCollection();
         $this->y = new ArrayCollection();
         $this->options = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     /**
@@ -203,6 +216,20 @@ class Ad
         }
         return $notAvailableDays;
     }
+
+    /**
+     * Permet de savoir si un article est liké par un utilisateur
+     * @param User $user
+     * @return bool
+     */
+    public function isLikeByUser(User $user)
+    {
+        foreach ($this->likes as $like){
+            if ($like->getUser() === $user ) return true;
+        }
+        return false;
+    }
+    
 
     public function getId(): ?int
     {
@@ -497,4 +524,61 @@ class Ad
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getImageFiles()
+    {
+        return $this->imageFiles;
+    }
+
+    /**
+     * @param mixed $imageFiles
+     * @return Ad
+     */
+    public function setImageFiles($imageFiles)
+    {
+        foreach ($imageFiles as $imageFile){
+            $image = new Image();
+            $image->setImageFile($imageFile);
+            $this->addImage($image);
+        }
+        $this->imageFiles = $imageFiles;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getAd() === $this) {
+                $like->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
 }

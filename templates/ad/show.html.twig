@@ -9,7 +9,7 @@
         a[data-toggle="modal"]{
             font-size: 0.8125rem;
         }
-        .fab, .far{
+        .socialNetwork>.fab, .socialNetwork>.far{
             margin-right: 1rem;
             color: #3B5998;
         }
@@ -44,15 +44,35 @@
                 <strong>{{ ad.rooms }} chambres</strong> pour <strong>{{ ad.price }}&euro;</strong> par nuits
             </p>
             {% if app.user and app.user == ad.author %}
-                <a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning">Modifier l'annonce</a>
-                <a href="{{ path('ads_delete', {'slug': ad.slug}) }}" class="btn btn-danger ml-2"
+                <form class="ml-lg-1 my-1 d-inline-block" method="post" action="{{ path('ads_edit', {'slug': ad.slug}) }}">
+                    <input type="hidden" name="_method" value="EDIT">
+                    <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ ad.slug ) }}">
+                    <button class="btn btn-warning ">Modifier l'annonce</button>
+                </form>
+                {#<a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning">Modifier l'annonce</a>#}
+                <form class="ml-lg-1 my-1 d-inline-block" method="post" action="{{ path('ads_delete', {'slug': ad.slug}) }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ad.slug ) }}">
+                    <button class="btn btn-danger ">Supprimer l'annonce</button>
+                </form>
+                {#<a href="{{ path('ads_delete', {'slug': ad.slug}) }}" class="btn btn-danger ml-2"
                    onclick="return confirm(`Êtes vous sur de vouloir supprimer l'annonce {{ ad.title }} ?`)">Supprimer
-                    l'annonce</a>
+                    l'annonce</a>#}
             {% else %}
                 <a href="{{ path('booking_create', {'slug': ad.slug}) }}" class="btn btn-primary">Réserver</a>
             {% endif %}
             <a href="#" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#exampleModalCenter">
                 <i class="fas fa-share-alt mr-2"></i>Partager
+            </a>
+            <a href="{{ path('ads_like', {'slug': ad.slug}) }}" class="js-like btn btn-secondary ml-2">
+                {% if app.user and ad.isLikeByUser(app.user) %}
+                    <i class="fas fa-heart mr-1" style="color: red"></i>
+                {% else %}
+                    <i class="far fa-heart mr-1" style="color: red"></i>
+                {% endif %}
+                <span class="js-likes">
+                    {{ ad.likes|length }}
+                </span><span>{% if ad.likes|length > 1 %} aiment{% else %} aime{% endif %} cette annonce</span>
             </a>
         </div>
     </div>
@@ -86,7 +106,7 @@
                     {% for comment in ad.comments %}
                         <div id="comments_for_ads" class="rounded mb-3">
                             <div id="comment_author" class="bg-gradient-warning px-3 py-2">
-                                <img src="{{ comment.author.picture }}" alt="" class="avatar avatar-mini">
+                                <img src="{{ comment.author.picture|imagine_filter('thumb') }}" alt="" class="avatar avatar-mini">
                                 <strong>{{ comment.author.username }}</strong> a dit :
                             </div>
                             <div class="px-3 py-2">
@@ -211,6 +231,9 @@
         $('.leaflet-popup-content').css('margin', "5px");
         $('.leaflet-popup-content-wrapper > div').maxWidth("20").height("30");**/
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 {% endblock %}
 
 

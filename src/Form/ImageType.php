@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +20,7 @@ class ImageType extends AbstractType
                     'placeholder' => 'URL de l\'image'
                 ]
             ])
-            ->add('caption', TextType::class, [
+            ->add('caption', HiddenType::class, [
                 'attr' => [
                     'placeholder' => 'Titre de l\'image'
                 ]

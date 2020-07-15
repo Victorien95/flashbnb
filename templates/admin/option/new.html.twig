@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle option{% endblock %}
+
+{% block body %}
+    <h1>Créer une nouvelle option</h1>
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ option.id ) }}">
+    <button class="btn btn-primary my-4" type="submit">
+        <i class="fas fa-check mr-1"></i>Enregistrer
+    </button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('admin_option_index') }}">Revenir à la liste</a>
+{% endblock %}

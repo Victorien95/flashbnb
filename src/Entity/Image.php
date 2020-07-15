@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
+ * @Vich\Uploadable
  */
 class Image
 {
@@ -19,10 +23,18 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Url()
+     * @var TextType|null
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $url;
+
+    /**
+     * @var File|null
+     * @Assert\Image(mimeTypes="image/jpeg")
+     * @Vich\UploadableField(mapping="ad_image", fileNameProperty="caption")
+     */
+    private $imageFile;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -35,6 +47,7 @@ class Image
      * @ORM\JoinColumn(nullable=false)
      */
     private $ad;
+
 
     public function getId(): ?int
     {
@@ -58,7 +71,7 @@ class Image
         return $this->caption;
     }
 
-    public function setCaption(string $caption): self
+    public function setCaption(?string $caption): self
     {
         $this->caption = $caption;
 
@@ -76,4 +89,25 @@ class Image
 
         return $this;
     }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return Image
+     */
+    public function setImageFile(?File $imageFile): Image
+    {
+        $this->imageFile = $imageFile;
+
+        return $this;
+    }
+
+
 }

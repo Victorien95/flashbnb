@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Form\AdminCommentType;
 use App\Service\Paginator;
+use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,26 +39,35 @@ class AdminCommentController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Comment $comment, \Symfony\Component\HttpFoundation\Request $request, EntityManagerInterface $manager)
+    public function edit(Comment $comment, \Symfony\Component\HttpFoundation\Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
-        $form = $this->createForm(AdminCommentType::class, $comment);
 
-        $form->handleRequest($request);
+        $tokens = $request->getSession()->all();
+        $id = $comment->getId();
+        if($this->isCsrfTokenValid('edit' . $id, $tokens['_csrf/edit' . $id])){
+            $form = $this->createForm(AdminCommentType::class, $comment);
 
-        if ($form->isSubmitted() && $form->isValid()){
+            $form->handleRequest($request);
 
-            $manager->persist($comment);
+            if ($form->isSubmitted() && $form->isValid()){
+                if($this->isCsrfTokenValid('save' . $comment->getId(), $request->get('_token_save'))){
+                    $manager->persist($comment);
 
-            $manager->flush();
+                    $manager->flush();
 
-            $this->addFlash('success', "Le commantaire <strong>n°{$comment->getId()}</strong> a bien été modifié");
+                    $this->addFlash('success', "Le commantaire <strong>n°{$comment->getId()}</strong> a bien été modifié");
+                }
 
+            }
+
+            return $this->render('admin/comment/edit.html.twig', [
+                'form' => $form->createView(),
+                'comment' => $comment
+            ]);
         }
-
-        return $this->render('admin/comment/edit.html.twig', [
-            'form' => $form->createView(),
-            'comment' => $comment
-        ]);
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_comment_index");
     }
 
     /**
@@ -68,14 +78,20 @@ class AdminCommentController extends AbstractController
      * @param Comment $comment
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Comment $comment, EntityManagerInterface $manager)
+    public function delete(Comment $comment, EntityManagerInterface $manager, Request $request, TokenError $tokenError)
     {
-        $id = $comment->getId();
-        $manager->remove($comment);
+        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->get('_token'))){
+            $id = $comment->getId();
+            $manager->remove($comment);
 
-        $manager->flush();
+            $manager->flush();
 
-        $this->addFlash('success', "Le commentaire <strong>n°{$id} posté par {$comment->getAuthor()->getFullName()}</strong> a bien été supprimé");
-        return $this->redirectToRoute('admin_comment_index');
+            $this->addFlash('success', "Le commentaire <strong>n°{$id} posté par {$comment->getAuthor()->getFullName()}</strong> a bien été supprimé");
+            return $this->redirectToRoute('admin_comment_index');
+        }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_comment_index");
+
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\Ad;
 use App\Entity\Option;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -32,6 +33,11 @@ class AdType extends ApplicationType
                     'allow_add' => true,
                     'allow_delete' => true
                 ])
+            ->add('imageFiles', FileType::class, $this->getConfiguration('Uploader vos images',
+                [
+                    'required' => false,
+                    'multiple' => true
+                ]))
             ->add('adress', TextType::class)
             ->add('streetAddress', TextType::class)
             ->add('city', TextType::class)

@@ -1,0 +1,5 @@
+<form class="ml-lg-1 my-1" method="post" action="{{ path(route, {'id': id}) }}">
+    <input type="hidden" name="_method" value="EDIT">
+    <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ id ) }}">
+    <button class="btn btn-{{ btn|default('primary') }} "><i class="fas fa-{{ awesome |default ('edit') }}"></i></button>
+</form>

@@ -12,7 +12,7 @@ class OptionType extends ApplicationType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, $this->getConfiguration("Modifier le nom de l'option",
+            ->add('name', TextType::class, $this->getConfiguration("Nom de l'option",
                 [
                     'label' => "Nom de l'option"
                 ]))

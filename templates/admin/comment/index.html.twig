@@ -32,9 +32,15 @@
                     <td class="align-middle text-center h5">
                         <span class="badge badge-info">{{ comment.rating }}</span>
                     </td>
-                    <td class="text-center">
-                        <a href="{{ path('admin_comment_edit', {'id': comment.id}) }}" class="btn btn-primary my-1 mx-1"><i class="fas fa-edit"></i></a>
-                        <a href="{{ path('admin_comment_delete', {'id': comment.id}) }}" class="btn btn-danger  my-1 mx-1"><i class="fas fa-trash"></i></a>
+                    <td class="text-center row justify-content-center">
+                        {% include 'admin/common/_editButton.html.twig' with {
+                            'route': 'admin_comment_edit',
+                            'id': comment.id,
+                        } %}
+                        {% include 'admin/common/_deleteButton.html.twig' with {
+                            'route': 'admin_comment_delete',
+                            'id': comment.id,
+                        } %}
                     </td>
                 </tr>
             {% endfor %}

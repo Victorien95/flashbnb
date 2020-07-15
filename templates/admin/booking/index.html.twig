@@ -34,9 +34,15 @@
                     <td class="align-middle h5">
                         <span class="badge badge-warning">{{ booking.amount|number_format(0, ',', ' ') }} &euro;</span>
                     </td>
-                    <td class="text-center">
-                        <a href="{{ path('admin_booking_edit', {'id': booking.id}) }}" class="btn btn-primary mr-lg-1 my-1"><i class="fas fa-edit"></i></a>
-                        <a href="{{ path('admin_booking_delete', {'id': booking.id}) }}" class="btn btn-danger ml-lg-1 my-1"><i class="fas fa-trash"></i></a>
+                    <td class="text-center row justify-content-center">
+                        {% include 'admin/common/_editButton.html.twig' with {
+                            'route': 'admin_booking_edit',
+                            'id': booking.id,
+                        } %}
+                        {% include 'admin/common/_deleteButton.html.twig' with {
+                            'route': 'admin_booking_delete',
+                            'id': booking.id,
+                        } %}
                     </td>
                 </tr>
             {% endfor %}

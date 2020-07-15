@@ -15,6 +15,7 @@
             <div class="col-12 mt-4">
                 {{ form_start(form) }}
                 {{ form_row(form.content, {'label':  'Commentaire de ' ~ comment.author.firstName}) }}
+                <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ comment.id ) }}">
                 <button class="btn btn-primary my-4" type="submit">
                     <i class="fas fa-check mr-1"></i>Enregistrer les modifications
                 </button>

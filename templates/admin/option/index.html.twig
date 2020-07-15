@@ -6,6 +6,7 @@
 
 <div class="container-fluid">
     <h1 class="my-5">Gestion des options</h1>
+    <a class="btn btn-secondary mb-2" href="{{ path('admin_option_new') }}">Créer une nouvelle option</a>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -19,9 +20,15 @@
                 <tr>
                     <td class="align-middle">{{ option.id }}</td>
                     <td class="align-middle">{{ option.name }}</td>
-                    <td class="text-center">
-                        <a href="{{ path('admin_option_edit', {'id': option.id}) }}" class="btn btn-primary mr-lg-1 my-1"><i class="fas fa-edit"></i></a>
-                        <a href="{{ path('admin_option_delete', {'id': option.id}) }}" class="btn btn-danger ml-lg-1 my-1"><i class="fas fa-trash"></i></a>
+                    <td class="text-center row justify-content-center">
+                        {% include 'admin/common/_editButton.html.twig' with {
+                            'route': 'admin_option_edit',
+                            'id': option.id,
+                        } %}
+                        {% include 'admin/common/_deleteButton.html.twig' with {
+                            'route': 'admin_option_delete',
+                            'id': option.id,
+                        } %}
                     </td>
                 </tr>
             {% endfor %}

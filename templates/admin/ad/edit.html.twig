@@ -10,8 +10,35 @@
     <div class="container">
 
         <h1 class="my-5">Modification de l'annonce {{ ad.title }}</h1>
+        <div class="row">
+            <div class="col mb-5">
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h4 class="card-title">Les Images</h4>
+                    </div>
+                    <div class="card-body">
+                        {% for image in ad.images  %}
+                            {% if image.url %}
+                                <div class="row" style="border: 2px red solid;">
+                                    <img src="{{ image.url }}" alt="">
+                                    <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="row" style="border: 2px red solid;">
+                                    <img src="{{ vich_uploader_asset(image, 'imageFile') |imagine_filter('mini') }}" alt="">
+                                    <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-        {{ form_start(form) }}
+            </div>
+
 
         <div class="row">
             <div class="col">
@@ -20,13 +47,15 @@
                         <h4 class="card-title">Corriger l'annonce ?</h4>
                     </div>
                     <div class="card-body">
+                        {{ form_start(form) }}
                         {{ form_widget(form) }}
+                        <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ ad.id ) }}">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-check mr-1"></i>Enregistrer les modifications
                         </button>
+                        {{ form_end(form) }}
                     </div>
                 </div>
-
             </div>
             <div class="col">
                 <div class="card bg-light">
@@ -51,9 +80,11 @@
                                             <td>{{ booking.booker.fullName }}</td>
                                             <td>{{ booking.createdAt | date('d/m/Y H:i') }}</td>
                                             <td>
-                                                <a href="{{ path('admin_booking_edit', {'id':booking.id}) }}" class="btn btn-primary">
-                                                    <i class="fas fa-pen"></i>
-                                                </a>
+                                                {% include 'admin/common/_editButton.html.twig' with {
+                                                    'route': 'admin_booking_edit',
+                                                    'id': booking.id,
+                                                    'awesome':'pen',
+                                                } %}
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -87,9 +118,12 @@
                                         <td>{{ comment.rating }}</td>
                                         <td>{{ comment.content }}</td>
                                         <td>
-                                            <a href="{{ path('admin_comment_edit', {'id':comment.id}) }}" class="btn btn-primary">
-                                                <i class="fas fa-pen"></i>
-                                            </a>
+                                            {% include 'admin/common/_editButton.html.twig' with {
+                                                'route': 'admin_comment_edit',
+                                                'id': comment.id,
+                                                'awesome':'pen',
+                                            } %}
+
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -100,9 +134,7 @@
                 </div>
             </div>
         </div>
-        {{ form_end(form) }}
     </div>
-
 {% endblock %}
 
 

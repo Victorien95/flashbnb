@@ -6,6 +6,7 @@ use App\Entity\Option;
 use App\Form\OptionType;
 use App\Repository\OptionRepository;
 use App\Service\Paginator;
+use App\Service\TokenError;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,7 @@ class AdminOptionController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="option_new", methods={"GET","POST"})
+     * @Route("/new", name="admin_option_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -47,7 +48,7 @@ class AdminOptionController extends AbstractController
             return $this->redirectToRoute('admin_option_index');
         }
 
-        return $this->render('option/new.html.twig', [
+        return $this->render('admin/option/new.html.twig', [
             'option' => $option,
             'form' => $form->createView(),
         ]);
@@ -55,36 +56,51 @@ class AdminOptionController extends AbstractController
 
 
     /**
-     * @Route("/{id}/edit", name="admin_option_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="admin_option_edit", methods={"GET","POST", "EDIT"})
      */
-    public function edit(Request $request, Option $option): Response
+    public function edit(Request $request, Option $option, TokenError $tokenError): Response
     {
-        $form = $this->createForm(OptionType::class, $option);
-        $form->handleRequest($request);
+        $tokens = $request->getSession()->all();
+        $id = $option->getId();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        if ($this->isCsrfTokenValid('edit'. $id, $tokens['_csrf/edit' . $id])){
+            $form = $this->createForm(OptionType::class, $option);
+            $form->handleRequest($request);
 
-            return $this->redirectToRoute('admin_option_index');
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($this->isCsrfTokenValid('save' . $option->getId(), $request->get('_token_save'))){
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return $this->redirectToRoute('admin_option_index');
+                }
+
+            }
+            return $this->render('admin/option/edit.html.twig', [
+                'option' => $option,
+                'form' => $form->createView(),
+            ]);
         }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_ads_index");
 
-        return $this->render('admin/option/edit.html.twig', [
-            'option' => $option,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
      * @Route("/{id}", name="admin_option_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Option $option): Response
+    public function delete(Request $request, Option $option, TokenError $tokenError): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$option->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'. $option->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($option);
             $entityManager->flush();
+            return $this->redirectToRoute('admin_option_index');
         }
 
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
         return $this->redirectToRoute('admin_option_index');
+
     }
 }

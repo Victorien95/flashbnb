@@ -14,17 +14,19 @@ import 'select2'
 import Places from 'places.js'
 
 let inputAdress = document.querySelector('#ad_adress')
+
 if(inputAdress !== null){
     let place = Places({
         container: inputAdress
 
     })
     if (document.querySelector('#ad_streetAddress') !== null){
+
         if (place.getVal("name")){
             document.querySelector('#ad_streetAddress').value = place.getVal("name")
         }
     }
-    place.on('change', e => {
+    place.on('change', function(e)  {
         if (document.querySelector('#ad_city')){
             if (e.suggestion.city){
                 document.querySelector('#ad_city').value = e.suggestion.city
@@ -38,10 +40,9 @@ if(inputAdress !== null){
             }
             document.querySelector('#ad_streetAddress').value = e.suggestion.name
 
-        }else{
-            document.querySelector('#lat').value = e.suggestion.latlng.lat
-            document.querySelector('#lng').value = e.suggestion.latlng.lng
         }
+        document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
+        document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
     })
 }
 
@@ -70,7 +71,58 @@ var Flickity = require('flickity');
 Flickity.setJQuery( $ );
 jQueryBridget( 'flickity', Flickity, $ );
 
+//supression des images
+document.querySelectorAll('[data-delete]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault()
+        fetch(a.getAttribute('href'), {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'_token': a.dataset.token})
+
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success){
+                    a.parentNode.parentNode.removeChild(a.parentNode)
+                }else{
+                    alert(data.error + 'error')
+                }
+            })
+            .catch(e => alert(e + 'bonjour'))
+    })
+})
 
 //require('bootstrap.min.js');
 
 console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
+
+// Favoris
+function onClickBtnLike(event){
+    event.preventDefault();
+
+    const url = this.href;
+    const spanCount = this.querySelector('span.js-likes')
+    const icon = this.querySelector('i');
+
+    axios.get(url).then(function (response) {
+        spanCount.textContent = response.data.likes
+        if (icon.classList.contains('fas')){
+            icon.classList.replace('fas', 'far');
+        }else{
+            icon.classList.replace('far', 'fas');
+        }
+    }).catch(function (error) {
+        if (error.response.status === 403){
+            window.alert("Vous ne pouvez pas liker un article si vous n'etes pas conneté")
+        }else{
+            window.alert("Une erreur s'est produite, réessayez plus tard")
+        }
+    })
+}
+document.querySelectorAll('a.js-like').forEach(function (link) {
+    link.addEventListener('click', onClickBtnLike);
+
+})

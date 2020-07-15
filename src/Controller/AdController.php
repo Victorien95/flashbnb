@@ -4,13 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Ad;
 use App\Entity\AdSearch;
+use App\Entity\Like;
 use App\Entity\Option;
 use App\Form\AdSearchType;
 use App\Form\AdType;
 use App\Repository\AdRepository;
+use App\Repository\LikeRepository;
 use App\Service\CookieSuggestAd;
 use App\Service\Paginator;
 use App\Service\Stats;
+use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Component\Pager\PaginatorInterface;
@@ -38,12 +41,8 @@ class AdController extends AbstractController
                   ->setCurrentPage($page)
                   ->setLimit(2);**/
 
-
-
         $form = $this->createForm(AdSearchType::class, $search);
         $form->handleRequest($request);
-
-
 
 
         /**$paginator = $knp->paginate($repository->findAllVisibleQuery($search),
@@ -54,8 +53,6 @@ class AdController extends AbstractController
             $request->query->getInt('page', 1),
             9
         );
-
-
 
         return $this->render('ad/index.html.twig', [
             'paginator' => $paginator,
@@ -108,29 +105,44 @@ class AdController extends AbstractController
      * @Security("is_granted('ROLE_USER') and user === ad.getAuthor()", message="Cette annonce ne vous appartient pas, vous ne pouvez pas la modifier")
      * @return Response
      */
-    public function edit(Ad $ad, Request $request, EntityManagerInterface $manager)
+    public function edit(Ad $ad, Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
-        $form = $this->createForm(AdType::class, $ad);
-        $form->handleRequest($request);
+        $tokens = $request->getSession()->all();
+        $slug = $ad->getSlug();
+        if ($this->isCsrfTokenValid('edit' . $slug, $tokens['_csrf/edit' . $slug])){
+            $form = $this->createForm(AdType::class, $ad);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            foreach ($ad->getImages() as $image) {
-                $image->setAd($ad);
-                $manager->persist($image);
+            if ($form->isSubmitted() && $form->isValid()){
+
+                if ($this->isCsrfTokenValid('save' . $ad->getId(), $request->get('_token_save'))){
+                    foreach ($ad->getImages() as $image) {
+                        $image->setAd($ad);
+                        $manager->persist($image);
+                    }
+                    $manager->persist($ad);
+                    $manager->flush();
+                    $this->addFlash('success', "Les modifications de l'annonce <strong>{$ad->getTitle()}</strong> ont bien été enregistrée!");
+                    return $this->redirectToRoute('ads_show',
+                        [
+                            'slug' => $ad->getSlug()
+                        ]);
+                }
+
             }
-            $manager->persist($ad);
-            $manager->flush();
-            $this->addFlash('success', "Les modifications de l'annonce <strong>{$ad->getTitle()}</strong> ont bien été enregistrée!");
-            return $this->redirectToRoute('ads_show',
+            return $this->render('ad/edit.html.twig',
                 [
-                    'slug' => $ad->getSlug()
+                    'form' => $form->createView(),
+                    'ad' => $ad
                 ]);
         }
-        return $this->render('ad/edit.html.twig',
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute('ads_show',
             [
-                'form' => $form->createView(),
                 'ad' => $ad
             ]);
+
     }
 
     /**
@@ -172,12 +184,21 @@ class AdController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return  Response
      */
-    public function delete(Ad $ad, EntityManagerInterface $manager)
+    public function delete(Ad $ad, EntityManagerInterface $manager, Request $request, TokenError $tokenError)
     {
-        $manager->remove($ad);
-        $manager->flush();
-        $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été supprimée !");
-        return $this->redirectToRoute("ads_index");
+        if ($this->isCsrfTokenValid('delete' . $ad->getSlug(), $request->get('_token'))){
+            $manager->remove($ad);
+            $manager->flush();
+            $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été supprimée !");
+            return $this->redirectToRoute("ads_index");
+        }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->render('ad/show.html.twig',
+            [
+                'ad' => $ad
+            ]);
+
 
     }
 
@@ -199,6 +220,34 @@ class AdController extends AbstractController
 
         $html = 'https://scantrad.net/mangas/one-piece/982#19';
         return new PdfResponse($snappy->getOutput($html), 'file.pdf');
+
+    }
+
+    /**
+     * @Route("/ads/{slug}/like", name="ads_like")
+     * @param Ad $ad
+     * @param EntityManagerInterface $manager
+     * @param LikeRepository $likeRepository
+     */
+    public function like(Ad $ad, EntityManagerInterface $manager, LikeRepository $likeRepository)
+    {
+        $user = $this->getUser();
+        if (!$user) return $this->json(['code' => 403, 'message' => 'Non authorisé'], 403);
+
+        if ($ad->isLikeByUser($user)){
+            $like = $likeRepository->findOneBy(['ad' => $ad, 'user' => $user]);
+
+            $manager->remove($like);
+            $manager->flush();
+            return $this->json(['code' => 200, 'message' =>'Bien supprimé','likes'=>$likeRepository->count(['ad' => $ad])], 200);
+        }
+        $like = new Like();
+        $like->setAd($ad)
+            ->setUser($user);
+        $manager->persist($like);
+        $manager->flush();
+
+        return $this->json(['code' => 200, 'message' =>'Like bien ajouté', 'likes'=>$likeRepository->count(['ad' => $ad])], 200);
 
     }
 

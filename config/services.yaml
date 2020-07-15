@@ -34,3 +34,7 @@ services:
     #App\Service\ExceptionEventListener:
      #   tags:
       #      - { name: kernel.event_listener, event: kernel.exception, method: test}
+
+    App\Service\ImageCacheSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }

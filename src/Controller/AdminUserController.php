@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AdminUserType;
 use App\Service\Paginator;
+use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,27 +33,35 @@ class AdminUserController extends AbstractController
      * @Route("admin/user/{id}/edit", name="admin_user_edit")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(User $user, Request $request, EntityManagerInterface $manager)
+    public function edit(User $user, Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
-        $form = $this->createForm(AdminUserType::class, $user);
 
-        $form->handleRequest($request);
+        $tokens = $request->getSession()->all();
+        $id = $user->getId();
+        if ($this->isCsrfTokenValid('edit' . $user->getId(), $tokens['_csrf/edit' . $id])){
+            $form = $this->createForm(AdminUserType::class, $user);
 
-        if ($form->isSubmitted() && $form->isValid()){
+            $form->handleRequest($request);
 
-            $manager->persist($user);
+            if ($form->isSubmitted() && $form->isValid()){
+                if ($this->isCsrfTokenValid('save' . $user->getId(), $request->get('_token_save'))){
+                    $manager->persist($user);
 
-            $manager->flush();
+                    $manager->flush();
 
-            $this->addFlash('success', "L'utilisateur <strong>n°{$user->getId()} a bien été modifié</strong>");
+                    $this->addFlash('success', "L'utilisateur <strong>n°{$user->getId()} a bien été modifié</strong>");
+                }
+            }
 
+            return $this->render('admin/user/edit.html.twig', [
+                'user' => $user,
+                'form' => $form->createView()
+            ]);
         }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_user_index");
 
-
-        return $this->render('admin/user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView()
-        ]);
     }
 
 
@@ -63,15 +72,21 @@ class AdminUserController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function delete(User $user, EntityManagerInterface $manager)
+    public function delete(User $user, EntityManagerInterface $manager, Request $request, TokenError $tokenError)
     {
-        $userId = $user->getId();
-        $manager->remove($user);
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->get('_token'))){
+            $userId = $user->getId();
+            $manager->remove($user);
 
-        $manager->flush();
+            $manager->flush();
 
-        $this->addFlash('success', "L'utilisateur <strong>n°{$userId} a bien été supprimé</strong>");
+            $this->addFlash('success', "L'utilisateur <strong>n°{$userId} a bien été supprimé</strong>");
 
-        return $this->redirectToRoute('admin_user_index');
+            return $this->redirectToRoute('admin_user_index');
+        }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_user_index");
+
     }
 }

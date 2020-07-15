@@ -24,6 +24,16 @@
                     <p class="card-text">
                         {{ ad.introduction }}
                     </p>
+                    <a class="js-like" href="{{ path('ads_like', {'slug': ad.slug}) }}">
+                        {% if app.user and ad.isLikeByUser(app.user) %}
+                            <i class="fas fa-heart" style="color: red"></i>
+                        {% else %}
+                            <i class="far fa-heart" style="color: red"></i>
+                        {% endif %}
+                        <span class="js-likes">{{ ad.likes|length }}</span>
+                    </a>
+
+
                     {#
                     <hr>
                     <p class="card-text">

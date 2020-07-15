@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Booking;
 use App\Form\AdminBookingType;
 use App\Service\Paginator;
+use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,29 +36,36 @@ class AdminBookingController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Booking $booking, Request $request, EntityManagerInterface $manager)
+    public function edit(Booking $booking, Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
-        $form = $this->createForm(AdminBookingType::class, $booking);
-        
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()){
-            $booking->setAmount(0);
+        $tokens = $request->getSession()->all();
+        $id = $booking->getId();
 
-            $manager->persist($booking);
+        if($this->isCsrfTokenValid('edit' . $id, $tokens['_csrf/edit' . $id])){
+            $form = $this->createForm(AdminBookingType::class, $booking);
 
-            $manager->flush();
-            
-            $this->addFlash('success', "La réservation <strong>n°{$booking->getId()} a bien été modifiée</strong>");
+            $form->handleRequest($request);
 
-            return $this->redirectToRoute('admin_booking_index');
+            if ($form->isSubmitted() && $form->isValid()){
+                if($this->isCsrfTokenValid('save' . $booking->getId(), $request->get('_token_save'))){
+                    $booking->setAmount(0);
+                    $manager->persist($booking);
+                    $manager->flush();
+                    $this->addFlash('success', "La réservation <strong>n°{$booking->getId()} a bien été modifiée</strong>");
+
+                }
+            }
+
+            return $this->render('admin/booking/edit.html.twig', [
+                'form' => $form->createView(),
+                'booking' => $booking
+
+            ]);
         }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_booking_index");
 
-        return $this->render('admin/booking/edit.html.twig', [
-            'form' => $form->createView(),
-            'booking' => $booking
-
-        ]);
     }
 
     /**
@@ -67,14 +75,20 @@ class AdminBookingController extends AbstractController
      * @param Booking $booking
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Booking $booking, EntityManagerInterface $manager)
+    public function delete(Booking $booking, EntityManagerInterface $manager, Request $request, TokenError $tokenError)
     {
-        $bookingId = $booking->getId();
-        $manager->remove($booking);
-        $manager->flush();
+        if ($this->isCsrfTokenValid('delete' . $booking->getId(), $request->get('_token'))){
+            $bookingId = $booking->getId();
+            $manager->remove($booking);
+            $manager->flush();
 
-        $this->addFlash('success', "La réservation <strong>n°{$bookingId} a bien été supprimée</strong>");
+            $this->addFlash('success', "La réservation <strong>n°{$bookingId} a bien été supprimée</strong>");
 
-       return $this->redirectToRoute('admin_booking_index');
+            return $this->redirectToRoute('admin_booking_index');
+        }
+        $this->addFlash('warning',
+            $tokenError->ErrorMessage());
+        return $this->redirectToRoute("admin_booking_index");
+
     }
 }
