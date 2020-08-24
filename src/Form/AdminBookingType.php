@@ -18,7 +18,7 @@ class AdminBookingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('startDate', DateType::class)
+            ->add('startDate', DateType::class )
             ->add('endDate', DateType::class)
             ->add('comment')
             ->add('booker', EntityType::class, [
@@ -48,6 +48,7 @@ class AdminBookingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Booking::class,
+            'translation_domain' => 'bookingForm'
         ]);
     }
 }

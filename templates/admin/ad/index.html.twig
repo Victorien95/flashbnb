@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <h1 class="my-5">Gestion des annonces</h1>
-    <table class="table table-hover">
+    <table class="table table-hover table-striped myTable">
         <thead>
             <tr>
                 <th>Id</th>
@@ -18,12 +18,16 @@
             </tr>
         </thead>
         <tbody>
-            {% for ad in pagination.data %}
+            {% for ad in data %}{# in pagination.data #}
                 {% set author = ad.author %}
                 <tr>
                     <td class="align-middle">{{ ad.id }}</td>
                     <td class="align-middle">{{ ad.title }}</td>
-                    <td class="align-middle"><img class="avatar avatar-micro mr-2" src="{{ author.picture }}" alt="Avata de {{ author.fullname }}">{{ author.fullName }}</td>
+                    <td class="align-middle">
+                        <a href="{{ path('admin_user_edit', {'id':author.id}) }}">
+                            <img class="avatar avatar-micro mr-2" src="{{ author.picture }}" alt="Avata de {{ author.fullname }}">{{ author.fullName }}
+                        </a>
+                    </td>
                     <td class="text-center align-middle h5"><span class="badge badge-info">{{ ad.bookings|length }}</span></td>
                     <td class="text-center align-middle h5">
                         {% if ad.avgRatings == 0 %}
@@ -45,6 +49,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {{ pagination.display }}
+{#{{ pagination.display }}#}
 </div>
 {% endblock %}

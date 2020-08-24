@@ -1,0 +1,21 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Modifier le code promo n°{{ promocode.id }}{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('css/booking') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="my-4">Modifier le code promo n°{{ promocode.id }}</h1>
+        {{ form_start(form) }}
+        <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ promocode.id ) }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check mr-1"></i>Enregistrer les modifications
+        </button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+
+

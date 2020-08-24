@@ -8,6 +8,7 @@ use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Like;
 use App\Entity\Option;
+use App\Entity\PromoCode;
 use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -44,6 +45,7 @@ class AppFixtures extends Fixture
             ->setPicture('https://randomuser.me/api/portraits/men/67.jpg')
             ->setIntroduction('Administrateur de FlashBNB')
             ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(random_int(2, 4) )) . '</p>')
+            ->setUpdatedAt($faker->dateTime('now'))
             ->addUserRole($adminRole);
         $manager->persist($adminUser);
 
@@ -57,6 +59,19 @@ class AppFixtures extends Fixture
             $manager->persist($option);
             $options[] = $option;
         }
+
+        //Promocode
+        $promocode_flat = new PromoCode();
+        $promocode_prct = new PromoCode();
+        $promocode_flat->setAmount(15)
+            ->setCode('FLAT15')
+            ->setType('FIXE');
+        $promocode_prct->setAmount(15)
+            ->setCode('PRCT15')
+            ->setType('POURCENTAGE');
+
+        $manager->persist($promocode_prct);
+        $manager->persist($promocode_flat);
 
 
         // Users
@@ -79,6 +94,7 @@ class AppFixtures extends Fixture
                 ->setIntroduction($faker->sentence)
                 ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(random_int(2, 4) )) . '</p>')
                 ->setHash($hash)
+                ->setUpdatedAt($faker->dateTime('now'))
                 ->setPicture($picture);
 
             $manager->persist($user);
@@ -89,7 +105,7 @@ class AppFixtures extends Fixture
         for ($i = 1; $i < 30; $i++){
             $ad = new Ad();
 
-            $title = $faker->sentence();
+            $title = $faker->sentence($nbWords = 7, $variableNbWords = true);
             $user = $users[mt_rand(0, count($users) - 1)];
             $option = $options[mt_rand(0, count($options) - 1)];
             $ad->setTitle($title)
@@ -103,8 +119,9 @@ class AppFixtures extends Fixture
                 ->setPostalCode($faker->postcode)
                 ->setAdress($faker->address)
                 ->setStreetAddress($faker->streetAddress)
-                ->setLng($faker->longitude)
-                ->setLat($faker->latitude)
+                ->setLng($faker->longitude($min = -0.5, $max =3.6))
+                ->setLat($faker->latitude($min = 47, $max =49))
+                ->setUpdatedAt($faker->dateTime('now'))
                 ->addOption($option);
 
             for($j = 1; $j <= mt_rand(2, 5); $j++){

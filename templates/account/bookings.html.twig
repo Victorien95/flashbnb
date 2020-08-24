@@ -7,7 +7,7 @@
         <div class="alert alert-primary mt-5">
             <p>Retrouvez ci-dessous toutes vos réservations passées et à venir</p>
         </div>
-        {% for booking in app.user.bookings  %}
+        {% for booking in paginator  %}
             {% set ad = booking.ad %}
             <div class="row mb-4">
                 <div class="col-4">
@@ -31,13 +31,16 @@
                             <p>
                                 Réservation <strong>n°{{ booking.id }}</strong><br>
 
-                            Du {{ booking.startDate|date('d/m/Y') }} au {{ booking.endDate|date('d/m/Y') }} ({{ booking.amount }} &euro;)
+                            Du {{ booking.startDate|date('d/m/Y') }} au {{ booking.endDate|date('d/m/Y') }} ({{ booking.ttcAmount }} &euro; TTC)
                             </p>
                             <a href="{{ path('booking_show', {'id': booking.id}) }}" class="btn btn-info">Plus d'informations</a>
                         </div>
                         <div class="col-2 align-middle">
                                 <i class="fas fa-circle text-{% if booking.endDate < date()  %}{{ 'danger' }}{% else %}{{ 'success' }}{% endif %}"></i>
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ path('bill_pdf', {'id':booking.id }) }}">Télécharger la facture</a>
                     </div>
                 </div>
             </div>
@@ -46,6 +49,10 @@
                     <hr>
             {% endif %}
         {% endfor %}
+
+        <div class="navigation row justify-content-center">
+            {{ knp_pagination_render(paginator) }}
+        </div>
     </div>
 
 {% endblock %}

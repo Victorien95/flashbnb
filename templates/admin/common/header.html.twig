@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
-    <a class="navbar-brand" href="{{ path('home') }}">FlashBNB</a>
+    <a class="navbar-brand" href="{{ path('admin_dashboard') }}"><img id="logoFlashbnb" src="{{ asset('images/logo/logo_flashbnb_vecto_white.png') }}" alt=""></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
             aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -37,6 +37,16 @@
                     <i class="fas fa-align-justify mr-1"></i>Options
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_promocode_index') }}">
+                    <i class="fas fa-qrcode mr-1"></i>Codes promos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_newsletter_index') }}">
+                    <i class="fas fa-envelope mr-1"></i>Newsletter
+                </a>
+            </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item d-flex align-items-center">
@@ -47,7 +57,13 @@
             {% if app.user %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
-                        <img src="{{ app.user.picture }}" class="avatar avatar-mini" alt="Avatar de {{ app.user.fullName }}"> {{ app.user.fullName }}
+                        {% if app.user.avatarname %}
+                            <img src="{{ vich_uploader_asset(app.user, 'imageFile')}}" class="avatar avatar-mini" alt="Avatar de {{ app.user.fullName }}"> {{ app.user.fullName }}
+                        {% elseif not app.user.avatarname and app.user.picture %}
+                            <img src="{{ app.user.picture }}" class="avatar avatar-mini" alt="Avatar de {{ app.user.fullName }}"> {{ app.user.fullName }}
+                        {% else %}
+                            <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-mini" alt="Avatar de {{ app.user.fullName }}"> {{ app.user.fullName }}
+                        {% endif %}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdownLink">
                         <a href="{{ path('admin_account_logout') }}" class="dropdown-item">Déconnexion</a>

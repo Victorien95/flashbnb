@@ -20,14 +20,17 @@ class AdminOptionController extends AbstractController
     /**
      * @Route("/{page<\d+>?1}", name="admin_option_index", methods={"GET"})
      */
-    public function index(Paginator $paginator, $page): Response
+    public function index(Paginator $paginator, $page, OptionRepository $optionRepository): Response
     {
-        $paginator->setEntityClass(Option::class)
+        $data = $optionRepository->findAll();
+
+        /*$paginator->setEntityClass(Option::class)
             ->setCurrentPage($page)
             ->setLimit(5);
+        */
 
         return $this->render('admin/option/index.html.twig', [
-            'pagination' => $paginator
+            'data' => $data
         ]);
     }
 
@@ -82,12 +85,12 @@ class AdminOptionController extends AbstractController
         }
         $this->addFlash('warning',
             $tokenError->ErrorMessage());
-        return $this->redirectToRoute("admin_ads_index");
+        return $this->redirectToRoute("admin_option_index");
 
     }
 
     /**
-     * @Route("/{id}", name="admin_option_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="admin_option_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Option $option, TokenError $tokenError): Response
     {

@@ -1,8 +1,9 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block title %}Modification de l'annonce {{ ad.id }}{% endblock %}
+{% block stylesheets %}
 
-
+{% endblock %}
 
 {% form_theme form _self %}
 
@@ -17,27 +18,66 @@
                         <h4 class="card-title">Les Images</h4>
                     </div>
                     <div class="card-body">
-                        {% for image in ad.images  %}
-                            {% if image.url %}
-                                <div class="row" style="border: 2px red solid;">
-                                    <img src="{{ image.url }}" alt="">
-                                    <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                        <div class="row">
+                            {% if ad.adCoverImage  %}
+                                <div class="col-4 mx-2 imageContainer">
+                                    <div class="row justify-content-center">
+                                        <img class="img-fluid col-12 px-0" src="{{ vich_uploader_asset(ad, 'imageFile2') }}" alt="Image de {{ ad.author.fullName }}">
+                                        <div class="imageDeleter text-center col-12">
+                                            <a href="{{ path('admin_image_delete_cover', {'id': ad.id}) }}" data-delete data-token="{{ csrf_token('delete'~ ad.id) }}">
+                                                <span>Image de couverture</span><br>
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            {% else %}
-                                <div class="row" style="border: 2px red solid;">
-                                    <img src="{{ vich_uploader_asset(image, 'imageFile') |imagine_filter('mini') }}" alt="">
-                                    <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
+                                {% elseif ad.coverImage %}
+                                    <div class="col-4 mx-2 imageContainer">
+                                        <div class="row justify-content-center">
+                                            <img class="img-fluid col-12 px-0" src="{{ ad.coverImage }}" alt="Image de {{ ad.author.fullName }}">
+                                            <div class="imageDeleter text-center col-12">
+                                                <a href="{{ path('admin_image_delete_cover', {'id': ad.id}) }}" data-delete data-token="{{ csrf_token('delete'~ ad.id) }}">
+                                                    <span>Image de couverture</span><br>
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                             {% endif %}
-                        {% endfor %}
+                            {% for image in ad.images  %}
+                                {% if image.url %}
+                                    <div class="col-1 mx-2 imageContainer">
+                                        <div class="row justify-content-center">
+                                            <img class="img-fluid col-12 px-0" src="{{ image.url }}" alt="Image de {{ image.ad.author.fullName }}">
+                                            <div class="imageDeleter text-center col-12">
+                                                <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {% if vich_uploader_asset(image, 'imageFile') %}
+                                        <div class="col-1 mx-2 imageContainer">
+                                            <div class="row justify-content-center">
+                                                <img class="img-fluid col-12 px-0" src="{{ vich_uploader_asset(image, 'imageFile') |imagine_filter('mini') }}" alt="Image de {{ image.ad.author.fullName }}">
+                                                <div class="imageDeleter text-center col-12">
+                                                    <a href="{{ path('admin_image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
             </div>
+        </div>
 
 
         <div class="row">
@@ -140,32 +180,30 @@
 
 
 {% block _ad_images_widget %}
-    {{ form_widget(form) }}
+    <div class="row">
+        {{ form_widget(form) }}
+    </div>
 {% endblock %}
 
 {% block _ad_images_entry_row %}
-    <div id="block_{{ id }}">
-    {{ form_widget(form) }}
+    <div id="block_{{ id }}" class="col-3 p-1">
+        {{ form_widget(form) }}
     </div>
 {% endblock %}
 
 {% block _ad_images_entry_widget %}
-    <div class="row align-items-center">
-        <div class="col-4 mb-3">
+        <div class="col-12 mb-3 p-1">
             {% if value %}
-                <img class="img-fluid" src="{{ value.url }}" alt="Image de l'annonce n°{{ value.ad.id }} de {{ value.ad.author.getFullName }}">
+                <img class="img-fluid col-12 p-0" src="{{ value.url }}" alt="Image de l'annonce n°{{ value.ad.id }} de {{ value.ad.author.getFullName }}">
             {% endif %}
-        </div>
-        <div class="col-6">
-            {{ form_row(form.caption) }}
-            {{ form_widget(form.url, {'type':'hidden'}) }}
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-danger" data-action="delete" data-target="#block_{{ id }}">
+            <button type="button" class="btn btn-danger col-12 w-100" data-action="delete" data-target="#block_{{ id }}" style="border-top-left-radius: 0; border-top-right-radius: 0">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
-    </div>
+        {#<div class="col-6">
+            {{ form_row(form.caption) }}
+            {{ form_widget(form.url, {'type':'hidden'}) }}
+        </div>#}
 {% endblock %}
 
 {% block javascripts %}
@@ -176,6 +214,7 @@
                 console.log(target);
                 $(target).remove();
             })
+            $('#ad_images').addClass('row').css('padding','10px');
         })
     </script>
 {% endblock %}

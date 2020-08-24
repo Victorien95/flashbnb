@@ -5,15 +5,52 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="my-4">Créer une nouvelle annonce</h1>
-        <button id="urlImage">Ajouter des images url</button>
-
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-            <div class="form-group">
-                <button class="btn btn-primary">Créer une nouvelle annonce</button>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="my-4">Créer une nouvelle annonce</h4>
             </div>
-        {{ form_end(form) }}
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.adress) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.price) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.rooms) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.options) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.imageFile2) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.imageFiles) }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ form_row(form.introduction) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.content) }}
+                    </div>
+
+                </div>
+                {{ form_widget(form) }}
+                <div class="form-group">
+                    <button class="btn btn-primary">Créer une nouvelle annonce</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        {#<button id="urlImage">Ajouter des images url</button>#}
+
     </div>
 {% endblock %}
 

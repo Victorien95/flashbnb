@@ -22,7 +22,6 @@ final class Version20200627145836 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE ad ADD lat DOUBLE PRECISION NOT NULL, ADD lng DOUBLE PRECISION NOT NULL');
         $this->addSql('ALTER TABLE user CHANGE picture picture VARCHAR(255) DEFAULT NULL');
     }
 

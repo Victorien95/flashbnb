@@ -10,8 +10,14 @@
             {% include 'common/rating.html.twig' with {'rating': data.avgRating} %}
             <hr>
             <div class="card-text">
-                <img class="avatar avatar-large float-left mr-3" src="{{ user.picture }}" alt="Avata de {{ user.FullName }}">
-                <p>{{ user.introduction }}</p>
+                {% if user.avatarname %}
+                    <img src="{{ vich_uploader_asset(user, 'imageFile') | imagine_filter('thumb')}}" class="avatar avatar-large float-left mr-3" alt="Avatar de {{ user.fullName }}"> <strong>{{ user.fullName }}</strong>
+                {% elseif not user.avatarname and user.picture %}
+                    <img src="{{ user.picture }}" class="avatar avatar-large float-left mr-3" alt="Avatar de {{ user.fullName }}"> <strong>{{ user.fullName }}</strong>
+                {% else %}
+                    <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-large float-left mr-3" alt="Avatar de {{ user.fullName }}"> <strong>{{ user.fullName }}</strong>
+                {% endif %}
+                <p class="mt-2">{{ user.introduction }}</p>
                 <a href="{{ url }}" class="btn btn-success float-right">En savoir plus</a>
             </div>
         </div>

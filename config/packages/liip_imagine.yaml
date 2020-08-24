@@ -15,3 +15,21 @@ liip_imagine:
             quality: 75
             filters:
                 thumbnail: { size: [360, 230], mode: outbound }
+        large:
+            quality: 75
+            filters:
+                thumbnail: { size: [630, 470], mode: outbound }
+
+        card:
+            quality: 75
+            filters:
+                dim: [1000, 564]
+                thumbnail: { size: [330, 185], mode: outbound }
+
+
+        carousel:
+            quality: 75
+            filters:
+                fixed:
+                    width: 650
+                    heigth: 500

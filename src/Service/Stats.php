@@ -36,10 +36,15 @@ class Stats
         return $this->manager->createQuery('SELECT count(c) FROM App\Entity\Comment c')->getSingleScalarResult();
     }
 
+    public function getNewsletterCount()
+    {
+        return $this->manager->createQuery('SELECT count(n) FROM App\Entity\Newsletter n')->getSingleScalarResult();
+    }
+
     public function getAdsStats($direction)
     {
         return $this->manager->createQuery(
-            'SELECT AVG(c.rating) as note, a.title, a.id, u.firstName, u.lastName, u.picture
+            'SELECT AVG(c.rating) as note, a.title, a.id, u.firstName, u.lastName, u.avatarname, u.picture, u.id as userId
                  FROM APP\Entity\Comment AS c
                  JOIN c.ad AS a
                  JOIN a.author AS u

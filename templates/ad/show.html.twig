@@ -9,7 +9,7 @@
         a[data-toggle="modal"]{
             font-size: 0.8125rem;
         }
-        .socialNetwork>.fab, .socialNetwork>.far{
+        .socialNetwork>.fab, .socialNetwork>.far, .socialNetwork>.fas{
             margin-right: 1rem;
             color: #3B5998;
         }
@@ -36,7 +36,13 @@
 {% block title %}{{ ad.title }}{% endblock %}
 
 {% block body %}
+    {% if ad.adCoverImage %}
+    <div class="ad" style="background-image: url({{ vich_uploader_asset(ad, 'imageFile2') }})">
+        {% elseif not ad.adCoverImage and ad.coverImage %}
     <div class="ad" style="background-image: url({{ ad.coverImage }})">
+        {% else %}
+    <div class="ad" style="background-image: url({{ asset('images/ads_cover_images/cover_image_default.jpeg') }})">
+    {% endif %}
         <div class="container">
             <h1>{{ ad.title }}</h1>
             <p>{{ ad.introduction }}</p>
@@ -44,13 +50,13 @@
                 <strong>{{ ad.rooms }} chambres</strong> pour <strong>{{ ad.price }}&euro;</strong> par nuits
             </p>
             {% if app.user and app.user == ad.author %}
-                <form class="ml-lg-1 my-1 d-inline-block" method="post" action="{{ path('ads_edit', {'slug': ad.slug}) }}">
+                <form class="ml-lg-1 my-1 d-inline-block mr-3 mb-2" method="post" action="{{ path('ads_edit', {'slug': ad.slug}) }}">
                     <input type="hidden" name="_method" value="EDIT">
                     <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ ad.slug ) }}">
                     <button class="btn btn-warning ">Modifier l'annonce</button>
                 </form>
                 {#<a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning">Modifier l'annonce</a>#}
-                <form class="ml-lg-1 my-1 d-inline-block" method="post" action="{{ path('ads_delete', {'slug': ad.slug}) }}">
+                <form class="ml-lg-1 my-1 d-inline-block mr-5 mr-md-3 mb-2" method="post" action="{{ path('ads_delete', {'slug': ad.slug}) }}">
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ad.slug ) }}">
                     <button class="btn btn-danger ">Supprimer l'annonce</button>
@@ -59,12 +65,9 @@
                    onclick="return confirm(`Êtes vous sur de vouloir supprimer l'annonce {{ ad.title }} ?`)">Supprimer
                     l'annonce</a>#}
             {% else %}
-                <a href="{{ path('booking_create', {'slug': ad.slug}) }}" class="btn btn-primary">Réserver</a>
+                <a href="{{ path('booking_create', {'slug': ad.slug}) }}" class="btn btn-primary mr-3 mb-2">Réserver</a>
             {% endif %}
-            <a href="#" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#exampleModalCenter">
-                <i class="fas fa-share-alt mr-2"></i>Partager
-            </a>
-            <a href="{{ path('ads_like', {'slug': ad.slug}) }}" class="js-like btn btn-secondary ml-2">
+            <a href="{{ path('ads_like', {'slug': ad.slug}) }}" class="js-like btn btn-secondary mr-3 mb-2">
                 {% if app.user and ad.isLikeByUser(app.user) %}
                     <i class="fas fa-heart mr-1" style="color: red"></i>
                 {% else %}
@@ -72,7 +75,11 @@
                 {% endif %}
                 <span class="js-likes">
                     {{ ad.likes|length }}
-                </span><span>{% if ad.likes|length > 1 %} aiment{% else %} aime{% endif %} cette annonce</span>
+                </span>
+                <span>{% if ad.likes|length > 1 %} aiment{% else %} aime{% endif %} cette annonce</span>
+            </a>
+            <a href="#" class="btn btn-secondary mr-xl-3 mb-2" data-toggle="modal" data-target="#exampleModalCenter">
+                <i class="fas fa-share-alt mr-3"></i>Partager
             </a>
         </div>
     </div>
@@ -80,7 +87,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-7 mb-4">
-                {{ ad.content|raw }}
+                <div class="col-12">
+                    <span   >
+                        {{ ad.content|raw }}
+                    </span>
+                </div>
+                <br>
 
                 {% include 'common/carousel.html.twig' %}
 
@@ -107,7 +119,7 @@
                         <div id="comments_for_ads" class="rounded mb-3">
                             <div id="comment_author" class="bg-gradient-warning px-3 py-2">
                                 <img src="{{ comment.author.picture|imagine_filter('thumb') }}" alt="" class="avatar avatar-mini">
-                                <strong>{{ comment.author.username }}</strong> a dit :
+                                <strong>{{ comment.author.firstName }}</strong> a dit :
                             </div>
                             <div class="px-3 py-2">
                                 <blockquote>
@@ -166,33 +178,34 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <a class="socialNetwork" href=""><i class="fab fa-twitter" style="color: #00B6F1;"></i>Twitter</a>
+                            <a class="socialNetwork" href="https://twitter.com/intent/tweet?url={{ url('ads_show', {'slug':ad.slug}) }}" target="_blank"><i class="fab fa-twitter" style="color: #00B6F1;"></i>Twitter</a>
                         </div>
                         <div class="col-12">
-                            <a class="socialNetwork" href=""><i class="fab fa-facebook" style="color: #3B5998;"></i>Facebook</a>
+                            <a class="socialNetwork" href="https://www.facebook.com/sharer.php?u={{ url('ads_show', {'slug':ad.slug}) }}" target="_blank"><i class="fab fa-facebook" style="color: #3B5998;"></i>Facebook</a>
                         </div>
                         <div class="col-12">
-                            <a class="socialNetwork" href=""><i class="fab fa-whatsapp" style="color: #25d366;"></i>WhatsApp</a>
+                            <a class="socialNetwork" href="https://www.whatsapp.com/?lang=fr" target="_blank"><i class="fab fa-whatsapp" style="color: #25d366;"></i>WhatsApp</a>
                         </div>
                         <div class="col-12">
-                            <a class="socialNetwork" href=""><i class="fab fa-linkedin-in" style="color: #04669A;"></i>Linkedin</a>
+                            <a class="socialNetwork" href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('ads_show', {'slug':ad.slug}) }}" target="_blank"><i class="fab fa-linkedin-in" style="color: #04669A;"></i>Linkedin</a>
                         </div>
                         <div class="col-12">
-                            <a class="socialNetwork" href=""><i class="fab fa-instagram" style="color: #c13584"></i>Instagram</a>
+                            <a class="socialNetwork" href="https://www.instagram.com/?hl=fr" target="_blank"><i class="fab fa-instagram" style="color: #c13584"></i>Instagram</a>
                         </div>
                         <div class="col-12">
-                            <a class="socialNetwork"><i class="fab fa-snapchat" style="color: #fffc00;"></i>SnapChat</a>
+                            <a class="socialNetwork" href="https://www.snapchat.com/l/fr-fr/" target="_blank"><i class="fab fa-snapchat" style="color: #fffc00;"></i>SnapChat</a>
                         </div>
+                        {% set myEmail = "Partager cette annonce avec vos proches ! " %}
                         <div class="col-12">
-                            <a class="socialNetwork"><i class="far fa-file-pdf" style="color: #ff0000;"></i>Télécharger en PDF</a>
+                                <a class="socialNetwork" href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=target@email.com&su=Annonce FlashBnB location de biens immobilier&body={{ myEmail|raw }}{{ url('ads_show', {'slug': ad.slug}) }}" target="_blank"><i class="fas fa-envelope-open-text"></i>Mail</a>
                         </div>
+                        {#<div class="col-12">
+                            <a class="socialNetwork" href="{{ path('pdf_download', {'slug': ad.slug})  }}"><i class="far fa-file-pdf" style="color: #ff0000;"></i>Télécharger en PDF</a>
+                        </div>#}
                     </div>
                 </div>
             </div>
         </div>
-
-
-
     </div>
 
 {% endblock %}

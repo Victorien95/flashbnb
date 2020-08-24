@@ -49,6 +49,8 @@ class AdController extends AbstractController
                 $request->query->getInt('page', 1),
                 5
             );**/
+        //dump($repository->findAllVisibleQuery($search));
+        //die();
         $paginator = $knp->paginate($repository->findAllVisibleQuery($search),
             $request->query->getInt('page', 1),
             9
@@ -81,7 +83,8 @@ class AdController extends AbstractController
                 $image->setAd($ad);
                 $manager->persist($image);
             }
-            $ad->setAuthor($this->getUser());
+            $ad->setAuthor($this->getUser())
+                ->setUpdatedAt(new \DateTime('now'));
             $manager->persist($ad);
             $manager->flush();
             $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> à bien été enregistrée !");
@@ -108,17 +111,20 @@ class AdController extends AbstractController
     public function edit(Ad $ad, Request $request, EntityManagerInterface $manager, TokenError $tokenError)
     {
         $tokens = $request->getSession()->all();
-        $slug = $ad->getSlug();
-        if ($this->isCsrfTokenValid('edit' . $slug, $tokens['_csrf/edit' . $slug])){
+        $id = $ad->getId();
+        if ($this->isCsrfTokenValid('edit' . $id, $tokens['_csrf/edit' . $id])){
             $form = $this->createForm(AdType::class, $ad);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()){
 
                 if ($this->isCsrfTokenValid('save' . $ad->getId(), $request->get('_token_save'))){
-                    foreach ($ad->getImages() as $image) {
-                        $image->setAd($ad);
-                        $manager->persist($image);
+                    $ad->setUpdatedAt(new \DateTime('now'));
+                    if ($ad->getImages()){
+                        foreach ($ad->getImages() as $image) {
+                            $image->setAd($ad);
+                            $manager->persist($image);
+                        }
                     }
                     $manager->persist($ad);
                     $manager->flush();
@@ -203,25 +209,6 @@ class AdController extends AbstractController
     }
 
 
-    /**
-     * @Route("ads/{slug}/pdf", name="ads_pdf")
-     */
-    public function pdf(Ad $ad)
-    {
-        $snappy = new Pdf('C:\wamp64\www\symbnb\vendor\wemersonjanuario\wkhtmltopdf-windows\bin\64bit\wkhtmltopdf.exe');
-        $snappy->setTemporaryFolder("C:\mytemp");
-
-        /*$html = $this->generateUrl('ads_show',
-            [
-                'slug' => $ad->getSlug()
-            ]);
-        dump($html);
-        die();*/
-
-        $html = 'https://scantrad.net/mangas/one-piece/982#19';
-        return new PdfResponse($snappy->getOutput($html), 'file.pdf');
-
-    }
 
     /**
      * @Route("/ads/{slug}/like", name="ads_like")
@@ -250,5 +237,6 @@ class AdController extends AbstractController
         return $this->json(['code' => 200, 'message' =>'Like bien ajouté', 'likes'=>$likeRepository->count(['ad' => $ad])], 200);
 
     }
+
 
 }

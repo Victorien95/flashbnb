@@ -1,49 +1,61 @@
 {% set url = path('ads_show', { 'slug': ad.slug }) %}
 <div class="col-lg-4 card_container" data-mapping="{{ ad.id }}">
-    <div class="card mb-3">
+    <div class="card card2 mb-3">
         <div class="row no-gutters">
             <div class="col-12 col-md-5 col-lg-12 img_card_container px-2 py-2">
                 <a href="{{ url }}">
-                    <img class="img_card rounded" src="{{ ad.coverImage }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block">
+                    {% if ad.adCoverImage %}
+                        <img class="img_card rounded" src="{{ vich_uploader_asset(ad, 'imageFile2') }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block">
+                    {% elseif not ad.adCoverImage and ad.coverImage %}
+                        <img class="img_card rounded" src="{{ ad.coverImage }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block">
+                    {% else %}
+                        <img class="img_card rounded" src="{{ asset('images/ads_cover_images/cover_image_default.jpeg')|imagine_filter('card') }}" alt="Image de l'appartement pour l'annonce {{ ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block"">
+                    {% endif %}
                 </a>
             </div>
             <div class="col-12 col-md-7 col-lg-12 body_card_container">
                 <div class="card-header text-center">
                     {{ ad.rooms }} chambres, <strong>{{ ad.price }}&euro; / nuit</strong><br>
-
+                    <span class="card-text">
+                        {{ ad.city }} ({{ ad.postalCode|replace({' ':''}) }})
+                    </span><br>
                     {% if ad.comments|length > 0 %}
                         {% include 'common/rating.html.twig' with{'rating' : ad.avgRatings} %}
                     {% else %}
                         <small>Pas encore noté</small>
                     {% endif %}
                 </div>
-                <div class="card-body">
+                <div class="card-body cutCard">
                     <a href="{{ url }}">
                         <h4 class="card-title">{{ ad.title }}</h4>
                     </a>
                     <p class="card-text">
-                        {{ ad.introduction }}
-                    </p>
-                    <a class="js-like" href="{{ path('ads_like', {'slug': ad.slug}) }}">
-                        {% if app.user and ad.isLikeByUser(app.user) %}
-                            <i class="fas fa-heart" style="color: red"></i>
+                        {% if ad.introduction|length > 50 %}
+                            {{ ad.introduction|slice(0, 100) }}...
                         {% else %}
-                            <i class="far fa-heart" style="color: red"></i>
+                            {{ ad.introduction }}
                         {% endif %}
-                        <span class="js-likes">{{ ad.likes|length }}</span>
-                    </a>
-
-
-                    {#
-                    <hr>
-                    <p class="card-text">
-                        {{ ad.city }} ({{ ad.postalCode|replace({' ':''}) }})
                     </p>
-                    <a href="{{ url }}" class="btn btn-secondary">En savoir plus</a>
-                    #}
-                    {% if app.user and app.user == ad.author %}
-                        <a href="{{ path('ads_edit', {'slug': ad.slug}) }}" class="btn btn-warning ml-2">Modifier l'annonce</a>
-                    {% endif %}
+
+                    <div class="row justify-content-between align-items-center px-3">
+                        <a class="js-like" href="{{ path('ads_like', {'slug': ad.slug}) }}">
+                            {% if app.user and ad.isLikeByUser(app.user) %}
+                                <i class="fas fa-heart" style="color: red"></i>
+                            {% else %}
+                                <i class="far fa-heart" style="color: red"></i>
+                            {% endif %}
+                            <span class="js-likes">{{ ad.likes|length }}</span>
+                        </a>
+                        {% if app.user and app.user == ad.author %}
+                            {% include 'common/_editButton.html.twig' with {
+                                'route': 'ads_edit',
+                                'id': ad.id,
+                                'slug':ad.slug,
+                                'btn':'warning',
+                                'type':'badge'
+                            } %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

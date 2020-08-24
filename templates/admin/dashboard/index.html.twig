@@ -8,7 +8,7 @@
         <div class="row mt-5">
             <div class="col">
                 <a class="dash-link" href="{{ path('admin_user_index') }}">
-                    <div class="card bg-gradient-primary text-white text-center">
+                    <div class="card bg-gradient-primary text-white text-center dashdiv">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4"><i class="fas fa-users fa-3x"></i></div>
@@ -22,7 +22,7 @@
             </div>
             <div class="col">
                 <a class="dash-link" href="{{ path('admin_ads_index') }}">
-                    <div class="card bg-gradient-success text-white text-center">
+                    <div class="card bg-gradient-success text-white text-center dashdiv">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4">
@@ -38,7 +38,7 @@
             </div>
             <div class="col">
                 <a class="dash-link" href="{{ path('admin_booking_index') }}">
-                    <div class="card bg-gradient-warning text-white text-center">
+                    <div class="card bg-gradient-warning text-white text-center dashdiv">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4">
@@ -54,7 +54,7 @@
             </div>
             <div class="col">
                 <a class="dash-link" href="{{ path('admin_comment_index') }}">
-                    <div class="card bg-gradient-info text-white text-center">
+                    <div class="card bg-gradient-info text-white text-center dashdiv">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4">
@@ -62,6 +62,22 @@
                                 </div>
                                 <div class="col-8">
                                     <h4 class="card-title">{{ stats.commentsCount }} commentaires</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="dash-link" href="{{ path('admin_comment_index') }}">
+                    <div class="card bg-gradient-dark text-white text-center dashdiv">
+                        <div class="card-body">
+                            <div class="row" style="color: white">
+                                <div class="col-4">
+                                    <i class="fas fa-envelope fa-3x"></i>
+                                </div>
+                                <div class="col-8">
+                                    <h4 class="card-title">{{ stats.newsletterCount }} newsletter</h4>
                                 </div>
                             </div>
                         </div>
@@ -88,15 +104,31 @@
                         </thead>
                         <tbody>
                             {% for ad in stats.adsStats('DESC')  %}
+                                {% set user = repo.find(ad.userId) %}
                                 <tr>
-                                    <td>{{ ad.title }}</td>
                                     <td>
-                                        <img class="avatar avatar-micro mr-1" src="{{ ad.picture }}"
-                                             alt="avatar de {{ ad.firstName }} {{ ad.lastName }}">
-                                        {{ ad.firstName }} {{ ad.lastName }}
+                                        <a href="{{ path('admin_ads_edit', {'id':ad.id}) }}">{{ ad.id }} - {{ ad.title }}</a>
+                                        <input type="hidden" name="_method" value="EDIT">
+                                        <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ ad.id ) }}">
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('admin_user_edit', {'id':ad.userId}) }}">
+                                            {% if ad.avatarname %}
+                                                <img src="{{ vich_uploader_asset(user, 'imageFile')}}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                            {% elseif not user.avatarname and user.picture %}
+                                                <img src="{{ ad.picture }}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                            {% else %}
+                                                <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                            {% endif %}
+                                            {#<img class="avatar avatar-micro mr-1" src="{{ ad.picture }}"
+                                             alt="avatar de {{ ad.firstName }} {{ ad.lastName }}">#}
+                                            {{ user.fullName }}
+                                            <input type="hidden" name="_method" value="EDIT">
+                                            <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ user.id ) }}">
+                                        </a>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge badge-info">
+                                        <span class="badge badge-light">
                                             {{ ad.note|number_format(1, ',', ' ') }}
                                         </span>
                                     </td>
@@ -122,15 +154,31 @@
                         </thead>
                         <tbody>
                         {% for ad in stats.adsStats('ASC')  %}
+                            {% set user = repo.find(ad.userId) %}
                             <tr>
-                                <td>{{ ad.title }}</td>
                                 <td>
-                                    <img class="avatar avatar-micro mr-1" src="{{ ad.picture }}"
-                                         alt="avatar de {{ ad.firstName }} {{ ad.lastName }}">
-                                    {{ ad.firstName }} {{ ad.lastName }}
+                                    <a href="{{ path('admin_ads_edit', {'id':ad.id}) }}">{{ ad.id }} - {{ ad.title }}</a>
+                                    <input type="hidden" name="_method" value="EDIT">
+                                    <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ ad.id ) }}">
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_user_edit', {'id':ad.userId}) }}">
+                                        {% if ad.avatarname %}
+                                            <img src="{{ vich_uploader_asset(user, 'imageFile')}}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                        {% elseif not user.avatarname and user.picture %}
+                                            <img src="{{ ad.picture }}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                        {% else %}
+                                            <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-micro mr-1" alt="Avatar de {{ user.fullName }}">
+                                        {% endif %}
+                                        {#<img class="avatar avatar-micro mr-1" src="{{ ad.picture }}"
+                                         alt="avatar de {{ ad.firstName }} {{ ad.lastName }}">#}
+                                        {{ user.fullName }}
+                                        <input type="hidden" name="_method" value="EDIT">
+                                        <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ user.id ) }}">
+                                    </a>
                                 </td>
                                 <td class="text-center">
-                                        <span class="badge badge-info">
+                                        <span class="badge badge-light">
                                             {{ ad.note|number_format(1, ',', ' ') }}
                                         </span>
                                 </td>

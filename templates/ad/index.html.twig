@@ -23,7 +23,7 @@
 
         }
 
-        .leaflet-div-icon:hover{
+        div.leaflet-marker-icon.leaflet-div-icon.leaflet-zoom-animated.leaflet-interactive:hover{
             background-color: #0f0f0f;
             color: whitesmoke;
             transform: scale(1.15);
@@ -57,7 +57,6 @@
         #map_button:hover{
             background-color: #0f0f0f;
             color: whitesmoke;
-            transform: scale(1.15);
         }
 
 
@@ -125,8 +124,62 @@
         .main-carousel{
             min-height: 470px;
         }
+        .active>.page-link{
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        #filterButton{
+            background-color: white;
+        }
+        #filterButton:hover{
+            background-color: #0f0f0f;
+            color: whitesmoke;
+        }
+        .jumbotron{
+            border: 1px solid rgba(0,0,0,.125);
+            padding-top: 20px;
+            padding-bottom: 20px;
 
+        }
+        #maxPrice, #minRooms{
+            background-color: white;
+            border-radius: 0.25rem;
+        }
+        .select2-selection.select2-selection--single, .select2-search.select2-search--dropdown, .select2-dropdown.select2-dropdown--below,
+         .select2.select2-container.select2-container--default.select2-container--below.select2-container--open, .select2.select2-container.select2-container--default{
+            max-width: 100px;
+            min-height: 39px;
+            text-align: center;
+            align-content: center;
+            align-items: center;
+        }
+        span>.select2-selection.select2-selection--single{
+           border: 1px solid #CCC;
+        }
+        .flickity-button:hover{
+            background-color: #0f0f0f;
+            opacity: 0.80;
+            color: whitesmoke;
+        }
 
+        div.form-group.searchHide.col-12.p-0>span{
+            min-width: 225px;
+        }
+        i.fas.fa-arrow-alt-circle-up{
+            position: fixed;
+            bottom: 10%;
+            right: 5%;
+            font-size: 3rem;
+            z-index: 2000;
+            opacity: 0.65;
+            color: red;
+        }
+        i.fas.fa-arrow-alt-circle-up:hover{
+            cursor: pointer;
+            transform: scale(1.15);
+            transition-duration: 0.5s
+        }
 
 
     </style>
@@ -134,9 +187,15 @@
 
 {% block body %}
     <div id="body_container" class="container-fluid">
-        <div class="jumbotron mx-5">
+        <a id="upper" href="#jumbotron"><i class="fas fa-arrow-alt-circle-up"></i></a>
+        <div id="jumbotron" class="jumbotron mx-5">
+            <div class="row justify-content-end">
+                <div class="mr-5 mb-4">
+                    <span class="btn" id="filterButton">Moins de filtres</span>
+                </div>
+            </div>
             {{ form_start(form) }}
-            <div class="form-row">
+            <div class="form-row searchHide">
                 <div class="col">
                     {{ form_row(form.maxPrice) }}
                 </div>
@@ -145,25 +204,25 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="col">
+                <div class="col-12 col-lg-10">
                     <div class="form-group">
                         <label for="ad_adress">Adresse</label>
                         <input type="text" id="ad_adress">
                     </div>
                 </div>
-                <div class="col text-center">
-                    <div class="form-group">
-                        <label for="{{ form.distance.vars.id }}">{{ form_label(form.distance) }}</label>
+                <div class="col-12 col-lg-2 pl-lg-3">
+                    <div class="form-group col-11 p-0">
+                        <label class="mb-0" for="{{ form.distance.vars.id }}">{{ form_label(form.distance) }}</label><br>
                         {{ form_widget(form.distance) }}
-                        <span id="distance_value" class="text-center"></span>
                     </div>
                 </div>
-                <div class="col">
-                    <label for="{{ form.options.vars.id }}">{{ form_label(form.options) }}</label>
-                    {{ form_widget(form.options) }}
-                </div>
             </div>
-
+            <div class="form-row">
+                    <div class="form-group searchHide col-12 p-0">
+                        <label class="mb-0" for="{{ form.options.vars.id }}">{{ form_label(form.options) }}</label><br>
+                        {{ form_widget(form.options) }}
+                    </div>
+            </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Rechercher</button>
             </div>
@@ -182,6 +241,9 @@
                     {% for ad in paginator %}
                         {% include 'common/_ad2.html.twig'  with {'ad': ad }%}
                     {% endfor %}
+                    {% if paginator|length is same as (0) %}
+                        <h3 class="mb-5">Désolé, aucun résultats pour votre recherche. Veuillez réessayer avec d'autres filtres</h3>
+                    {% endif %}
                     <div class="navigation">
                         {{ knp_pagination_render(paginator) }}
                     </div>
@@ -189,7 +251,7 @@
                         <i class="far fa-map mr-1"></i>Carte
                     </div>
                 </div>
-                <h1>Recommandations pour vous</h1>
+                <h1 class="mt-5 mb-4">Recommandations pour vous</h1>
                 <div class="main-carousel">
                     {% for ad in suggest %}
                         {% include 'common/_suggest.html.twig' %}
@@ -216,31 +278,34 @@
 
 {% endblock %}
 {% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <script>
 
 
         $(document).ready(function () {
+            $('#upper').hide()
+
             $('#minRooms').attr({max:{{ stats.maxRooms }}, min: 1});
-            $('#distance_value').text($("#distance").val() + ' km');
+            //$('#distance_value').text($("#distance").val() + ' km');
             let height1 = $(window).height()
             $('#map_container').css('height',height1)
             $('#map').css('height',height1)
+            document.querySelector('#lat').value = ''
+            document.querySelector('#lng').value = ''
         })
 
 
-        $('#distance').mousedown(e => {
+
+        /*$('#distance').mousedown(e => {
             $(document).mousemove(e => {
                 $('#distance_value').text($("#distance").val() + ' km');
             });
-        });
+        });*/
 
 
         let map1 = document.querySelector('#map')
         if (map1 !== null){
 
-            var map = L.map('map', {worldCopyJump: true, scrollWheelZoom:false}).setView([51.505, -0.09], 1)
+            var map = L.map('map', {worldCopyJump: true, scrollWheelZoom:false}).setView([48.8666667, 5.3166666666666664], 6)
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -353,6 +418,18 @@
             cellSelector: '.card-cell',
             adaptiveHeight: true
         })
+        /*----------------------------------------------------------------------------------*/
+            $(window).scroll(function () {
+                const footer = $('footer')
+                const footerHeight = footer.height();
+                const position = footer.offset().top
+                if ($(window).scrollTop() >= 500 ){
+                    $('#upper').fadeIn()
+                }
+                if($(window).scrollTop() < 500 ){
+                    $('#upper').fadeOut()
+                }
+            })
 
         /* --------------------------------  OPEN AND CLOSE MAP BUTTON SET ------------------------------- */
         var button_fonction_display = function(){
@@ -366,9 +443,14 @@
                 $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
                 $(this).find($('.body_card_container')).removeClass('col-md-7 col-lg-12').addClass('col-lg-7')
             });
+            $('.card-cell').each(function () {
+                $(this).removeClass('col-xl-4').addClass('col-xl-6')
+                $(this).removeClass('col-lg-8').addClass('col-lg-12')
+            });
            /* $('.card-cell').each(function () {
                 $(this).removeClass('col-lg-4 col-xl-3').addClass('col-lg-6')
             });*/
+
         }
         var button_fonction_close = function(){
             $('#map_container_active').removeClass('col-lg-7 col-xl-6')
@@ -379,6 +461,11 @@
 
                 $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
                 $(this).find($('.body_card_container')).removeClass('col-lg-7').addClass('col-md-7 col-lg-12')
+            });
+
+            $('.card-cell').each(function () {
+                $(this).removeClass('col-xl-6').addClass('col-xl-4')
+                $(this).removeClass('col-lg-12').addClass('col-lg-8')
             });
             /*$('.card-cell').each(function () {
                 $(this).removeClass('col-lg-6').addClass('col-lg-4 col-xl-3')
@@ -417,10 +504,12 @@
 
             $('#map_container').css({'position':'fixed', 'z-index': '1000'}).removeClass('d-none').addClass('d-block');
             map.invalidateSize();
+            $('#upper').addClass('d-none')
         })
 
         $('#map_close_smart').click(function () {
             map_close()
+            $('#upper').removeClass('d-none')
         })
 
         $('#map_close').click(function () {
@@ -443,11 +532,13 @@
                 if (width > '974'){
                     console.log('GOOOOOOOOO' + sessionStorage.getItem('map'))
                     if (sessionStorage.getItem('map') === '2'){
+                        $('#upper').removeClass('d-none')
                         $('#map_container').css({'position':'sticky', 'top':'0'})
                         $('#map_container_active').addClass('col-lg-7 col-xl-6')
                     }
                 }
                 if (sessionStorage.getItem('map') === '2'){
+
                     $('.card_container').each(function () {
                         $(this).removeClass('col-md-4')
                         $(this).find($('.img_card_container')).addClass('col-lg-5')
@@ -455,10 +546,29 @@
                         $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
                         $(this).find($('.body_card_container')).addClass('col-lg-7')
                     })
+                    $('.card-cell').each(function () {
+                        $(this).removeClass('col-xl-4').addClass('col-xl-6')
+                        $(this).removeClass('col-lg-8').addClass('col-lg-12')
+                    });
+                }
+                if (sessionStorage.getItem('map') === 1){
+                    $('.card_container').each(function () {
+                        $(this).addClass('col-lg-4')
+                        $(this).find($('.img_card_container')).removeClass('col-lg-5').addClass('col-md-5 col-lg-12')
+
+                        $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                        $(this).find($('.body_card_container')).removeClass('col-lg-7').addClass('col-md-7 col-lg-12')
+                    });
+
+                    $('.card-cell').each(function () {
+                        $(this).removeClass('col-xl-6').addClass('col-xl-4')
+                        $(this).removeClass('col-lg-12').addClass('col-lg-8')
+                    });
                 }
                 if (width < '975'){
                     console.log('DOOOWWWNWNN' + sessionStorage.getItem('map'))
                     if (sessionStorage.getItem('map') === '2' && width<='974'){
+                        $('#upper').addClass('d-none')
                         $('#map_container').css({'position':'fixed', 'z-index': '1000'})
                         $('#map_container_active').removeClass('col-lg-7 col-xl-6')
 
@@ -479,12 +589,19 @@
             var id = $(this).data('mapping')
             $("b[data-mapping='" + id + "']").parent().css({'background-color':'white', 'color': 'black'})
         })
+
+
+        $('#filterButton').click(function () {
+            const myToggle = $('.searchHide');
+            const filterButton = $('#filterButton');
+            myToggle.toggle()
+            if (myToggle.is(":hidden")){
+                console.log('HIDDEN')
+                filterButton.text('Plus de filtres')
+            }else{
+                filterButton.text('Moins de filtres')
+            }
+        })
     </script>
-
-
-
-
-
-
 
 {% endblock %}

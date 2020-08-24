@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FlashBnB - Qui sommes nous ?{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <main id="site-content" role="main" tabindex="-1" class="">
+        <style>
+            #dgccrf a {
+                color: #006c70;
+            }
+        </style>
+
+
+        <div id="dgccrf" style="padding-left: 80px; padding-right: 80px; padding-top: 40px; padding-bottom: 24px;">
+            <h1 class="my-4">Qui sommes nous ?</h1>
+
+            <p>
+                <strong>Fonctionnement du site et classement des annonces</strong>
+            </p>
+            <p>
+                <strong>QU’EST-CE QUE FLASHBNB ?</strong>
+            </p>
+            <p>
+                La Plateforme FlashBnb est une place de marché en ligne qui permet aux utilisateurs enregistrés <strong>(les « Membres »)</strong> et à certains tiers qui proposent des services (les Membres et tiers qui proposent des <strong>services</strong> sont des <strong>« Hôtes »</strong> et les services qu’ils proposent <strong>sont des « Services d’Hôte »</strong>) de publier ces Services d’Hôte sur la Plateforme FlashBnb <strong>(les « Annonces »)</strong> et de communiquer et traiter directement avec des Membres qui souhaitent réserver ces Services d’Hôte (les Membres qui utilisent des Services d’Hôte sont des <strong>« Voyageurs »</strong>). Les Services d’Hôte peuvent comprendre la location de logements pour des vacances ou autre usage <strong>(les « Hébergements »)</strong>, des activités sur une ou plusieurs journées dans différentes catégories <strong>(les « Expériences »)</strong>, un accès à des événements et lieux uniques <strong>(les « Événements »)</strong>, ainsi que d’autres services variés, en lien ou non avec les voyages.
+            </p>
+            <p>
+                Vous devez créer un compte pour pouvoir publier une Annonce.
+            </p>
+            <p>
+                <strong>QUI PEUT DEVENIR HÔTE SUR FLASHBNB (LOGEMENTS) ?</strong>
+            </p>
+            <p>
+                Pratiquement tout le monde peut devenir hôte, que vous soyez un professionnel ou un non-professionnel. Votre inscription et la mise en ligne de votre logement sont gratuites. Les logements disponibles sur le site sont aussi variés que les hôtes qui les publient.
+            </p>
+            <p>
+                Vous pouvez publier une annonce pour votre logement dans presque tous les pays du monde. Bien que nous souhaiterions faire d'FlashBnb un lieu d'échange mondial, nous sommes soumis aux lois internationales qui limitent l'utilisation de notre site aux résidents de certains pays. Par conséquent, nos services ne sont donc pas accessibles en Crimée, en Iran, en Syrie et en Corée du Nord.
+            </p>
+            <p>
+                Pour proposer des séjours agréables et adaptés aux voyageurs, nous demandons à tous les hôtes de respecter 4 critères de base :
+            </p>
+            <ul>
+
+                <li><strong>Faire preuve de réactivité</strong> : maintenez un taux de réponse élevé en répondant aux demandes d'information et de réservation dans les 24 heures.
+
+                </li><li><strong>Accepter les demandes de réservation</strong> : montrez aux voyageurs qu'ils sont les bienvenus en acceptant les demandes de réservation lorsque votre logement est disponible.
+
+                </li><li><strong>Éviter les annulations</strong> : les annulations ne sont pas anodines et nous demandons à tous les hôtes d'éviter d'annuler les réservations des voyageurs pour ne pas compromettre leurs projets de voyage.
+
+                </li><li><strong>Maintenir une bonne évaluation globale</strong> : les voyageurs aiment pouvoir s'attendre à un niveau de qualité constant, quelle que soit leur destination.
+                </li>
+            </ul>
+            <p>
+                Par ailleurs nous encourageons fortement les hôtes à fournir les <strong>équipements essentiels</strong> : papier toilette, savon, linge de maison, draps, et au moins une serviette et un oreiller par voyageur.
+            </p>
+            <p>
+                <strong>QUI PEUT PUBLIER UNE EXPÉRIENCE SUR FLASHBNB ?</strong>
+            </p>
+            <p>
+                Les expériences FlashBnb sont des activités créées et animées par des passionnés. Les expériences durent quelques heures en moyenne. Il peut s'agir d'un simple atelier ou d'une longue randonnée en montagne. Elles s'adressent à tout le monde, quels que soient vos centres d'intérêt ou votre niveau.
+            </p>
+            <p>
+                Pour les hôtes : Il n'est pas nécessaire de partager votre logement sur FlashBnb pour pouvoir organiser une expérience.
+            </p>
+            <p>
+                Pour les voyageurs : Il n'est pas nécessaire de séjourner dans un logement FlashBnb pour pouvoir réserver une expérience.
+            </p>
+            <p>
+                Chaque expérience proposée à FlashBnb est examinée pour s'assurer qu'elle respecte trois critères de qualité : l'expertise, l'accès privilégié et la relation. Ces critères nous aident à garantir que les attentes des voyageurs sont satisfaites.
+            </p>
+            <ul>
+
+                <li><strong>Expertise</strong> : les hôtes sont bien informés et extrêmement passionnés par ce qu'ils font. Ils enrichissent et animent l'expérience grâce à des histoires personnelles et au contexte local.
+
+                </li><li><strong>Accès privilégié</strong> : les hôtes peuvent accéder à des lieux ou des activités que le voyageur ordinaire ne pourrait pas découvrir par lui-même. Ils invitent les voyageurs à participer activement à l'activité, à découvrir une communauté ou une culture.
+
+                </li><li><strong>Relation</strong> : les hôtes s'efforcent d'établir des relations humaines enrichissantes. Ils font de leur mieux pour que les voyageurs se sentent bienvenus et appréciés.
+                </li>
+            </ul>
+
+            <p>
+                Toutes les expériences et les hôtes qui les proposent doivent se conformer à nos <a href="{{ path('administrator_pages_cgv') }}">Conditions générales</a> et Conditions supplémentaires applicables aux hôtes proposant des expériences. Voici quelques-unes de ces exigences supplémentaires :
+            </p>
+            <ul>
+
+                <li><strong>Précision</strong> : les hôtes doivent décrire leur expérience de manière exhaustive et précise, en y incluant le récapitulatif, la date et l'heure, le lieu de rendez-vous, les éléments fournis aux voyageurs, etc.
+
+                </li><li><strong>Périodes d'exclusivité</strong> : dès qu'un hôte propose une expérience sur FlashBnb pour une heure et une date précise, seuls les voyageurs de FlashBnb peuvent y participer.
+
+                </li><li><strong>Engagement relatif aux réservations</strong> : les hôtes doivent honorer toutes leurs réservations, même si elles ne concernent qu'une seule personne, sauf en cas d'annulation consécutive à un cas de force majeure. Un nombre trop faible de participants n'est pas une circonstance valable actuellement pour annuler.
+
+                </li><li><strong>Note minimum des voyageurs</strong> : les expériences ayant reçu trop de mauvaises évaluations (1, 2 ou 3 étoiles) dans les commentaires ou avec une évaluation moyenne inférieure ou égale à 4,7 peuvent être supprimées de FlashBnb.
+                </li>
+            </ul>
+            <p>
+                <strong>EST-CE QUE FLASHBNB PEUT DÉSACTIVER MON ANNONCE OU MON COMPTE ?</strong>
+            </p>
+            <p>
+                FlashBnb peut limiter, suspendre ou désactiver votre compte, conformément à ses <a href="{{ path('administrator_pages_cgv') }}">Conditions générales</a>, notamment les articles 5 relatif au contenu et 15 relatif à la Durée et Résiliation, Suspension et autres Mesures.
+            </p>
+            <p>
+                <strong>FlashBnb peut supprimer ou désactiver l’accès à tout Contenu des Membres</strong> qui est contraire au droit applicable, aux présentes Conditions ou aux Politiques ou Normes en vigueur de FlashBnb, ou potentiellement nuisibles ou inacceptables pour FlashBnb, ses Membres, des tiers ou des biens.
+            </p>
+            <p>
+                <strong>Votre compte peut être désactivé lors d'un examen des comptes FlashBnb</strong>. Ces examens s'inscrivent dans le cadre d'efforts visant à faire respecter les valeurs de la communauté FlashBnb (tranquillité d’esprit, sécurité, respect, authenticité, fiabilité), ses Conditions générales, les lois et règlements applicables et à instaurer un climat de confiance mutuelle. Votre compte peut également être désactivé ou suspendu à la suite d'un problème signalé à notre équipe d'assistance utilisateurs. La sécurité est prise très au sérieux chez FlashBnb, et si une violation des Valeurs de la communauté est signalée, nous mènerons une enquête sur ce signalement et prendrons les mesures appropriées.
+            </p>
+            <p>
+                Votre compte peut être provisoirement désactivé en raison de votre taux de réponse ou de votre taux d'acceptation. Pour réactiver votre compte dans ce cas, suivez les étapes indiquées dans l'e-mail que vous avez reçu.
+            </p>
+            <p>
+                Si votre compte est désactivé ou suspendu, toute réservation future, en attente de réponse ou acceptée, que ce soit en tant qu'hôte ou voyageur, peut être annulée.
+            </p>
+            <p>
+                <strong>QU’EST-CE QUI INFLUENCE LE CLASSEMENT DE MON ANNONCE DANS LES RÉSULTATS DE RECHERCHE ?</strong>
+            </p>
+            <p>
+                Le but de l’algorithme du classement des annonces sur FlashBnb est simple : aider les voyageurs à trouver le logement parfait pour leur séjour, et les hôtes à trouver les voyageurs qui conviennent à leur logement. Nous tenons compte de près de 100 facteurs différents pour chaque recherche d’annonce.
+            </p>
+            <p>
+                La liste exacte des facteurs pris en compte reste confidentielle, mais voici les grandes catégories de facteurs qui affectent le classement :
+            </p>
+            <ul>
+
+                <li><strong>Besoins des voyageurs</strong>: Nous tenons compte de facteurs liés aux voyageurs, notamment le lieu d’où ils effectuent la recherche, l’historique de leurs voyages, les annonces ajoutées dans leur <em>Wish List</em> ou sur lesquelles ils ont cliqué, et bien plus encore.
+
+                </li><li><strong>Détails de l’annonce</strong>: Nous prenons en considération des informations comme le nombre de commentaires 5 étoiles, le prix, l’emplacement du logement, l’activation ou non de la réservation instantanée, la rapidité avec laquelle l’hôte répond aux demandes, et de nombreux autres facteurs.
+
+                </li><li><strong>Détails du voyage</strong>: Nous prenons en compte le nombre de voyageurs, la durée du voyage, l’imminence du voyage, la configuration ou non d’un prix minimum ou maximum, et divers autres facteurs.
+                </li>
+            </ul>
+            <p>
+                Nous améliorons notre système constamment afin de permettre aux hôtes et voyageurs d’obtenir les meilleurs résultats possibles sur notre plateforme ; ces facteurs peuvent donc faire l’objet de modifications et de tests.
+            </p>
+            <p>
+                A l’heure actuelle, il n’est pas possible pour un Hôte de rémunérer FlashBnb pour que son Annonce soit mieux classée dans les résultats de recherche.
+            </p>
+            <p>
+                Certaines Annonces sont gérées par des filiales de FlashBnb, telles que Luckey dédiée aux services de conciergerie dans certaines régions), Luxury Retreats (dédiée aux prestations haut de gamme) ou HotelTonight qui propose des réservations de chambres d’hôtels notamment en dernière minute.
+            </p>
+            <p>
+                <strong>FRAIS DE SERVICE</strong>
+            </p>
+            <p>
+                Votre inscription et la mise en ligne de votre logement sont gratuites.
+            </p>
+            <p>
+                Pour vous aider à utiliser au mieux la plateforme FlashBnb, y compris des services tels que l’assistance client 24h/24 et le traitement des cartes de crédit, nous facturons des frais de service lorsqu'une réservation est confirmée. Les frais de service applicables sont communiqués à l’Hôte avant qu’il ne publie une Annonce ou au Voyageur avant qu’il ne réserve.
+            </p>
+            <p>
+                FlashBnb applique des frais de service aux voyageurs et/ou aux hôtes.
+            </p>
+            <p>
+                <strong>GARANTIE HÔTE ET ASSURANCE HÔTE</strong>
+            </p>
+            <p>
+                Notre <strong>Garantie Hôte</strong> est conçue pour protéger les hôtes contre les dommages causés sur leurs propres biens ou dans les rares cas de dommages matériels provoqués par les voyageurs dans leurs logements.
+            </p>
+            <p>
+                Notre <strong>Assurance Hôte</strong>, d'autre part, est conçue pour protéger les hôtes contre des réclamations de tiers en cas de blessures physiques ou de sinistre dans le logement et protège contre les dommages survenant dans les espaces communs hors du logement.
+            </p>
+            <p>
+                La Garantie Hôte FlashBnb et l'Assurance Hôte FlashBnb vous fournissent une protection de base pour les dommages et les responsabilités désignés. Cependant, elles ne remplacent ni l'assurance habitation (locataire ou propriétaire), ni votre assurance responsabilité civile. Vous devrez peut-être satisfaire à d'autres obligations en matière d'assurance.
+            </p>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

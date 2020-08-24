@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvelle utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="my-1">Créer un nouvelle Administrateur</h3>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_row(form.firstName) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.lastName) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.picture) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.introduction) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.description) }}
+                    </div>
+
+                </div>
+                {#<input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ user.id ) }}">#}
+                <button class="btn btn-primary my-4" type="submit">
+                    <i class="fas fa-check mr-1"></i>Enregistrer
+                </button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        <br><a href="{{ path('admin_user_index') }}">Revenir à la liste</a>
+    </div>
+{% endblock %}
+

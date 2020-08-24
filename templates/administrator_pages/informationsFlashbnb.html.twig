@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FlashBnB - Informations sur FlashBnb {% endblock %}
+
+{% block body %}
+
+
+<main id="site-content" role="main" tabindex="-1" class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-copy">
+                        <h1 class="h2 space-4 my-5">Coordonnées de l'entreprise</h1>
+
+                        <h4>
+                            <strong>Fournisseur du site web :</strong>
+                        </h4>
+
+                        <!-- Company Details Page content for EEA countries, BR, PT, RU -->
+                        <p>
+                            FlashBnb France UC, compagnie privée<br>Tour D3, La défense<br>
+                        </p>
+
+                        <p>
+                            <strong>Conseil d'administration</strong>&nbsp;: Usain Bolt et David Douillet <br>
+                            <strong>Numéro de TVA</strong>&nbsp;: IE8828584P <br>
+                            <strong>Numéro d'immatriculation</strong>&nbsp;: (Registre du commerce francais) FR 511426
+                        </p>
+
+                        <p>
+                            <strong>Nous contacter&nbsp;:</strong><br>
+                            <a href="mailto:flashbnb@gmail.com">flashbnb@gmail.com</a><br>
+                            <a href="{{ path('administrator_pages_contact') }}">Formulaire de contact</a>
+                        </p>
+
+
+                        <p>
+                            FlashBnb Payments FR Limited est autorisé et régulé par l'Autorité de bonne conduite financière (Financial Conduct Authority) en tant qu'établissement de monnaie électronique sous la référence 900971.
+                        </p>
+
+                        <!-- Hide the EU dispute resolution section for Switzerland, Liechtenstein, and Russia -->
+                        <p>
+                            <strong>Site web de la Commission européenne sur le règlement des litiges en ligne&nbsp;:</strong><br>
+                            <a href="http://ec.europa.eu/consumers/odr">http://ec.europa.eu/consumers/odr</a>
+                        </p>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

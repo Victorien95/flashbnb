@@ -3,8 +3,8 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -19,7 +19,15 @@ class AdminUserType extends ApplicationType
             ->add('firstName', TextType::class, $this->getConfiguration("Prénom de l'utilisateur"))
             ->add('lastName', TextType::class, $this->getConfiguration("Nom de l'utilisateur"))
             ->add('email', EmailType::class, $this->getConfiguration("Email de l'utilisateur"))
-            ->add('picture', UrlType::class, $this->getConfiguration("Modifier l'image de l'utilisateur"))
+            ->add('imageFile', FileType::class,
+                [
+                    'required' => false,
+                    'attr' =>
+                        [
+                            'placeholder' => 'Uploader votre avatar'
+                        ]
+                ])
+            //->add('picture', UrlType::class, $this->getConfiguration("Modifier l'image de l'utilisateur"))
             ->add('introduction', TextType::class, $this->getConfiguration("Corriger l'introduction de l'utilisateur"))
             ->add('description', TextareaType::class, $this->getConfiguration("Corriger la description de l'utilisateur"))
         ;

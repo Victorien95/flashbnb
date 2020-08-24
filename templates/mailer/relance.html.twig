@@ -1,0 +1,32 @@
+
+{% block stylesheets %}
+    <style>
+        {# here, define your CSS styles as usual #}
+        h1 {
+            color: red;
+        }
+        h2 {
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+
+
+{% block body %}
+
+
+    <div class="example-wrapper">
+        <h1>Hello {{ user.FullName }}! </h1>
+
+       <h2>Pour profitez pleinement de votre futur logement FlashBnb vous offre 10% de réduction sur votre prochaine réservation</h2>
+       <p>Bénéficiez de vos 10% en utilisant le code ci-dessous</p>
+
+        <h1>{{ promocode.code }}</h1>
+
+        <span>Attention ! Ce code n'est utilisibale qu'une seul fois et est lié à votre compte</span>
+
+        <p>L'équipe <a href="{{ url('ads_index') }}">FlashBnB</a></p>
+    </div>
+{% endblock %}
+

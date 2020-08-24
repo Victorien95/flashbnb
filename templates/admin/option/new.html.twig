@@ -1,16 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
 {% block title %}Nouvelle option{% endblock %}
 
 {% block body %}
-    <h1>Créer une nouvelle option</h1>
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ option.id ) }}">
-    <button class="btn btn-primary my-4" type="submit">
-        <i class="fas fa-check mr-1"></i>Enregistrer
-    </button>
-    {{ form_end(form) }}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="my-1">Créer une nouvelle option</h4>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ option.id ) }}">
+            <button class="btn btn-primary my-4" type="submit">
+                <i class="fas fa-check mr-1"></i>Enregistrer
+            </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 
-    <a href="{{ path('admin_option_index') }}">Revenir à la liste</a>
+
+    <br><a href="{{ path('admin_option_index') }}">Revenir à la liste</a>
+</div>
 {% endblock %}

@@ -4,27 +4,32 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\AdminUserType;
+use App\Repository\RoleRepository;
+use App\Repository\UserRepository;
 use App\Service\Paginator;
 use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminUserController extends AbstractController
 {
     /**
      * @Route("/admin/user/{page<\d+>?1}", name="admin_user_index")
      */
-    public function index(Paginator $paginator, $page)
+    public function index(Paginator $paginator, $page, UserRepository $userRepository)
     {
-        $paginator->setEntityClass(User::class)
+        $data = $userRepository->findAll();
+        /*$paginator->setEntityClass(User::class)
                   ->setCurrentPage($page)
                   ->setLimit(5);
+        */
 
 
         return $this->render('admin/user/index.html.twig', [
-            'pagination' => $paginator,
+            'data' => $data,
             'route' => 'admin_user_index'
         ]);
     }
@@ -45,6 +50,7 @@ class AdminUserController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()){
                 if ($this->isCsrfTokenValid('save' . $user->getId(), $request->get('_token_save'))){
+                    $user->setUpdatedAt(new \DateTime('now'));
                     $manager->persist($user);
 
                     $manager->flush();
@@ -87,6 +93,40 @@ class AdminUserController extends AbstractController
         $this->addFlash('warning',
             $tokenError->ErrorMessage());
         return $this->redirectToRoute("admin_user_index");
+
+    }
+
+    /**
+     * @Route("admin/user/new", name="admin_user_new")
+     */
+    public function new(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, RoleRepository $roleRepository)
+    {
+        $user = new User();
+        $adminRole = $roleRepository->findOneBy(['title' => 'ROLE_ADMIN']);
+
+        $form = $this->createForm(AdminUserType::class, $user);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $hash = $encoder->encodePassword($user, 'admin');
+
+            $user->setHash($hash)
+                ->setUpdatedAt(new \DateTime('now'))
+                ->addUserRole($adminRole);
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash('success', 'Le nouvel administrateur: ' . $user->getFullName() . ' a bien été créé');
+            return $this->redirectToRoute('admin_user_index');
+        }
+
+
+        return $this->render('admin/user/new.html.twig',
+            [
+                'form' => $form->createView()
+            ]);
 
     }
 }

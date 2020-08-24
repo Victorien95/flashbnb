@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Form\AdminCommentType;
+use App\Repository\CommentRepository;
 use App\Service\Paginator;
 use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,16 +17,17 @@ class AdminCommentController extends AbstractController
     /**
      * @Route("/admin/comment/{page<\d+>?1}", name="admin_comment_index")
      */
-    public function index(Paginator $paginator, $page)
+    public function index(Paginator $paginator, $page, CommentRepository $commentRepository)
     {
-        $paginator->setEntityClass(Comment::class)
+        $data = $commentRepository->findAll();
+       /* $paginator->setEntityClass(Comment::class)
                   ->setCurrentPage($page)
                   ->setLimit(5);
-
+       */
 
 
         return $this->render('admin/comment/index.html.twig', [
-            'pagination' => $paginator,
+            'data' => $data,
             'route' => 'admin_comment_index'
         ]);
     }

@@ -6,16 +6,21 @@ use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(fields={"email"}, message="Une autre utilisateur possède déjà cette email. Merci de le modifier")
+ * @Vich\Uploadable
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -23,6 +28,20 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var File|null
+     * @Assert\Image(mimeTypes={"image/jpeg", "image/jpg", "image/png"}, mimeTypesMessage="Le format de votre fichier est invalide ({{ type }}). Formats acceptés: {{ types }}")
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="avatarname")
+     */
+    private $imageFile;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatarname;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -103,6 +122,19 @@ class User implements UserInterface
      */
     private $likes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PromoCode", mappedBy="user")
+     */
+    private $promoCodes;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
+
+
+
+
     public function __construct()
     {
         $this->ads = new ArrayCollection();
@@ -110,6 +142,7 @@ class User implements UserInterface
         $this->bookings = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->promoCodes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -423,6 +456,108 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|PromoCode[]
+     */
+    public function getPromoCodes(): Collection
+    {
+        return $this->promoCodes;
+    }
+
+    public function addPromoCode(PromoCode $promoCode): self
+    {
+        if (!$this->promoCodes->contains($promoCode)) {
+            $this->promoCodes[] = $promoCode;
+            $promoCode->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromoCode(PromoCode $promoCode): self
+    {
+        if ($this->promoCodes->contains($promoCode)) {
+            $this->promoCodes->removeElement($promoCode);
+            // set the owning side to null (unless already changed)
+            if ($promoCode->getUser() === $this) {
+                $promoCode->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->hash,
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->hash,
+            ) = unserialize($serialized);
+
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return User
+     */
+    public function setImageFile(?File $imageFile): User
+    {
+        $this->imageFile = $imageFile;
+        if ($this->imageFile instanceof UploadedFile){
+            $this->updated_at = new \DateTime('now');
+        }
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAvatarname(): ?string
+    {
+        return $this->avatarname;
+    }
+
+    /**
+     * @param string|null $avatarname
+     * @return User
+     */
+    public function setAvatarname(?string $avatarname): User
+    {
+        $this->avatarname = $avatarname;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
 
 
 }

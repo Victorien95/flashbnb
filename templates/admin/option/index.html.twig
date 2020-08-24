@@ -6,8 +6,8 @@
 
 <div class="container-fluid">
     <h1 class="my-5">Gestion des options</h1>
-    <a class="btn btn-secondary mb-2" href="{{ path('admin_option_new') }}">Créer une nouvelle option</a>
-    <table class="table table-hover">
+    <a class="btn btn-secondary mb-4" href="{{ path('admin_option_new') }}">Créer une nouvelle option</a>
+    <table class="table table-hover table-striped myTable">
         <thead>
             <tr>
                 <th>Id</th>
@@ -16,10 +16,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for option in pagination.data %}
+            {% for option in data %}
                 <tr>
                     <td class="align-middle">{{ option.id }}</td>
-                    <td class="align-middle">{{ option.name }}</td>
+                    <td class="align-middle"><a href="{{ path('admin_option_edit', {'id':option.id}) }}">{{ option.name }}</td>
                     <td class="text-center row justify-content-center">
                         {% include 'admin/common/_editButton.html.twig' with {
                             'route': 'admin_option_edit',
@@ -34,6 +34,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {{ pagination.display }}
+    {#{{ pagination.display }}#}
 </div>
 {% endblock %}

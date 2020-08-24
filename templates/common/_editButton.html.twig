@@ -1,0 +1,5 @@
+<form class="my-1" method="post" action="{{ path(route, {'slug': slug}) }}">
+    <input type="hidden" name="_method" value="EDIT">
+    <input type="hidden" name="_token_edit" value="{{ csrf_token('edit' ~ id ) }}">
+    <button class="{{ type|default('btn') }} {{ type|default('btn') }}-{{ btn|default('primary') }} ">Modifier l'annonce</button>
+</form>

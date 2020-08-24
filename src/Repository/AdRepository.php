@@ -105,35 +105,43 @@ class AdRepository extends ServiceEntityRepository
     public function findSuggestQuery($request)
     {
         $array = unserialize($request->cookies->get('suggest'));
-        $minPrice = 1000;
-        $maxPrice = 0;
-        $minRooms = 100;
-        $maxRooms = 0;
+        if ($array){
+            $minPrice = 1000;
+            $maxPrice = 0;
+            $minRooms = 100;
+            $maxRooms = 0;
 
-        foreach ($array as $value){
-            if ($value[1] > $maxPrice){
-                $maxPrice = $value[1];
+            foreach ($array as $value){
+                if ($value[1] > $maxPrice){
+                    $maxPrice = $value[1];
+                }
+                if ($value[1] < $minPrice){
+                    $minPrice = $value[1];
+                }
+                if ($value[2] > $maxRooms){
+                    $maxRooms = $value[2];
+                }
+                if ($value[2] < $minRooms){
+                    $minRooms = $value[2];
+                }
             }
-            if ($value[1] < $minPrice){
-                $minPrice = $value[1];
-            }
-            if ($value[2] > $maxRooms){
-                $maxRooms = $value[2];
-            }
-            if ($value[2] < $minRooms){
-                $minRooms = $value[2];
-            }
+            $query = $this->findVisibleQuery()
+                ->andWhere("a.price BETWEEN $minPrice AND $maxPrice")
+                ->andWhere("a.rooms BETWEEN $minRooms AND $maxRooms")
+                ->orderBy('RAND()')
+                ->setMaxResults(9)
+                ->getQuery();
+
+            return $query->getResult();
         }
 
-
         $query = $this->findVisibleQuery()
-            ->andWhere("a.price BETWEEN $minPrice AND $maxPrice")
-            ->andWhere("a.rooms BETWEEN $minRooms AND $maxRooms")
             ->orderBy('RAND()')
             ->setMaxResults(9)
             ->getQuery();
 
         return $query->getResult();
+
     }
 
 

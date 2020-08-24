@@ -3,6 +3,11 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/booking.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.scss') }}">
+    <style>
+        .form-control{
+            background-color: white;
+        }
+    </style>
 {% endblock %}
 
 
@@ -32,7 +37,7 @@
         <div class="row">
             <div class="col">
                 <div class="myControl">
-                    <h2>Détails</h2>
+                    <h2 class="mt-3">Détails</h2>
                     <dl class="row">
                         <dt class="col-md-4">Numéro</dt>
                         <dd class="col-md-8">{{ booking.id }}</dd>
@@ -42,10 +47,22 @@
                         <dd class="col-md-8">{{ booking.endDate|date('d/m/Y') }}</dd>
                         <dt class="col-md-4">Nombre de nuits</dt>
                         <dd class="col-md-8">{{ booking.duration }}</dd>
-                        <dt class="col-md-4">Montant Total</dt>
+                        <dt class="col-md-4">Montant Total HT</dt>
                         <dd class="col-md-8">{{ booking.amount }} &euro;</dd>
+                        <dt class="col-md-4">Taxe FlashBnB</dt>
+                        <dd class="col-md-8">3%</dd>
+                        <dt class="col-md-4">Montant Total TTC</dt>
+                        <dd class="col-md-8">{{ booking.ttcAmount }} &euro;</dd>
+                        {% if booking.promoCode %}
+                            <dt class="col-md-4">Code promotion</dt>
+                            <dd class="col-md-8">{{ booking.promoCode.code }}</dd>
+                            <dt class="col-md-4">Réduction</dt>
+                            <dd class="col-md-8">{{ booking.promoCode.amount }} {{ booking.promoOperator }}</dd>
+                            <dt class="col-md-4">Montant après réduction</dt>
+                            <dd class="col-md-8">{{ booking.promoAmount }} &euro;</dd>
+                        {% endif %}
                         <dt class="col-md-4">Commentaire</dt>
-                        <dd class="col-md-8">{{ booking.comment |default('Aucun commentaire') }}</dd>
+                        <dd class="col-md-8">{{ booking.comment |default('Aucun commentaire')|raw }}</dd>
                     </dl>
 
                     <hr>
@@ -65,7 +82,7 @@
                     {{ author.description|raw }}
                     <a href="{{ path('user_show', {'slug': author.slug}) }}" class="btn btn-primary">Plus d'infos sur {{ author.firstname }}</a>
                 </div>
-                <div class="alert alert-warning" id="comment">
+                <div class="alert alert-warning mt-5" id="comment">
                     <h2 class="alert-heading">Votre avis compte !</h2>
                     {% if date() > date(booking.endDate) %}
                         {% set comment = booking.ad.commentFromAuthor(app.user) %}

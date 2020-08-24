@@ -6,7 +6,7 @@
 
     <div class="container-fluid">
         <h1 class="my-5">Gestion des réservations</h1>
-        <table class="table table-hover">
+        <table class="table table-hover table-striped myTable">
             <thead>
             <tr>
                 <th>Id</th>
@@ -19,15 +19,15 @@
             </tr>
             </thead>
             <tbody>
-            {% for booking in pagination.data %}
+            {% for booking in data %}{# in pagination.data #}
                 {% set author = booking.booker %}
                 <tr>
                     <td class="align-middle">{{ booking.id }}</td>
                     <td class="align-middle">{{ booking.createdAt|date('d/m/Y à H:i') }}</td>
                     <td class="align-middle">
-                        <img class="avatar avatar-micro mr-2" src="{{ author.picture }}" alt="Avata de {{ author.fullname }}">{{ author.fullName }}
+                        <a href="{{ path('admin_user_edit', {'id': author.id}) }}"><img class="avatar avatar-micro mr-2" src="{{ author.picture }}" alt="Avata de {{ author.fullname }}">{{ author.fullName }}</a>
                     </td>
-                    <td class="align-middle">{{ booking.ad.id }} - {{ booking.ad.title }}</td>
+                    <td class="align-middle"><a href="{{ path('admin_ads_edit', {'id':booking.ad.id}) }}">{{ booking.ad.id }} - {{ booking.ad.title }}</a></td>
                     <td class="align-middle h5">
                         <span class="badge badge-info">{{ booking.duration }}</span>
                     </td>
@@ -49,7 +49,7 @@
             </tbody>
         </table>
 
-        {{ pagination.display }}
+        {#{{ pagination.display }}#}
 
     </div>
 {% endblock %}

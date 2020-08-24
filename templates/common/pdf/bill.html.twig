@@ -1,12 +1,81 @@
-{% block stylesheets %}
-    <style>
-        h1{
-            color: red;
-        }
-    </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Facture {{ booking.id }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+
+
+{% block body %}
+    <body>
+
+    <div id="logo" class="mb-5">
+        <img src="{{ app.request.scheme ~'://'~ app.request.httpHost ~ asset('images/logo/logo_flashbnb_vecto_grey.png')}}" alt="logo FlashBnb" style="width: 200px">
+    </div>
+    <h1 class="text-center">FACTURE N°{{ booking.id }}</h1><br><br>
+    <div id="company" class="float-right h3 lead">
+        <div>FlashBnb</div>
+        <div>37-39 Rue Saint-Sébastien</div>
+        <div>75011 Paris</div>
+        <div><a href="mailto:contact@flashbnb.fr">contact@flashbnb.fr</a></div>
+    </div>
+    <div id="project" class="float-left h3 lead">
+        <div><span>Client:</span> {{ booking.booker.fullName }}</div>
+        <div><span>Email:</span> <a href="mailto:{{ booking.booker.email }}">{{ booking.booker.email }}</a></div>
+        <div><span>Date de la réservation:</span> {{ booking.createdAt|date("d/m/Y") }}</div>
+    </div>
+
+    <table class="position-relative w-100 table table-striped table-bordered text-center" style="top: 75px">
+        <thead class="thead-light">
+            <tr>
+                <th class="service">N°</th>
+                <th class="align-middle">Date d'arrivée</th>
+                <th class="align-middle">Date de départ</th>
+                <th class="align-middle">Nombre de jours</th>
+                <th class="align-middle">Annonce n°</th>
+                <th class="align-middle">Prix par jour</th>
+                <th class="align-middle">Montant HT</th>
+                <th class="align-middle">Taxe FlashBnb</th>
+                <th class="align-middle">Montant TTC</th>
+                {% if booking.promoCode %}
+                    <th class="align-middle">Promotion</th>
+                    <th class="align-middle">Montant après réduction</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="align-middle">{{ booking.id }}</td>
+                <td class="align-middle">{{ booking.startDate|date("d/m/Y") }}</td>
+                <td class="align-middle">{{ booking.endDate|date("d/m/Y")}}</td>
+                <td class="align-middle">{{ booking.duration }}</td>
+                <td class="align-middle">{{ booking.ad.id }}</td>
+                <td class="align-middle">{{ booking.ad.price }} &euro;</td>
+                <td class="align-middle">{{ booking.amount }} &euro;</td>
+                <td class="align-middle">3%</td>
+                <td class="align-middle">{{ booking.ttcAmount }} &euro;</td>
+                {% if booking.promoCode %}
+                    <td class="align-middle">
+                        {{ booking.promoCode.code }}
+                        <br>({{ booking.promoCode.amount }} {{ booking.promoOperator}} de réduction)
+                    </td>
+                    <td class="align-middle">
+                        {{ booking.promoAmount }}
+                    </td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+    <div class="row text-center" style="top: 1550px;left: 300px; position: absolute">
+            <p>FlashBnb Tour D3, La défense / IMAT FR511426 / Contact: flashbnb@gmail.com</p>
+    </div>
+    </body>
+
 
 {% endblock %}
-<h1>Un test de PDF</h1>
-{% block body %}
-<a href="https://stackoverflow.com/questions/2104635/abcpdf-document-not-applying-css"></a>
-{% endblock %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</html>

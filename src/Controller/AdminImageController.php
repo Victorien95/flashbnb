@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Ad;
 use App\Entity\Image;
 use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,6 +34,32 @@ class AdminImageController extends AbstractController
             return $this->redirectToRoute('admin_ads_edit',
                 [
                     'id' => $image->getAd()->getId()
+                ]);
+
+        }
+    }
+    /**
+     * @Route("/cover/{id}", name="admin_image_delete_cover", methods={"DELETE"})
+     */
+    public function delete_cover(Request $request, Ad $ad, EntityManagerInterface $manager, TokenError $tokenError): Response
+    {
+
+        $data = json_decode($request->getContent(), true);
+        if ($this->isCsrfTokenValid('delete'. $ad->getId(), $data['_token'])) {
+
+            if ($ad->getAdCoverImage()){
+                $ad->setAdCoverImage(null);
+            }else{
+                $ad->setCoverImage(null);
+            }
+            $manager->flush();
+            return new JsonResponse(['success' => 1]);
+        }else{
+            $this->addFlash('warning',
+                $tokenError->ErrorMessage());
+            return $this->redirectToRoute('admin_ads_edit',
+                [
+                    'id' => $ad->getId()
                 ]);
 
         }

@@ -1,7 +1,11 @@
 @import "bootstrap.min.css";
 @import "date-picker.css";
 
-
+.errorPenguin{
+    border-radius: 10%;
+    min-width: 500px;
+    max-width: 500px;
+}
 div.container, div.container-fluid{
     margin-top: 20px;
 }
@@ -28,21 +32,29 @@ div.carousel-caption{
     &.avatar-large{
         max-width: 84px;
         max-height: 84px;
+        min-width: 84px;
+        min-height: 84px;
     }
 
     &.avatar-medium{
         max-width: 74px;
         max-height: 74px;
+        min-width: 74px;
+        min-height: 74px;
     }
 
     &.avatar-mini{
         max-width: 44px;
         max-height: 44px;
+        min-width: 44px;
+        min-height: 44px;
     }
 
     &.avatar-micro{
         max-width: 32px;
         max-height: 32px;
+        min-width: 32px;
+        min-height: 32px;
     }
 }
 
@@ -86,3 +98,97 @@ a{
         }
     }
 }
+hr{
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.card2:hover, .dashdiv:hover{
+    transform: scale(1.03);
+    transition-duration: 0.5s
+}
+.cutCard{
+    max-height: 185px;
+    min-height: 185px;
+}
+.btn:hover{
+    transform: scale(1.10);
+    transition-duration: 0.5s
+}
+#promo_checker{
+    color: red;
+}
+a.footerLink{
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+}
+a.footerLink:hover{
+    text-decoration: none;
+    color: #b3b3b3;
+    font-size: 1rem;
+}
+.jumbotron{
+    background-color: whitesmoke;
+}
+label{
+    font-weight: 500;
+}
+
+.socialNetworkFooter{
+    font-size: 1.5rem;
+}
+div.custom-file{
+    border-bottom: 2px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.imageDeleter{
+    background-color: red;
+    border-radius: 0.25rem;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.imageDeleter>a{
+    text-decoration: none;
+    color: white;
+}
+.imageDeleter>a:hover{
+    opacity: 0.75;
+}
+.imageDeleter>a:hover ~ .imageDeleter {
+    background-color: whitesmoke;
+}
+
+.imageContainer:hover{
+    transform: scale(1.05);
+    transition-duration: 0.5s
+}
+
+.carousel {
+    max-height: 476.25px;
+    overflow: hidden;
+}
+
+.carouselImg{
+    width: 100%;
+    height: auto;
+}
+button>i{
+    min-width: 14.733px;
+    margin: 5px;
+}
+button.badge.badge-warning{
+    font-size: 1rem;
+    padding: 5px;
+    border: none;
+}
+button.badge.badge-warning:hover{
+    color: whitesmoke;
+    background-color: #00B6F1;
+}
+#logoFlashbnb{
+    height: 60px;
+    padding-top: 10px;
+}
+

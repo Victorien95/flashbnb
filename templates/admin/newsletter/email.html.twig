@@ -1,0 +1,26 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Envoi d'une newsletter{% endblock %}
+
+{% form_theme form _self %}
+
+{% block body %}
+    <div class="container">
+
+        <h1 class="my-5">Envoi d'une newsletter</h1>
+        <form action="pos"></form>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary my-4" type="submit">
+            <i class="fas fa-check mr-1"></i>Envoyer la newsletter
+        </button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+
+
+
+

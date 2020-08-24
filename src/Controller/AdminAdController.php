@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Ad;
 use App\Form\AdType;
+use App\Repository\AdRepository;
 use App\Service\Paginator;
 use App\Service\TokenError;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,13 +19,15 @@ class AdminAdController extends AbstractController
      * @Route("/admin/ads/{page<\d+>?1}", name="admin_ads_index")
      * <\d+>?1 == requirements={"page" = "\d+"} avec valeur par default 1
      */
-    public function index(Paginator $paginator, $page)
+    public function index(Paginator $paginator, $page, AdRepository $adRepository)
     {
-        $paginator->setEntityClass(Ad::class)
+        $data = $adRepository->findAll();
+        /*$paginator->setEntityClass(Ad::class)
                   ->setCurrentPage($page);
+        */
 
         return $this->render('admin/ad/index.html.twig', [
-            'pagination' => $paginator,
+            'data' => $data,
         ]);
     }
 
@@ -50,10 +53,18 @@ class AdminAdController extends AbstractController
                 dump($test['_csrf/save' . $id]);
                 dump($request->get('_token_save'));*/
                 if ($this->isCsrfTokenValid('save' . $ad->getId(), $request->get('_token_save'))) {
+                    $ad->setUpdatedAt(new \DateTime('now'));
+
                     $manager->persist($ad);
                     $manager->flush();
+
                     $this->addFlash('success', "L'annonce <strong>{$ad->getTitle()}</strong> a bien été enregistrée !");
                 }
+                return $this->redirectToRoute('admin_ads_edit',
+                    [
+                        'id' => $id
+                    ]);
+
             }
             return $this->render('admin/ad/edit.html.twig', [
                 'ad' => $ad,

@@ -9,15 +9,109 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="my-4">Modifier l'annonce {{ ad.title }}</h1>
-
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ ad.id ) }}">
-        <div class="form-group">
-            <button class="btn btn-primary">Enregistrer les modifications</button>
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Les Images</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if ad.adCoverImage  %}
+                        <div class="col-4 mx-2 imageContainer">
+                            <div class="row justify-content-center">
+                                <img class="img-fluid col-12 px-0" src="{{ vich_uploader_asset(ad, 'imageFile2') }}" alt="Image de {{ ad.author.fullName }}">
+                                <div class="imageDeleter text-center col-12">
+                                    <a href="{{ path('image_delete_cover', {'id': ad.id}) }}" data-delete data-token="{{ csrf_token('delete'~ ad.id) }}">
+                                        <span>Image de couverture</span><br>
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif ad.coverImage %}
+                        <div class="col-4 mx-2 imageContainer">
+                            <div class="row justify-content-center">
+                                <img class="img-fluid col-12 px-0" src="{{ ad.coverImage }}" alt="Image de {{ ad.author.fullName }}">
+                                <div class="imageDeleter text-center col-12">
+                                    <a href="{{ path('image_delete_cover', {'id': ad.id}) }}" data-delete data-token="{{ csrf_token('delete'~ ad.id) }}">
+                                        <span>Image de couverture</span><br>
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% for image in ad.images  %}
+                        {% if image.url %}
+                            <div class="col-1 mx-2 imageContainer">
+                                <div class="row justify-content-center">
+                                    <img class="img-fluid col-12 px-0" src="{{ image.url }}" alt="Image de {{ image.ad.author.fullName }}">
+                                    <div class="imageDeleter text-center col-12">
+                                        <a href="{{ path('image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            {% if vich_uploader_asset(image, 'imageFile') %}
+                                <div class="col-1 mx-2 imageContainer">
+                                    <div class="row justify-content-center">
+                                        <img class="img-fluid col-12 px-0" src="{{ vich_uploader_asset(image, 'imageFile') |imagine_filter('mini') }}" alt="Image de {{ image.ad.author.fullName }}">
+                                        <div class="imageDeleter text-center col-12">
+                                            <a href="{{ path('image_delete', {'id': image.id}) }}" data-delete data-token="{{ csrf_token('delete'~ image.id) }}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        {{ form_end(form) }}
+
+        <div class="card">
+            <h3 class="card-header py-3">Modifier l'annonce {{ ad.title }}</h3>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.imageFile2) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.price) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.rooms) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.adress) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.options) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.introduction) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.imageFiles) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.content) }}
+                    </div>
+
+                </div>
+                <input type="hidden" name="_token_save" value="{{ csrf_token('save' ~ ad.id ) }}">
+                <div class="form-group">
+                    <button class="btn btn-primary">Enregistrer les modifications</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
     </div>
 {% endblock %}
 

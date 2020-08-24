@@ -2,12 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Newsletter;
 use App\Entity\PasswordUpdate;
 use App\Entity\User;
 use App\Form\AccountType;
 use App\Form\PasswordUpdateType;
 use App\Form\RegistrationType;
+use App\Repository\BookingRepository;
+use App\Repository\LikeRepository;
+use App\Repository\NewsletterRepository;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -52,20 +59,37 @@ class AccountController extends AbstractController
      * @Route("/register", name="account_register")
      * @return Response
      */
-    public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
+    public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, MailerService $mailerService, NewsletterRepository $newsletterRepository)
     {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            if ($form->getData()['newsletter'] && !$newsletterRepository->findOneBy(['email'=> $form->getData()['email']])){
+                $newsletterRegister = new Newsletter();
+                $newsletterRegister->setEmail($form->getData()['email'])
+                    ->setFirstname($form->getData()['firstName'])
+                    ->setLastname($form->getData()['lastName']);
+
+                $manager->persist($newsletterRegister);
+                $this->addFlash('success', 'Vous êtes bien inscrits à la newsletter FlashBnB !');
+            }
+
             $hash = $encoder->encodePassword($user, $user->getHash());
-            $user->setHash($hash);
+            $user->setHash($hash)
+                ->setUpdatedAt(new \DateTime('now'));
+
 
             $manager->persist($user);
             $manager->flush();
             
             $this->addFlash('success', 'Votre compte a bien été créé ! Vous pouvez vous connecter !');
+
+            if ($user){
+                $mailerService->inscription($user);
+            }
+
             return $this->redirectToRoute('account_login');
         }
 
@@ -89,6 +113,7 @@ class AccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $user->setUpdatedAt(new \DateTime('now'));
             $manager->persist($user);
             $manager->flush();
 
@@ -120,7 +145,9 @@ class AccountController extends AbstractController
             }else{
                 $newPassword = $passwordUpdate->getNewPassword();
                 $hash = $encoder->encodePassword($user, $newPassword);
-                $user->setHash($hash);
+                $user->setHash($hash)
+                    ->setUpdatedAt(new \DateTime('now'));
+
 
                 $manager->persist($user);
                 $manager->flush();
@@ -143,11 +170,13 @@ class AccountController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @return Response
      */
-    public function myAccount()
+    public function myAccount(LikeRepository $likeRepository)
     {
+        
+        $likes = $likeRepository->findBy(['user'=> $this->getUser()]);
         return $this->render('user/index.html.twig',
             [
-                'user' => $this->getUser()
+                'user' => $this->getUser(),
             ]);
 
     }
@@ -158,8 +187,20 @@ class AccountController extends AbstractController
      * @Route("/account/bookings", name="account_bookings")
      * @return Response
      */
-    public function bookings()
+    public function bookings(BookingRepository $bookingRepository, PaginatorInterface $knp, Request $request)
     {
-        return $this->render('account/bookings.html.twig');
+
+        $books = $bookingRepository->findBy(['booker' => $this->getUser()]);
+
+        $paginator = $knp->paginate($books, $request->query->getInt('page', 1),
+            5);
+
+
+
+        return $this->render('account/bookings.html.twig',
+            [
+                'paginator' => $paginator
+            ]);
     }
+
 }

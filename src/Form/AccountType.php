@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,9 +17,22 @@ class AccountType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('email')
-            ->add('picture')
+            ->add('imageFile', FileType::class,
+                [
+                    'required' => false,
+                    'attr' =>
+                        [
+                            'placeholder' => 'Uploader votre avatar'
+                        ]
+                ])
             ->add('introduction')
-            ->add('description')
+            ->add('description', TextareaType::class,
+                [
+                    'attr' =>
+                        [
+                            'rows' => 20
+                        ]
+                ])
         ;
     }
 

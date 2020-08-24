@@ -38,6 +38,11 @@ Encore
 
     .addStyleEntry('css/flickity', './assets/css/flickity.css')
 
+    //autocompletion
+    .addEntry('js/autocomplete', './assets/js/modules/autocomplete.js')
+
+
+
 
     .addStyleEntry('css/booking', './assets/css/booking.css')
     //.addEntry('page1', './assets/js/page1.js')

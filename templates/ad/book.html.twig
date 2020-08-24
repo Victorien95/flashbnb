@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+{% block title %}Réserver l'annonce : {{ ad.title }}{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('css/booking') }}
+    {{ encore_entry_link_tags('css/date-picker') }}
+
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-2">Réserver pour l'annonce : {{ ad.title }}</h1>
+        <p class="mb-5">Vous êtes sur le point de réserver le bien de <strong>{{ ad.author.fullName }}</strong>. Dites-nous tout on s'occupe du reste !</p>
+
+        {{ form_start(form) }}
+        <div class="myControl mb-4">
+            <h2 class="mb-4">Commencez par nous dire quelles sont les dates qui vous intéressent !</h2>
+            <div class="row">
+                <div class="col">
+                    {{ form_row(form.startDate) }}
+                </div>
+                <div class="col justify-content-between">
+                    {{ form_row(form.endDate) }}
+                </div>
+            </div>
+            <div class="mt-4">
+                <h5>Montant du séjour HT: <span id="amount" data-amount="0"></span></h5>
+                <span id="days">0</span> <span id="nigths">nuit</span> à {{ ad.price }}&euro; / nuit
+                <h6 class="mt-3">Taxe FlashBnB 3%</h6>
+                <h5>Montant du séjour TTC: <span id="ttc" data-ttc="0"></span></h5>
+
+
+                <h6 class="pb-0 mb-0">
+                    <label for="promocode" class="mr-1">Code promotion</label>
+                    <input id="promocode" type="text" placeholder="Votre code de réduction">
+                    <br><span id="promo_checker"></span>
+                </h6>
+                <h5 class="mt-4" id="promo_amount"></h5>
+
+
+            </div>
+
+            <h4 class="mt-5">Vous avez un commentaire ?</h4>
+            {{ form_row(form.comment) }}
+        </div>
+        <h2 class="mt-5 mb-3">Vous avez terminé !</h2>
+        <p>Vacances de rêves ? Espace Coworking ? Peu importe, on est avec vous !</p>
+        <button type="submit" class="btn btn-primary mr-3">Je réserve</button>
+        <a href="{{ path('booking_abandon', {'slug': ad.slug} )}}" class="btn btn-primary">Annuler</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+
+
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('js/date-picker') }}
+    <script>
+        $(document).ready(e => {
+            $('#booking_startDate, #booking_endDate').datepicker({
+            format: 'dd/mm/yyyy',
+            datesDisabled: [
+                {% for day in ad.notAvailableDays %}
+                    "{{ day.format('d/m/Y') }}",
+                {% endfor %}
+            ],
+            startDate: new Date()
+            });
+            reservationAmount();
+            $('#booking_startDate, #booking_endDate').change(reservationAmount)
+            $('#booking_startDate, #booking_endDate').change(onChangePromoCode)
+        });
+        
+        function reservationAmount() {
+
+            //Regex (\d+)\/(\d+)\/(\d{4})
+            const endDate = new Date($('#booking_endDate').val().replace(/(\d+)\/(\d+)\/(\d{4})/, '$3-$2-$1'));
+            const startDate = new Date($('#booking_startDate').val().replace(/(\d+)\/(\d+)\/(\d{4})/, '$3-$2-$1'));
+            const numberFormat = new Intl.NumberFormat("fr-FR", {maximumFractionDigits : '0'})
+
+            if (startDate && endDate && startDate < endDate){
+                const DAY_TIME = 24 * 60 * 60 * 1000;
+                const interval = endDate.getTime() - startDate.getTime();
+                const days = interval / DAY_TIME;
+                const amount = days * {{ ad.price }};
+
+                $('#days').text(days);
+                //$('#amount').text(numberFormat.format(amount)).data('amount', amount);
+                $('#amount').text(parseInt(amount));
+                //$('#ttc').text(numberFormat.format(((amount * 0.03) + amount))).data('ttc', ((amount * 0.03) + amount))
+                $('#ttc').text(parseInt(((amount * 0.03) + amount)))
+                if (days > 1){
+                    $('#nigths').text('nuits')
+                }else{
+                    $('#nigths').text('nuit')
+                }
+            }else{
+                $('#days').text('0');
+                $('#amount').text('');
+                $('#ttc').text('');
+                $('#nigths').text('nuit');
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        // Gerer le promocode AJAX
+
+
+        function onChangePromoCode(event){
+
+            const url = "http://127.0.0.1:8000/promocode/checker";
+            const promo_checker = document.getElementById('promo_checker')
+            const promo_code = document.getElementById('promocode').value
+            const promo_amount = document.getElementById('promo_amount')
+            const booking_promoCode = document.getElementById('booking_promo_id')
+            console.log(promo_code + 'ICI')
+            if (this.value === ''){
+                promo_checker.textContent =  ''
+                promo_amount.textContent =  ''
+                booking_promoCode.value = ''
+                return
+            }
+
+            axios.get(url).then(function (response) {
+                //console.log(response)
+                const data = response.data.promoCodes
+
+                for (i = 0; i<= data.length; i ++){
+                    if (data[i]['code'] !== promo_code){
+                        promo_checker.textContent = 'Code invalide'
+                        promo_amount.textContent =  ''
+                        booking_promoCode.value = ''
+
+                    }else{
+                        const currentData = data[i]
+                        if (currentData['expiredAt'] && currentData['expiredAt'] < Date.now()){
+                            promo_checker.textContent = 'Code expiré'
+                            promo_amount.textContent =  ''
+                            booking_promoCode.value = ''
+                            return;
+                        }else{
+                            if (currentData['maxNumber'] == -1){
+                                promo_checker.textContent = "Ce code promotion n'est plus utilisable"
+                                promo_amount.textContent =  ''
+                                booking_promoCode.value = ''
+                                return;
+                            }else{
+                                type = "%"
+                                if (currentData['type'] === "FIXE"){
+                                    type = "€"
+                                }
+                                promo_checker.textContent = "Code valide, vous bénéficiez d'une réduction de " + currentData['amount'] + ' ' + type
+                                booking_promoCode.value = currentData['id']
+                                amount = $('#ttc').text();
+                                amount = parseInt(amount)
+                                console.log(amount)
+
+
+                                if (amount){
+                                    if (type === '%'){
+                                        amount = amount  - (amount * currentData['amount'] / 100)
+                                        console.log(amount + 'prct')
+
+                                    }else{
+                                        amount = amount - currentData['amount']
+                                        console.log(amount + 'add')
+
+                                    }
+                                    if ( $('#booking_startDate').val() && $('#booking_endDate').val()){
+                                        promo_amount.textContent = 'Montant après promotion: ' + amount + ' €'
+                                    }
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+
+
+            }).catch( function (error) {
+                if (error.response.status >= 500){
+                    promo_checker.textContent = "Une erreur est survenue, vérification impossible veuillez réessayer plus tard"
+                }
+            })
+        }
+        $('#promocode').keyup(onChangePromoCode).blur(onChangePromoCode).focus(onChangePromoCode).change(onChangePromoCode);
+    </script>
+{% endblock %}
+
+
+

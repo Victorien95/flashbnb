@@ -41,8 +41,14 @@ if(inputAdress !== null){
             document.querySelector('#ad_streetAddress').value = e.suggestion.name
 
         }
-        document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
-        document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
+        if (document.querySelector('#ad_lat') && document.querySelector('#ad_lng')){
+            document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
+            document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
+        }
+        if (document.querySelector('#lat') && document.querySelector('#lng')){
+            document.querySelector('#lat').value = e.suggestion.latlng.lat
+            document.querySelector('#lng').value = e.suggestion.latlng.lng
+        }
     })
 }
 
@@ -86,7 +92,8 @@ document.querySelectorAll('[data-delete]').forEach(a => {
         }).then(response => response.json())
             .then(data => {
                 if (data.success){
-                    a.parentNode.parentNode.removeChild(a.parentNode)
+                    console.log(a.parentNode.parentNode.parentNode.parentNode)
+                    a.parentNode.parentNode.parentNode.parentNode.removeChild(a.parentNode.parentNode.parentNode)
                 }else{
                     alert(data.error + 'error')
                 }

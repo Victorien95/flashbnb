@@ -50,7 +50,7 @@ class Booking
     private $createdAt;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      */
     private $amount;
 
@@ -58,6 +58,16 @@ class Booking
      * @ORM\Column(type="text", nullable=true)
      */
     private $comment;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $ttc_amount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PromoCode", inversedBy="booking")
+     */
+    private $promoCode;
 
     /**
      * Appelé à chaque création de réservation // Calcul le montant et initialise la date de création
@@ -72,6 +82,10 @@ class Booking
         }
         if (empty($this->amount)){
             $this->amount = $this->ad->getPrice() * $this->getDuration();
+        }
+
+        if (empty($this->ttc_amount)){
+            $this->ttc_amount = (($this->amount * 0.03) + $this->amount);
         }
     }
 
@@ -171,6 +185,35 @@ class Booking
         return $this;
     }
 
+// Afficher le prix avec promocode
+
+    public function promoAmount()
+    {
+        $promoCode = $this->getPromoCode();
+        if($promoCode){
+            if ($promoCode->getType() === 'POURCENTAGE'){
+                $result = $this->ttc_amount - ($this->ttc_amount * $promoCode->getAmount() / 100);
+            }else{
+                $result = $this->ttc_amount - $promoCode->getAmount();
+            }
+        }
+        return $result;
+    }
+
+    public function promoOperator()
+    {
+        $promoCode = $this->getPromoCode();
+        if($promoCode){
+            if ($promoCode->getType() === 'POURCENTAGE'){
+                $operator = '%';
+            }else{
+                $operator = '€';
+            }
+        }
+        return $operator;
+
+    }
+
 // FONCTIONS MANIPULATION DE DATE POUR LES RESERVATIONS
     public function isBookableDates()
     {
@@ -210,5 +253,29 @@ class Booking
         }, $resultat);
 
         return $days;
+    }
+
+    public function getTtcAmount(): ?float
+    {
+        return $this->ttc_amount;
+    }
+
+    public function setTtcAmount(float $ttc_amount): self
+    {
+        $this->ttc_amount = $ttc_amount;
+
+        return $this;
+    }
+
+    public function getPromoCode(): ?PromoCode
+    {
+        return $this->promoCode;
+    }
+
+    public function setPromoCode(?PromoCode $promoCode): self
+    {
+        $this->promoCode = $promoCode;
+
+        return $this;
     }
 }

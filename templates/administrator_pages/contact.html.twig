@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FlashBnB - Contact{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="my-4">Contacter FlashBnb</h4>
+                <p>Pour toutes demande veuillez remplir le formulaire ci-dessous afin de contacter notre assistance techniques</p>
+                <p>Nous faisons tout pour vous répondre dans les plus brefs délais</p>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button class="btn btn-primary my-4" type="submit">
+                    <i class="fas fa-check mr-1"></i>Envoyer
+                </button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

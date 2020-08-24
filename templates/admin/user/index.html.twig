@@ -6,14 +6,16 @@
 
     <div class="container-fluid">
         <h1 class="my-5">Gestion des utilisateurs</h1>
-        <table class="table table-hover">
+
+        <a class="btn btn-primary mb-4" href="{{ path('admin_user_new') }}">Créer un nouvel administrateur</a>
+        <table class="table table-hover table-striped myTable">
             <thead>
             <tr>
                 <th>Id</th>
                 <th>Utilisateur</th>
                 <th>Email</th>
-                <th>Description</th>
                 <th>Introduction</th>
+                <th>Description</th>
                 <th class="text-center">Annonces</th>
                 <th class="text-center">Réservations</th>
                 <th class="text-center">Commentaires</th>
@@ -21,11 +23,11 @@
             </tr>
             </thead>
             <tbody>
-            {% for user in pagination.data %}
+            {% for user in data %} {# in pagination.data #}
                 <tr>
                     <td class="align-middle">{{ user.id }}</td>
                     <td class="align-middle">
-                        <img class="avatar avatar-micro mr-2" src="{{ user.picture }}" alt="Avata de {{ user.fullname }}">{{ user.fullName }}
+                        <a href="{{ path('admin_user_edit', {'id':user.id}) }}"><img class="avatar avatar-micro mr-2" src="{{ user.picture }}" alt="Avata de {{ user.fullname }}">{{ user.fullName }}</a>
                     </td>
                     <td class="align-middle">{{ user.email}}</td>
                     <td class="align-middle">{{ user.introduction }}</td>
@@ -54,7 +56,7 @@
             </tbody>
         </table>
 
-        {{ pagination.display }}
+        {#{{ pagination.display }}#}
 
     </div>
 {% endblock %}

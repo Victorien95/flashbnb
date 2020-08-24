@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FlashBnB - newsletter{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="my-4">S'inscrire à la newsletter FlashBnB</h4>
+                <p>Recevez les dernières nouveautés, des codes promotions et participez à nos évènements !</p>
+            </div>
+            {{ form_start(form) }}
+
+            <div class="card-body">
+                {{ form_widget(form) }}
+                <button class="btn btn-primary my-4" type="submit">
+                    <i class="fas fa-check mr-1"></i>Envoyer
+                </button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

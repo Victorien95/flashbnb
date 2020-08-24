@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des code promos{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <h1 class="my-5">Gestion des code promos</h1>
+        <a class="btn btn-secondary mb-4" href="{{ path('admin_promocode_new') }}">Créer une nouvelle promotion</a>
+        <table class="table table-hover table-striped myTable">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date de d'expiration</th>
+                <th>Code</th>
+                <th>Nombre max</th>
+                <th>Type</th>
+                <th>Montant</th>
+                <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for code in data %}
+                <tr>
+                    <td class="align-middle">{{ code.id }}</td>
+                    <td class="align-middle">{{ code.expiredAt|date('d/m/Y à H:i') }}</td>
+                    <td class="align-middle"><a href="{{ path('admin_promocode_edit', {'id':code.id}) }}">{{ code.code}}</a></td>
+                    <td class="align-middle">{{ code.maxNumber}}</td>
+                    <td class="align-middle">{{ code.type}}</td>
+                    <td class="align-middle">{{ code.amount}}</td>
+                    <td class="text-center row justify-content-center">
+                        {% include 'admin/common/_editButton.html.twig' with {
+                            'route': 'admin_promocode_edit',
+                            'id': code.id,
+                        } %}
+                        {% include 'admin/common/_deleteButton.html.twig' with {
+                            'route': 'admin_promocode_delete',
+                            'id': code.id,
+                        } %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {#{{ pagination.display }}#}
+    </div>
+{% endblock %}

@@ -30,8 +30,9 @@ class Image
 
     /**
      * @var File|null
-     * @Assert\Image(mimeTypes="image/jpeg")
+     * @Assert\Image(mimeTypes={"image/jpeg", "image/jpg", "image/png"}, mimeTypesMessage="Le format de votre fichier est invalide ({{ type }}). Formats acceptés: {{ types }}")
      * @Vich\UploadableField(mapping="ad_image", fileNameProperty="caption")
+     *
      */
     private $imageFile;
 

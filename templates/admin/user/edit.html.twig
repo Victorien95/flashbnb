@@ -3,7 +3,7 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="my-5">Modification du l'utilisateur n°{{ user.id }}</h1>
+        <h1 class="my-5">Modification de l'utilisateur n°{{ user.id }}</h1>
         {{ form_start(form) }}
         <div class="row">
             <div class="col-12">
@@ -19,10 +19,17 @@
             <div class="col-12 my-5">
                 <div class="row">
                     <div class="col-6">
-                        {{ form_label(form.picture) }}<img class="avatar avatar-mini ml-1" src="{{ user.picture }}" alt="Image de {{ user.fullName }}">
-                        {{ form_widget(form.picture) }}
+                        {{ form_label(form.imageFile) }}
+                        {% if user.avatarname %}
+                            <img src="{{ vich_uploader_asset(user, 'imageFile')}}" class="avatar avatar-mini" alt="Avatar de {{ user.fullName }}">
+                        {% elseif not user.avatarname and user.picture %}
+                            <img src="{{ user.picture }}" class="avatar avatar-mini" alt="Avatar de {{ user.fullName }}">
+                        {% else %}
+                            <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-mini" alt="Avatar de {{ user.fullName }}">
+                        {% endif %}
+                        {{ form_widget(form.imageFile) }}
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 mt-3">
                         {{ form_row(form.description) }}
                     </div>
                 </div>

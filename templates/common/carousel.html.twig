@@ -1,4 +1,4 @@
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+<div id="carouselExampleIndicators" class="carousel slide mt-4" data-ride="carousel">
     <ol class="carousel-indicators">
         {% for image in ad.images %}
             <li data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index0 }}"
@@ -8,11 +8,11 @@
     <div class="carousel-inner">
         {% for image in ad.images %}
             <div class="carousel-item{% if loop.first %} active{% endif %}">
-                <img class="d-block w-100" src="{{ image.url }}" alt="First slide">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ ad.title }}</h5>
-                    <p>{{ image.caption }}</p>
-                </div>
+                {% if not image.url %}
+                    <img class="d-block w-100 carouselImg" src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="First slide" style="min-height: 476.25px">
+                {% else %}
+                    <img class="d-block w-100" src="{{ image.url }}" alt="First slide">
+                {% endif %}
             </div>
         {% endfor %}
     </div>

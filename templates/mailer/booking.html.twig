@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Facture {{ booking.id }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+
+
+{% block body %}
+    <body>
+
+    <div id="logo">
+        <a href="{{ url('home') }}"><img src="{{ asset('build/images/logo.jpg') }}" alt="logo FlashBnb" style="height: 100px; width: 100px"></a>
+    </div>
+    <br><h2>Bonjour {{ booking.booker.fullName }},</h2><br>
+
+        <h5><a href="{{ url('home') }}">FlashBnb</a> vous remercie pour votre réservation et votre confiance !
+            <br><br>Retrouvez ci-dessous le détail de votre commande du {{ booking.createdAt|date("d/m/Y") }} !
+        </h5>
+    <br>
+        <h5>Adresse: {{ booking.ad.adress }}</h5>
+    <br>
+
+
+    <table class="w-100 table table-striped table-bordered text-center" style="top: 75px">
+        <thead class="thead-light">
+        <tr>
+            <th class="service">N°</th>
+            <th class="align-middle">Date d'arrivée</th>
+            <th class="align-middle">Date de départ</th>
+            <th class="align-middle">Nombre de jours</th>
+            <th class="align-middle">Annonce n°</th>
+            <th class="align-middle">Prix par jour</th>
+            <th class="align-middle">Montant HT</th>
+            <th class="align-middle">Taxe FlashBnb</th>
+            <th class="align-middle">Montant TTC</th>
+            {% if booking.promoCode %}
+                <th class="align-middle">Promotion</th>
+                <th class="align-middle">Montant après réduction</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="align-middle">{{ booking.id }}</td>
+            <td class="align-middle">{{ booking.startDate|date("d/m/Y") }}</td>
+            <td class="align-middle">{{ booking.endDate|date("d/m/Y")}}</td>
+            <td class="align-middle">{{ booking.duration }}</td>
+            <td class="align-middle">{{ booking.ad.id }}</td>
+            <td class="align-middle">{{ booking.ad.price }} &euro;</td>
+            <td class="align-middle">{{ booking.amount }} &euro;</td>
+            <td class="align-middle">3%</td>
+            <td class="align-middle">{{ booking.ttcAmount }} &euro;</td>
+            {% if booking.promoCode %}
+                <td class="align-middle">
+                    {{ booking.promoCode.code }}
+                    <br>({{ booking.promoCode.amount }} {{ booking.promoOperator}} de réduction)
+                </td>
+                <td class="align-middle">
+                    {{ booking.promoAmount }}
+                </td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+
+
+    <br><h2>Votre réservation !</h2>
+    {% set url = url('ads_show', { 'slug': booking.ad.slug }) %}
+    <div class="col-lg-4 card_container" data-mapping="{{ booking.ad.id }}">
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-12 col-md-5 col-lg-12 img_card_container px-2 py-2">
+                    <a href="{{ url }}">
+                        <img class="img_card rounded" src="{{ booking.ad.coverImage }}" alt="Image de l'appartement pour l'annonce {{ booking.ad.title }}" style="height: 100%; min-height: 180px; width: 100%; display: block">
+                    </a>
+                </div>
+                <div class="col-12 col-md-7 col-lg-12 body_card_container">
+                    <div class="card-header text-center">
+                        {{ booking.ad.rooms }} chambres, <strong>{{ booking.ad.price }}&euro; / nuit</strong><br>
+
+                        {% if booking.ad.comments|length > 0 %}
+                            {% include 'common/rating.html.twig' with{'rating' : booking.ad.avgRatings} %}
+                        {% else %}
+                            <small>Pas encore noté</small>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ url }}">
+                            <h4 class="card-title">{{ booking.ad.title }}</h4>
+                        </a>
+                        <p class="card-text">
+                            {{ booking.ad.introduction }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</html>

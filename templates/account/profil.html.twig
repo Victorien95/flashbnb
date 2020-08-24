@@ -3,12 +3,36 @@
 {% block body %}
 
     <div class="container">
-        <h1 class="my-4">Modification du profil</h1>
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">Enregistrer les modifications</button>
-        {{ form_end(form) }}
-
+        <div class="card">
+            <div class="card-header">
+                <h4 class="my-4">Modification du profil</h4>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_row(form.firstName) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.lastName) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.imageFile) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.introduction) }}
+                    </div>
+                    <div class="col-12 mt-3">
+                        {{ form_row(form.description) }}
+                    </div>
+                </div>
+                <button class="btn btn-primary">Enregistrer les modifications</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
     </div>
 
 {% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouveau promocode{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3>Créer un nouvelle promotion</h3>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.code) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.expiredAt) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.maxNumber) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.type) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.amount) }}
+                    </div>
+                    <button class="btn btn-primary my-4 mx-4" type="submit">
+                        <i class="fas fa-check mr-1"></i>Enregistrer
+                    </button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+
+        <br><a href="{{ path('admin_promocode_index') }}">Revenir à la liste</a>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('js/date-picker') }}
+
+    <script>
+        $(document).ready(e => {
+            $('#admin_promo_code_expiredAt').datepicker({
+                format: 'dd/mm/yyyy',
+                startDate: new Date()
+            });
+        });
+    </script>
+{% endblock %}
+

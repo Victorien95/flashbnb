@@ -7,7 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
 
 
 /**
@@ -15,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(fields={"title", "slug"},
  *     message="Une autre annonce possède déjà ce titre. Merci de le modifier")
+ * @Vich\Uploadable
  */
 class Ad
 {
@@ -24,6 +30,20 @@ class Ad
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var File|null
+     * @Assert\Image(mimeTypes={"image/jpeg", "image/jpg", "image/png"}, mimeTypesMessage="Le format de votre fichier est invalide ({{ type }}). Formats acceptés: {{ types }}")
+     * @Vich\UploadableField(mapping="ad_cover_image", fileNameProperty="adCoverImage")
+     */
+    private $imageFile2;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $adCoverImage;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -39,9 +59,9 @@ class Ad
     private $slug;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      * @Assert\Positive(message="Le prix ne peut pas être négatif")
-     * @Assert\GreaterThan(value="50" ,message="Le prix ne peut pas être inférieur à 50€ par nuits")
+     * @Assert\GreaterThanOrEqual(value="50" ,message="Le prix ne peut pas être inférieur à 50€ par nuits")
      */
     private $price;
 
@@ -58,7 +78,7 @@ class Ad
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Url()
      */
     private $coverImage;
@@ -77,7 +97,7 @@ class Ad
 
     /**
      * @Assert\All({
-     *     @Assert\Image(mimeTypes="image/jpeg")
+     *     @Assert\Image(mimeTypes={"image/jpeg", "image/jpg", "image/png"}, mimeTypesMessage="Le format de votre fichier est invalide ({{ type }}). Formats acceptés: {{ types }}")
      * })
      */
     private $imageFiles;
@@ -137,6 +157,11 @@ class Ad
      * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="ad", orphanRemoval=true)
      */
     private $likes;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
 
 
     public function __construct()
@@ -539,11 +564,13 @@ class Ad
      */
     public function setImageFiles($imageFiles)
     {
+
         foreach ($imageFiles as $imageFile){
             $image = new Image();
             $image->setImageFile($imageFile);
             $this->addImage($image);
         }
+
         $this->imageFiles = $imageFiles;
         return $this;
     }
@@ -578,6 +605,59 @@ class Ad
 
         return $this;
     }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile2(): ?File
+    {
+        return $this->imageFile2;
+    }
+
+    /**
+     * @param File|null $imageFile2
+     * @return Ad
+     */
+    public function setImageFile2(?File $imageFile2): Ad
+    {
+        $this->imageFile2 = $imageFile2;
+        if ($this->imageFile2 instanceof UploadedFile){
+            $this->updated_at = new \DateTime('now');
+        }
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAdCoverImage(): ?string
+    {
+        return $this->adCoverImage;
+    }
+
+    /**
+     * @param string|null $adCoverImage
+     * @return Ad
+     */
+    public function setAdCoverImage(?string $adCoverImage): Ad
+    {
+        $this->adCoverImage = $adCoverImage;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+
 
 
 
