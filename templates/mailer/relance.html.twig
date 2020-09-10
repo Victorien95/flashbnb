@@ -2,10 +2,8 @@
 {% block stylesheets %}
     <style>
         {# here, define your CSS styles as usual #}
-        h1 {
-            color: red;
-        }
-        h2 {
+
+        #promocode {
             color: green;
         }
     </style>
@@ -17,16 +15,21 @@
 
 
     <div class="example-wrapper">
-        <h1>Hello {{ user.FullName }}! </h1>
+        <div id="logo">
+            <a href="{{ url('home') }}">
+                <img src="{{ app.request.scheme ~'://'~ app.request.httpHost ~ asset('images/logo/logo_flashbnb_vecto_grey.png')}}" alt="logo FlashBnb" style="width: 200px">
+            </a>
+        </div>
+        <h1>Bonjour {{ user.FullName }} ! </h1>
 
-       <h2>Pour profitez pleinement de votre futur logement FlashBnb vous offre 10% de réduction sur votre prochaine réservation</h2>
-       <p>Bénéficiez de vos 10% en utilisant le code ci-dessous</p>
+       <h3>Pour profitez pleinement de votre futur logement FlashBnb vous offre 10% de réduction sur votre prochaine réservation</h3>
+       <h3>Bénéficiez de vos 10% en utilisant le code ci-dessous:</h3>
 
-        <h1>{{ promocode.code }}</h1>
+        <h3 id="promocode">{{ promocode.code }}</h3>
 
-        <span>Attention ! Ce code n'est utilisibale qu'une seul fois et est lié à votre compte</span>
+        <h3>Attention ! Ce code n'est utilisibale qu'une seul fois et est lié à votre <a href="{{ url('account_index') }}">compte</a></h3>
 
-        <p>L'équipe <a href="{{ url('ads_index') }}">FlashBnB</a></p>
+        <h3>L'équipe <a href="{{ url('ads_index') }}">FlashBnB</a></h3>
     </div>
 {% endblock %}
 

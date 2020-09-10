@@ -36,13 +36,13 @@
 {% block title %}{{ ad.title }}{% endblock %}
 
 {% block body %}
-    {% if ad.adCoverImage %}
-    <div class="ad" style="background-image: url({{ vich_uploader_asset(ad, 'imageFile2') }})">
-        {% elseif not ad.adCoverImage and ad.coverImage %}
-    <div class="ad" style="background-image: url({{ ad.coverImage }})">
+    <div class="ad" {% if ad.adCoverImage %}
+         style="background-image: url({{ vich_uploader_asset(ad, 'imageFile2') }})"
+         {% elseif not ad.adCoverImage and ad.coverImage %}
+         style="background-image: url({{ ad.coverImage }})"
         {% else %}
-    <div class="ad" style="background-image: url({{ asset('images/ads_cover_images/cover_image_default.jpeg') }})">
-    {% endif %}
+        style="background-image: url({{ asset('images/ads_cover_images/cover_image_default.jpeg') }})"
+    {% endif %}>
         <div class="container">
             <h1>{{ ad.title }}</h1>
             <p>{{ ad.introduction }}</p>
@@ -78,11 +78,13 @@
                 </span>
                 <span>{% if ad.likes|length > 1 %} aiment{% else %} aime{% endif %} cette annonce</span>
             </a>
-            <a href="#" class="btn btn-secondary mr-xl-3 mb-2" data-toggle="modal" data-target="#exampleModalCenter">
+            <a href="#" class="btn btn-warning mr-xl-3 mb-2" data-toggle="modal" data-target="#exampleModalCenter">
                 <i class="fas fa-share-alt mr-3"></i>Partager
             </a>
         </div>
     </div>
+
+
 
     <div class="container">
         <div class="row">
@@ -101,11 +103,11 @@
                 {% if ad.comments|length > 0 %}
                     <h2 class="mb-3">Commentaires de nos voyageurs</h2>
 
-                    <div class="alert alert-info">
-                        <h4 class="alert-heading text-center">
+                    <div class="alert alert-dark">
+                        <div class="alert-heading text-center">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    Note globale donnée par nos voyageurs
+                                    <h5>Note globale donnée par nos voyageurs</h5>
                                 </div>
                                 <div class="col">
                                     {% include 'common/rating.html.twig' with{'rating' : ad.avgRatings} %}
@@ -113,12 +115,18 @@
                                     <small>(calculée sur {{ ad.comments|length }} avis)</small>
                                 </div>
                             </div>
-                        </h4>
+                        </div>
                     </div>
                     {% for comment in ad.comments %}
                         <div id="comments_for_ads" class="rounded mb-3">
                             <div id="comment_author" class="bg-gradient-warning px-3 py-2">
-                                <img src="{{ comment.author.picture|imagine_filter('thumb') }}" alt="" class="avatar avatar-mini">
+                                {% if comment.author.avatarname %}
+                                    <img src="{{ vich_uploader_asset(comment.author, 'imageFile')}}" class="avatar avatar-mini" alt="Avatar de {{ comment.author.fullName }}">
+                                {% elseif not comment.author.avatarname and comment.author.picture %}
+                                    <img src="{{ comment.author.picture }}" class="avatar avatar-mini" alt="Avatar de {{ comment.author.fullName }}">
+                                {% else %}
+                                    <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-mini" alt="Avatar de {{ comment.author.fullName }}">
+                                {% endif %}
                                 <strong>{{ comment.author.firstName }}</strong> a dit :
                             </div>
                             <div class="px-3 py-2">
@@ -139,8 +147,13 @@
                 <div class="row">
                     <div class="col-3">
                         <a href="{{ path('user_show', {'slug': a.slug}) }}">
-                            <img src="{{ ad.author.picture }}" class="avatar avatar-medium"
-                                 alt="Avatar de {{ a.fullName }}">
+                            {% if ad.author.avatarname %}
+                                <img src="{{ vich_uploader_asset(ad.author, 'imageFile')}}" class="avatar avatar-mini" alt="Avatar de {{ ad.author.fullName }}">
+                            {% elseif not ad.author.avatarname and ad.author.picture %}
+                                <img src="{{ ad.author.picture }}" class="avatar avatar-mini" alt="Avatar de {{ ad.author.fullName }}">
+                            {% else %}
+                                <img src="{{ asset('images/user/avatar_default.jpeg') }}" class="avatar avatar-mini" alt="Avatar de {{ ad.author.fullName }}">
+                            {% endif %}
                         </a>
                     </div>
                     <div class="col">
@@ -154,12 +167,14 @@
                 <div>
                     {{ a.description |raw }}
                 </div>
-                <div id="map" style="width: 100%; height: 400px" data-lat="{{ ad.lat }}" data-lng="{{ ad.lng }}"></div>
+                <div id="map" class="mt-4" style="width: 100%; height: 400px" data-lat="{{ ad.lat }}" data-lng="{{ ad.lng }}"></div>
 
-                <div class="table-active text-center p-2">L'adresse exacte vous sera communiqué après la réservation</div>
+                <div class="table-active text-center p-2 alert alert-primary">L'adresse exacte vous sera communiqué après la réservation</div>
             </div>
         </div>
     </div>
+    </div>
+
 
 
 
@@ -207,11 +222,9 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block javascripts %}
-
 
     <script>
         let map = document.querySelector('#map')

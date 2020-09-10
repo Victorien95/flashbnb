@@ -4,14 +4,38 @@
     {{ encore_entry_link_tags('css/booking') }}
     {{ encore_entry_link_tags('css/date-picker') }}
 
+    <style>
+        .myControl{
+            background-color: #faaf3a;
+            border-radius: 1rem;
+        }
+        label{
+            font-size: 1rem;
+        }
+        .montant{
+            font-size: 1.3rem;
+        }
+        #taxe{
+            text-decoration: none;
+            color: #444;
+        }
+        #taxe:hover{
+            color: #0c7cd5;
 
+        }
+        .mytext{
+            font-size: 1rem;
+        }
+
+
+    </style>
 {% endblock %}
 
 
 {% block body %}
-    <div class="container">
-        <h1 class="mb-2">Réserver pour l'annonce : {{ ad.title }}</h1><br>
-        <p class="mb-5">Vous êtes sur le point de réserver le bien de <strong>{{ ad.author.fullName }}</strong>. Dites-nous tout on s'occupe du reste !</p>
+    <div class="container my-5">
+        <h1 class="mb-2">Réserver pour l'annonce : <a href="{{ path('ads_show', {'slug': ad.slug}) }}">{{ ad.title }}</a></h1><br>
+        <p class="mb-5 mytext">Vous êtes sur le point de réserver le bien de <strong><a href="{{ path('user_show', {'slug':ad.author.slug}) }}">{{ ad.author.fullName }}</a></strong>. Dites-nous tout on s'occupe du reste !</p>
 
         {{ form_start(form) }}
         <div class="myControl mb-4">
@@ -25,18 +49,18 @@
                 </div>
             </div>
             <div class="mt-4">
-                <h5>Montant du séjour HT: <span id="amount" data-amount="0"></span></h5>
+                <h5 id="HT">Montant du séjour HT: <span id="amount" data-amount="0"></span></h5>
                 <span id="days">0</span> <span id="nigths">nuit</span> à {{ ad.price }}&euro; / nuit
-                <h6 class="mt-3">Taxe FlashBnB 3%</h6>
-                <h5>Montant du séjour TTC: <span id="ttc" data-ttc="0"></span></h5>
+                <a id="taxe" href="{{ path('administrator_pages_cgv') }}"><h6 class="mt-3">*Taxe FlashBnB 3%</h6></a>
+                <h5 class="mt-5 montant">Montant du séjour TTC: <span id="ttc" data-ttc="0"></span></h5>
 
 
                 <div class="pb-0 mb-0 row justify-content-end">
-                    <div class="col-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <h6><label for="promocode" class="mr-1">Code promotion</label></h6>
                         <input id="promocode" class="form-control col-12" type="text" placeholder="Votre code de réduction">
                         <br><span id="promo_checker"></span>
-                        <h5 class="mt-4 col-12" id="promo_amount"></h5>
+                        <h5 class="mt-4 col-12 montant" id="promo_amount"></h5>
                     </div>
                     <br>
                 </div><br>
@@ -44,13 +68,14 @@
 
             </div>
 
-            <h4 class="mt-5">Vous avez un commentaire ?</h4>
+            <h4 class="mt-2">Vous avez un commentaire ?</h4>
             {{ form_row(form.comment) }}
         </div>
         <h2 class="mt-5 mb-3">Vous avez terminé !</h2>
-        <p>Vacances de rêves ? Espace Coworking ? Peu importe, on est avec vous !</p>
+        <p class="mytext">Vacances de rêves ? Espace Coworking ? Peu importe, on est avec vous !</p>
         <button type="submit" class="btn btn-primary mr-3">Je réserve</button>
-        <a href="{{ path('booking_abandon', {'slug': ad.slug} )}}" class="btn btn-primary">Annuler</a>
+
+        <a href="{{ path('ads_index')}}" class="btn btn-danger">Annuler</a>
         {{ form_end(form) }}
     </div>
 {% endblock %}
@@ -74,7 +99,6 @@
             });
             reservationAmount();
             $('#booking_startDate, #booking_endDate').change(reservationAmount)
-            $('#booking_startDate, #booking_endDate').change(onChangePromoCode)
         });
         
         function reservationAmount() {
@@ -131,7 +155,6 @@
             const promo_code = document.getElementById('promocode').value
             const promo_amount = document.getElementById('promo_amount')
             const booking_promoCode = document.getElementById('booking_promo_id')
-            console.log(promo_code + 'ICI')
             if (this.value === ''){
                 promo_checker.textContent =  ''
                 promo_amount.textContent =  ''
@@ -140,7 +163,6 @@
             }
 
             axios.get(url).then(function (response) {
-                //console.log(response)
                 const data = response.data.promoCodes
                 if (data.length === 0){
                     promo_checker.textContent = 'Code invalide'
@@ -175,17 +197,14 @@
                                 booking_promoCode.value = currentData['id']
                                 amount = $('#ttc').text();
                                 amount = parseInt(amount)
-                                console.log(amount)
 
 
                                 if (amount){
                                     if (type === '%'){
                                         amount = amount  - (amount * currentData['amount'] / 100)
-                                        console.log(amount + 'prct')
 
                                     }else{
                                         amount = amount - currentData['amount']
-                                        console.log(amount + 'add')
 
                                     }
                                     if ( $('#booking_startDate').val() && $('#booking_endDate').val()){
@@ -208,6 +227,7 @@
             })
         }
         $('#promocode').keyup(onChangePromoCode).blur(onChangePromoCode).focus(onChangePromoCode).change(onChangePromoCode);
+        $(window).ready(onChangePromoCode)
     </script>
 {% endblock %}
 

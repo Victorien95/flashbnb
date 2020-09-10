@@ -2,12 +2,7 @@
 {% block stylesheets %}
     <style>
         {# here, define your CSS styles as usual #}
-        h1 {
-            color: red;
-        }
-        h5 {
-            color: green;
-        }
+
         span {
             color: darkblue;
         }
@@ -19,15 +14,27 @@
 {% block body %}
 
     <div class="example-wrapper">
+        <div id="logo">
+
+            <a href="{{ url('home') }}">
+                <img src="{{ app.request.scheme ~'://'~ app.request.httpHost ~ asset('images/logo/logo_flashbnb_vecto_grey.png')}}" alt="logo FlashBnb" style="width: 200px">
+            </a>
+        </div>
 
         <h1>Bienvenue {{ user.FullName }}! </h1>
 
-        <h3>L'équipe FlashBnb vous remercie pour votre inscription</h3>
+        <h3>L'équipe FlashBnb vous remercie pour votre inscription !</h3>
 
         <p>
             Vous pouvez vous connecter à l’aide de votre adresse e-mail: <span>{{user.email}}</span> et de votre mot de passe que vous avez indiqué lors de l'enregistrement.
-            <br>Vous pouvez changer votre mot de passe à tout moment dans les paramètres du compte. En cas d'oubli de votre mot de passe, nous vous enverrons un rappel.
-            <br>Nous vous invitons à suivre nos offres spéciales et promotions. Nous vous souhaitons de bons achats !
+        </p>
+        <br>
+        <p>
+            Vous pouvez changer votre mot de passe à tout moment dans les paramètres du compte.
+        </p>
+        <br>
+        <p>
+           Nous vous invitons à suivre nos offres spéciales et promotions. Nous vous souhaitons de bons achats !
         </p>
 
 

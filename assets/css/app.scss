@@ -191,4 +191,25 @@ button.badge.badge-warning:hover{
     height: 60px;
     padding-top: 10px;
 }
+a.js-like>span.js-likes{
+    text-decoration: none;
+    color: #444;
+}
+a.js-like>span.js-likes:hover{
+    color: red;
+}
+a.js-like:hover{
+    color: red;
+    text-decoration: none;
+}
 
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
+select.form-control{
+    background-color: white;
+    padding-left: 10px;
+}

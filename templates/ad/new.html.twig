@@ -3,6 +3,25 @@
 
 {% form_theme form 'common/Form/_collection.html.twig' %}
 
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('css/select2') }}
+
+        <style>
+
+            .select2-selection.select2-selection--single, .select2-search.select2-search--dropdown, .select2-dropdown.select2-dropdown--below,
+            .select2.select2-container.select2-container--default.select2-container--below.select2-container--open, .select2.select2-container.select2-container--default{
+                max-width: 100px;
+                min-height: 39px;
+                text-align: center;
+                align-content: center;
+                align-items: center;
+            }
+            span>.select2-selection.select2-selection--single{
+                border: 1px solid #CCC;
+            }
+        </style>
+    {% endblock %}
+
 {% block body %}
     <div class="container">
         <div class="card">

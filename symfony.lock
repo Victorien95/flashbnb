@@ -105,6 +105,9 @@
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
+    "h4cc/wkhtmltoimage-amd64": {
+        "version": "0.12.4"
+    },
     "h4cc/wkhtmltopdf-amd64": {
         "version": "0.12.4"
     },

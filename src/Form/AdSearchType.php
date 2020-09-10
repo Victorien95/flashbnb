@@ -50,6 +50,19 @@ class AdSearchType extends ApplicationType
             ]))
             ->add('lat', HiddenType::class)
             ->add('lng', HiddenType::class)
+            ->add('myadress', HiddenType::class)
+            ->add('orderby', ChoiceType::class,
+                [
+                    'label' => 'Trier',
+                    'required' => false,
+                    'choices' =>
+                        [
+                            'Prix croissant'=>'pASC',
+                            'Prix décroissant'=>'pDESC',
+                            'Chambres croissant'=>'rASC',
+                            'Chambres décroissant'=>'rDESC'
+                        ]
+                ])
             ->add('options', EntityType::class, $this->getConfiguration('Choisissez vos options',
                 [
                     'class' => Option::class,

@@ -28,7 +28,13 @@ class AdType extends ApplicationType
                     'required' => false,
                     'label' => 'Image de couverture'
                 ]))
-            ->add('introduction', TextType::class, $this->getConfiguration('Renseignez votre message de présentation'))
+            ->add('introduction', TextType::class, $this->getConfiguration('Renseignez votre message de présentation',
+                [
+                    'attr' =>
+                        [
+                            'autocomplete' => false
+                        ]
+                ]))
             ->add('content', TextareaType::class, $this->getConfiguration('Renseignez une description détaillée de votre bien',
                 [
                     'attr' =>

@@ -35,6 +35,7 @@ class AdController extends AbstractController
     public function index(AdRepository $repository, Request $request, Paginator $paginator, Stats $stats, PaginatorInterface $knp)
     {
         $search = new AdSearch();
+
         $suggest = $repository->findSuggestQuery($request);
 
         /**$paginator->setEntityClass(Ad::class)
@@ -43,6 +44,8 @@ class AdController extends AbstractController
 
         $form = $this->createForm(AdSearchType::class, $search);
         $form->handleRequest($request);
+
+        $value = $request->query->all();
 
 
         /**$paginator = $knp->paginate($repository->findAllVisibleQuery($search),
@@ -60,7 +63,8 @@ class AdController extends AbstractController
             'paginator' => $paginator,
             'form' => $form->createView(),
             'stats' => $stats,
-            'suggest' => $suggest
+            'suggest' => $suggest,
+            'value' => $value
         ]);
     }
 
@@ -79,6 +83,12 @@ class AdController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $registration = $request->request->all()['ad'];
+            if (!$registration['lat'] || !$registration['lng']){
+                $this->addFlash('danger', 'Attention adresse non valide veuillez réessayer');
+                return $this->redirectToRoute('ads_create');
+            }
+
             foreach ($ad->getImages() as $image) {
                 $image->setAd($ad);
                 $manager->persist($image);

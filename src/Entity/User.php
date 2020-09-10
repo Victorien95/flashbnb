@@ -44,21 +44,21 @@ class User implements UserInterface, \Serializable
 
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotBlank(message="Vous devez renseigner votre prénom")
      * @Assert\Length(min="2", minMessage="Le prénom doit faire au moin 2 caractères")
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotBlank(message="Vous devez renseigner votre nom de famille")
      * @Assert\Length(min="2", minMessage="Le nom de famille doit faire au moin 2 caractères")
      */
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\Email(message="Veuillez renseigner un email valide")
      */
     private $email;
@@ -70,7 +70,8 @@ class User implements UserInterface, \Serializable
     private $picture;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\Length(min="8", minMessage="Votre mot de passe doit faire au moins 8 caractères")
      */
     private $hash;
 
@@ -80,13 +81,13 @@ class User implements UserInterface, \Serializable
     private $passwordConfirm;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\Length(min="10", minMessage="Votre introduction doit faire au moins 10 caractères")
      */
     private $introduction;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=false)
      * @Assert\Length(min="100", minMessage="Votre description doit faire au moins 100 caractères")
      */
     private $description;
@@ -131,6 +132,16 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reset_token;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $token_updated_at;
 
 
 
@@ -554,6 +565,31 @@ class User implements UserInterface, \Serializable
     public function setUpdatedAt(\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(?string $reset_token): self
+    {
+        $this->reset_token = $reset_token;
+        $this->token_updated_at = new \DateTime('now');
+
+        return $this;
+    }
+
+    public function getTokenUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->token_updated_at;
+    }
+
+    public function setTokenUpdatedAt(?\DateTimeInterface $token_updated_at): self
+    {
+        $this->token_updated_at = $token_updated_at;
 
         return $this;
     }

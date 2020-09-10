@@ -35,9 +35,19 @@ class AdSearch
     private $distance;
 
     /**
+     * @var string|null
+     */
+    private $orderby;
+
+    /**
      * @var ArrayCollection|null
      */
     private $options;
+
+    /**
+     * @var string|null
+     */
+    private $myadress;
 
     public function __construct()
     {
@@ -152,6 +162,48 @@ class AdSearch
         $this->options = $options;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getOrderby(): ?string
+    {
+        return $this->orderby;
+    }
+
+    /**
+     * @param string|null $orderby
+     * @return AdSearch
+     */
+    public function setOrderby(?string $orderby): AdSearch
+    {
+        $this->orderby = $orderby;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMyadress(): ?string
+    {
+        return $this->myadress;
+    }
+
+    /**
+     * @param string|null $myadress
+     * @return AdSearch
+     */
+    public function setMyadress(?string $myadress): AdSearch
+    {
+        $this->myadress = $myadress;
+        return $this;
+    }
+
+
+
+
+
+
 
 
 }

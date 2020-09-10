@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -35,7 +34,14 @@ class RegistrationType extends ApplicationType
                 ])
             ->add('hash', PasswordType::class, $this->getConfiguration('Choisissez votre mot de passe'))
             ->add('passwordConfirm', PasswordType::class, $this->getConfiguration('Veuillez confirmer votre mot de passe'))
-            ->add('introduction', TextType::class, $this->getConfiguration('Présentez vous en quelques mots'))
+            ->add('introduction', TextType::class, $this->getConfiguration('Présentez vous en quelques mots',
+                [
+                    'auto_initialize' => false,
+                    'attr' =>
+                        [
+                            'autocomplete' => 'off'
+                        ]
+                ]))
             ->add('description', TextareaType::class, $this->getConfiguration('Présentez vous en détails'))
             ->add('newsletter', CheckboxType::class, $this->getConfiguration("S'inscrie à la newsletter",
                 [

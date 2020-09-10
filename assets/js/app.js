@@ -15,6 +15,36 @@ import Places from 'places.js'
 
 let inputAdress = document.querySelector('#ad_adress')
 
+
+var algoliaAutocompletion = function (e) {
+    if (document.querySelector('#ad_city')){
+        if (e.suggestion.city){
+            console.log(e.suggestion.value)
+            document.querySelector('#ad_city').value = e.suggestion.city
+        }else{
+            document.querySelector('#ad_city').value = e.suggestion.name
+        }
+        if (e.suggestion.postcode){
+            document.querySelector('#ad_postalCode').value = e.suggestion.postcode
+        }else{
+            document.querySelector('#ad_postalCode').value = 'NC'
+        }
+        document.querySelector('#ad_streetAddress').value = e.suggestion.name
+
+    }
+    if (document.querySelector('#ad_lat') && document.querySelector('#ad_lng')){
+        document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
+        document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
+    }
+    if (document.querySelector('#lat') && document.querySelector('#lng')){
+        document.querySelector('#lat').value = e.suggestion.latlng.lat
+        document.querySelector('#lng').value = e.suggestion.latlng.lng
+    }
+    if (document.querySelector('#myadress')){
+        document.querySelector('#myadress').value = e.suggestion.value
+    }
+}
+
 if(inputAdress !== null){
     let place = Places({
         container: inputAdress
@@ -27,28 +57,10 @@ if(inputAdress !== null){
         }
     }
     place.on('change', function(e)  {
-        if (document.querySelector('#ad_city')){
-            if (e.suggestion.city){
-                document.querySelector('#ad_city').value = e.suggestion.city
-            }else{
-                document.querySelector('#ad_city').value = e.suggestion.name
-            }
-            if (e.suggestion.postcode){
-                document.querySelector('#ad_postalCode').value = e.suggestion.postcode
-            }else{
-                document.querySelector('#ad_postalCode').value = 'NC'
-            }
-            document.querySelector('#ad_streetAddress').value = e.suggestion.name
-
-        }
-        if (document.querySelector('#ad_lat') && document.querySelector('#ad_lng')){
-            document.querySelector('#ad_lat').value = e.suggestion.latlng.lat
-            document.querySelector('#ad_lng').value = e.suggestion.latlng.lng
-        }
-        if (document.querySelector('#lat') && document.querySelector('#lng')){
-            document.querySelector('#lat').value = e.suggestion.latlng.lat
-            document.querySelector('#lng').value = e.suggestion.latlng.lng
-        }
+        algoliaAutocompletion(e);
+    })
+    place.on('keyup', function(e)  {
+        algoliaAutocompletion(e);
     })
 }
 
@@ -92,7 +104,6 @@ document.querySelectorAll('[data-delete]').forEach(a => {
         }).then(response => response.json())
             .then(data => {
                 if (data.success){
-                    console.log(a.parentNode.parentNode.parentNode.parentNode)
                     a.parentNode.parentNode.parentNode.parentNode.removeChild(a.parentNode.parentNode.parentNode)
                 }else{
                     alert(data.error + 'error')
@@ -104,7 +115,6 @@ document.querySelectorAll('[data-delete]').forEach(a => {
 
 //require('bootstrap.min.js');
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
 // Favoris
 function onClickBtnLike(event){

@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -34,8 +37,14 @@ class PdfController extends AbstractController
     /**
      * @Route("ads/pdf/booking/{id}", name="bill_pdf")
      */
-    public function pdf(Booking $booking, Pdf $snappy)
+    public function pdf(Booking $booking, Pdf $snappy, KernelInterface $kernel)
     {
+        $options = new Options();
+        $options->setIsRemoteEnabled(true)
+                ->setIsHtml5ParserEnabled(true);
+
+        $dompdf = new Dompdf($options);
+
         $user = $this->getUser();
         //$snappy = new Pdf('C:\wamp64\www\symbnb\vendor\wemersonjanuario\wkhtmltopdf-windows\bin\64bit\wkhtmltopdf.exe');
         //$snappy->setBinary('C:\wamp64\www\symbnb\vendor\wemersonjanuario\wkhtmltopdf-windows\bin\64bit\wkhtmltopdf.exe');
@@ -53,7 +62,8 @@ class PdfController extends AbstractController
                 'user' => $user
 
             ]);
-        $filename = 'Facture_FlashBnb';
+
+        $filename = 'Facture_FlashBnb_' . uniqid();
 
         //return new PdfResponse($snappy->getOutputFromHtml($html), 'file.pdf');
         /*return new PdfResponse(
@@ -61,12 +71,25 @@ class PdfController extends AbstractController
             'file.pdf'
         );*/
 
-        return new Response(
+       /* return new Response(
             $snappy->getOutputFromHtml($html),200,array(
                 'Content-Type'          => 'application/pdf',
                 'Content-Disposition'   => 'attachment; filename="'.$filename.'.pdf"'
             )
-        );
+        );*/
+
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream($filename . ".pdf", [
+            "Attachment" => true
+        ]);
 
     }
 

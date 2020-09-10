@@ -13,10 +13,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('ads_index') }}">Annonces</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('ads_create') }}">Créer une annonce</a>
+            </li>
             {% if app.user %}
-                {#<li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_show', {'slug':app.user.slug, '_fragment':'myAds' }) }}">Mes Annonces</a>
-                </li>#}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('user_show', {'slug':app.user.slug }) }}">Mon Compte</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('account_bookings') }}">Mes réservations</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('user_show', {'slug':app.user.slug, '_fragment':'liked' }) }}">Mes favoris</a>
                 </li>
@@ -24,7 +30,7 @@
         </ul>
         <form id="searchForm" class="form-inline my-2 my-lg-0">
             <input id="searchBarre" class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
-            <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0 d-block d-lg-none d-xl-block" type="submit">Rechercher</button>
+            <button id="searchButton" class="btn btn-outline-warning my-2 my-sm-0 d-block d-md-none d-xl-block" type="submit">Rechercher</button>
         </form>
         <ul class="navbar-nav ml-auto">
             {% if app.user %}

@@ -2,16 +2,28 @@
 
 {% block title %}Bienvenue sur le meilleur réseau d'appartements {% endblock %}
 
+{% block stylesheets %}
+    <style>
+        {# here, define your CSS styles as usual #}
+        .lead{
+            font-size: 1.5rem;
+        }
+
+    </style>
+{% endblock %}
+
+
 {% block body %}
     <div class="container mt-4">
-        <div class="jumbotron">
-            <h1 class="display-3">Bienvenue sur FlashBnB</h1>
+        <div class="jumbotron text-center">
+            <h1 class="display-3">Bienvenue sur FlashBnB</h1><br>
             <p class="lead">Nous mettons en relation les voyageurs et les propriétaires qui veulent profiter
                 d'opportuinités en proposant leur bien à la location.</p>
             <hr class="my-4">
-            <p class="lead"><b>Vous êtes voyageur ? Vous chercher un logement pour vos déplacements ?</b></p>
+            <p class="lead"><b>Vous êtes voyageur ? Vous chercher un logement pour vos déplacements ? <br>Réserver ou créer votre propre annonce !!</b></p>
             <p class="lead">
-                <a class="btn btn-primary btn-lg" href="{{ path('ads_index') }}" role="button">Voir les annonces</a>
+                <a class="btn btn-primary btn-lg m-2" href="{{ path('ads_index') }}" role="button">Voir les annonces</a>
+                <a class="btn btn-warning btn-lg m-2" href="{{ path('ads_create') }}" role="button">Créer votre annonce</a>
             </p>
         </div>
 

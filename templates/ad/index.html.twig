@@ -53,9 +53,11 @@
         }
         #map_button{
             font-size: 15px;
+            background-color: #1b1b1b;
+            color: whitesmoke;
         }
         #map_button:hover{
-            background-color: #0f0f0f;
+            background-color: #faaf3a;
             color: whitesmoke;
         }
 
@@ -129,13 +131,8 @@
             background-color: #007bff;
             border-color: #007bff;
         }
-        #filterButton{
-            background-color: white;
-        }
-        #filterButton:hover{
-            background-color: #0f0f0f;
-            color: whitesmoke;
-        }
+
+
         .jumbotron{
             border: 1px solid rgba(0,0,0,.125);
             padding-top: 20px;
@@ -148,7 +145,7 @@
         }
         .select2-selection.select2-selection--single, .select2-search.select2-search--dropdown, .select2-dropdown.select2-dropdown--below,
          .select2.select2-container.select2-container--default.select2-container--below.select2-container--open, .select2.select2-container.select2-container--default{
-            max-width: 100px;
+            max-width: 150px;
             min-height: 39px;
             text-align: center;
             align-content: center;
@@ -189,18 +186,26 @@
     <div id="body_container" class="container-fluid">
         <a id="upper" href="#jumbotron"><i class="fas fa-arrow-alt-circle-up"></i></a>
         <div id="jumbotron" class="jumbotron mx-5">
-            <div class="row justify-content-end">
+            <div class="row justify-content-between">
                 <div class="mr-5 mb-4">
-                    <span class="btn" id="filterButton">Moins de filtres</span>
+                    <span class="btn btn-outline-primary" id="filterButton">Moins de filtres</span>
                 </div>
             </div>
             {{ form_start(form) }}
             <div class="form-row searchHide">
                 <div class="col">
-                    {{ form_row(form.maxPrice) }}
+                    {% if value.distance is defined %}
+                        {{ form_row(form.maxPrice, {'value':value.maxPrice}) }}
+                    {% else %}
+                        {{ form_row(form.maxPrice) }}
+                    {% endif %}
                 </div>
                 <div class="col">
-                    {{ form_row(form.minRooms) }}
+                    {% if value.distance is defined %}
+                        {{ form_row(form.minRooms, {'value':value.minRooms}) }}
+                    {% else %}
+                        {{ form_row(form.minRooms) }}
+                    {% endif %}
                 </div>
             </div>
             <div class="form-row">
@@ -213,14 +218,29 @@
                 <div class="col-12 col-lg-2 pl-lg-3">
                     <div class="form-group col-11 p-0">
                         <label class="mb-0" for="{{ form.distance.vars.id }}">{{ form_label(form.distance) }}</label><br>
-                        {{ form_widget(form.distance) }}
+                        {% if value.distance is defined %}
+                            {{ form_widget(form.distance, {'value':value.distance}) }}
+                        {% else %}
+                            {{ form_widget(form.distance) }}
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="form-row">
-                    <div class="form-group searchHide col-12 p-0">
+                    <div class="form-group searchHide col-12 col-md-6 p-1">
                         <label class="mb-0" for="{{ form.options.vars.id }}">{{ form_label(form.options) }}</label><br>
-                        {{ form_widget(form.options) }}
+                        {% if value.options is defined %}
+                            {{ form_widget(form.options,  {'value':value.options}) }}
+                        {% else %}
+                            {{ form_widget(form.options) }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group searchHide col-12 col-md-6 p-1">
+                        {% if value.orderby is defined %}
+                            {{ form_row(form.orderby, {'value':value.orderby}) }}
+                        {% else %}
+                            {{ form_row(form.orderby) }}
+                        {% endif %}
                     </div>
             </div>
             <div class="col-12">
@@ -242,14 +262,17 @@
                         {% include 'common/_ad2.html.twig'  with {'ad': ad }%}
                     {% endfor %}
                     {% if paginator|length is same as (0) %}
-                        <h3 class="mb-5">Désolé, aucun résultats pour votre recherche. Veuillez réessayer avec d'autres filtres</h3>
+                        <h3 class="my-5 alert alert-warning">Désolé, aucun résultats pour votre recherche... Veuillez réessayer avec d'autres filtres...</h3>
                     {% endif %}
-                    <div class="navigation">
-                        {{ knp_pagination_render(paginator) }}
-                    </div>
+
+
+
                     <div id="map_open" class="d-lg-none btn">
                         <i class="far fa-map mr-1"></i>Carte
                     </div>
+                </div>
+                <div class="navigation row justify-content-center">
+                    {{ knp_pagination_render(paginator) }}
                 </div>
                 <h1 class="mt-5 mb-4">Recommandations pour vous</h1>
                 <div class="main-carousel">
@@ -375,12 +398,10 @@
         $(window).ready(function () {
             if (sessionStorage.getItem('map') === null){
                 sessionStorage.setItem('map', '1')
-                console.log('error')
             }
             if (sessionStorage.getItem('map') === '1'){
                 $('#map_container').addClass('d-none');
                 $('#body_container').removeClass('.container-fluid').addClass('container')
-                console.log(sessionStorage)
 
             }else{
                 $('#map_button').removeClass('d-lg-block');
@@ -397,7 +418,6 @@
                     })
                 }else{
                     $('#map_container').removeClass('d-none').css({'position':'fixed', 'z-index': '1000'})
-                    console.log('BOUUUM')
                 }
 
 
@@ -407,7 +427,6 @@
                 //$('#body_card_container').removeClass('col-12').addClass('col-md-8')
             }
 
-            console.log(sessionStorage.getItem("map") + "pipi")
 
         })
 
@@ -430,6 +449,7 @@
                     $('#upper').fadeOut()
                 }
             })
+
 
         /* --------------------------------  OPEN AND CLOSE MAP BUTTON SET ------------------------------- */
         var button_fonction_display = function(){
@@ -490,7 +510,6 @@
                 $('#body_container').removeClass('container').addClass('container-fluid')
                 $('#map_container').removeClass('d-none').addClass('d-block');
             button_fonction_display();
-            console.log(this);
             $(this).removeClass('d-lg-block');
             map.invalidateSize();
         })
@@ -525,12 +544,13 @@
             })
         })();
 
+
+
             /* Fonction pour la map qui passera de smartphone à PC*/
         (function(){
             $(window).resize(function () {
                 let width = $(window).width()
                 if (width > '974'){
-                    console.log('GOOOOOOOOO' + sessionStorage.getItem('map'))
                     if (sessionStorage.getItem('map') === '2'){
                         $('#upper').removeClass('d-none')
                         $('#map_container').css({'position':'sticky', 'top':'0'})
@@ -566,7 +586,55 @@
                     });
                 }
                 if (width < '975'){
-                    console.log('DOOOWWWNWNN' + sessionStorage.getItem('map'))
+                    if (sessionStorage.getItem('map') === '2' && width<='974'){
+                        $('#upper').addClass('d-none')
+                        $('#map_container').css({'position':'fixed', 'z-index': '1000'})
+                        $('#map_container_active').removeClass('col-lg-7 col-xl-6')
+
+                    }
+                }
+            })
+        })();
+        /* Fonction pour la map qui passera de smartphone à PC*/
+        (function(){
+            $(window).resize(function () {
+                let width = $(window).width()
+                if (width > '974'){
+                    if (sessionStorage.getItem('map') === '2'){
+                        $('#upper').removeClass('d-none')
+                        $('#map_container').css({'position':'sticky', 'top':'0'})
+                        $('#map_container_active').addClass('col-lg-7 col-xl-6')
+                    }
+                }
+                if (sessionStorage.getItem('map') === '2'){
+
+                    $('.card_container').each(function () {
+                        $(this).removeClass('col-md-4')
+                        $(this).find($('.img_card_container')).addClass('col-lg-5')
+
+                        $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                        $(this).find($('.body_card_container')).addClass('col-lg-7')
+                    })
+                    $('.card-cell').each(function () {
+                        $(this).removeClass('col-xl-4').addClass('col-xl-6')
+                        $(this).removeClass('col-lg-8').addClass('col-lg-12')
+                    });
+                }
+                if (sessionStorage.getItem('map') === 1){
+                    $('.card_container').each(function () {
+                        $(this).addClass('col-lg-4')
+                        $(this).find($('.img_card_container')).removeClass('col-lg-5').addClass('col-md-5 col-lg-12')
+
+                        $(this).find($('.img_card')).css({'height':'100%', 'min-height': '200px'})
+                        $(this).find($('.body_card_container')).removeClass('col-lg-7').addClass('col-md-7 col-lg-12')
+                    });
+
+                    $('.card-cell').each(function () {
+                        $(this).removeClass('col-xl-6').addClass('col-xl-4')
+                        $(this).removeClass('col-lg-12').addClass('col-lg-8')
+                    });
+                }
+                if (width < '975'){
                     if (sessionStorage.getItem('map') === '2' && width<='974'){
                         $('#upper').addClass('d-none')
                         $('#map_container').css({'position':'fixed', 'z-index': '1000'})
@@ -596,7 +664,6 @@
             const filterButton = $('#filterButton');
             myToggle.toggle()
             if (myToggle.is(":hidden")){
-                console.log('HIDDEN')
                 filterButton.text('Plus de filtres')
             }else{
                 filterButton.text('Moins de filtres')

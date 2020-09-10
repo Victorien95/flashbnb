@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Booking;
 use App\Entity\User;
 use App\Repository\NewsletterRepository;
+use Dompdf\Dompdf;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -63,10 +64,11 @@ class MailerService
 
     public function booking(User $user, Booking $booking)
     {
+
         $email = (new TemplatedEmail())
             ->from($this->flashBnBmail)
             ->to($user->getEmail())
-            ->subject('Promotion pour vous')
+            ->subject('Réservation FlashBnb annonce: ' . $booking->getAd()->getTitle())
 
             // path of the Twig template to render
             ->htmlTemplate('mailer/booking.html.twig')
@@ -110,6 +112,22 @@ class MailerService
         foreach ($mailing as $mail){
             $email->addBcc($mail->getEmail());
         }
+        $this->mailer->send($email);
+    }
+
+    public function resetPassword(User $user, $url)
+    {
+
+        $email = (new TemplatedEmail())
+            ->from($this->flashBnBmail)
+            ->to($user->getEmail())
+            ->subject('FlashBnb: Demande de réinitialisation de mot de passe')
+            ->htmlTemplate('mailer/resetPassword.html.twig')
+            ->context([
+                'urlReset' => $url,
+                'user' => $user
+            ])
+        ;
         $this->mailer->send($email);
     }
 }

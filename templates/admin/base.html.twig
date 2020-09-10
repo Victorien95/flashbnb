@@ -6,89 +6,94 @@
     {{ encore_entry_link_tags('app') }}
     {{ encore_entry_link_tags('css/select2') }}
 
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/fav-icon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/fav-icon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/fav-icon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('images/fav-icon/site.webmanifest') }}">
+
     <script src="https://kit.fontawesome.com/e971e3c315.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/xux5nc9ofnf9ijk7jk4efwtw030xpqf4dxyowv9lk0g6mlmu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+
 
 
     {% block stylesheets %}{% endblock %}
 </head>
+    <body>
+        <div id="main">
 
-<body>
-    {% include 'admin/common/header.html.twig' %}
-    {% include 'common/flashes.html.twig' %}
-    {% block body %}{% endblock %}
+            {% include 'admin/common/header.html.twig' %}
+            {% include 'common/flashes.html.twig' %}
+            {% block body %}{% endblock %}
 
 
-    {% include 'admin/common/footer.html.twig' %}
-    {{ encore_entry_script_tags('app') }}
-    {{ encore_entry_script_tags('js/select2') }}
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+            {% include 'admin/common/footer.html.twig' %}
+            {{ encore_entry_script_tags('app') }}
 
-    <style>
-        select[name="DataTables_Table_0_length"]{
-            box-shadow: none;
-            border-radius: 0.25rem;
-            border: 1px solid #ced4da;
-            padding: 5px;
-        }
-        input[aria-controls="DataTables_Table_0"]{
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-        }
-    </style>
+            {{ encore_entry_script_tags('js/select2') }}
+            <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-    <script>
-        $(document).ready( function () {
-            $('.myTable').DataTable(
-                {
-                    language: {
-                        "sEmptyTable":     "Aucune donnée disponible dans le tableau",
-                        "sInfo":           "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-                        "sInfoEmpty":      "Affichage de l'élément 0 à 0 sur 0 élément",
-                        "sInfoFiltered":   "(filtré à partir de _MAX_ éléments au total)",
-                        "sInfoPostFix":    "",
-                        "sInfoThousands":  ",",
-                        "sLengthMenu":     "Afficher _MENU_ éléments",
-                        "sLoadingRecords": "Chargement...",
-                        "sProcessing":     "Traitement...",
-                        "sSearch":         "Rechercher :",
-                        "sZeroRecords":    "Aucun élément correspondant trouvé",
-                        "oPaginate": {
-                            "sFirst":    "Premier",
-                            "sLast":     "Dernier",
-                            "sNext":     "Suivant",
-                            "sPrevious": "Précédent"
-                        },
-                        "oAria": {
-                            "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
-                            "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-                        },
-                        "select": {
-                            "rows": {
-                                "_": "%d lignes sélectionnées",
-                                "0": "Aucune ligne sélectionnée",
-                                "1": "1 ligne sélectionnée"
+
+
+            <style>
+                select[name="DataTables_Table_0_length"]{
+                    box-shadow: none;
+                    border-radius: 0.25rem;
+                    border: 1px solid #ced4da;
+                    padding: 5px;
+                }
+                input[aria-controls="DataTables_Table_0"]{
+                    border: 1px solid #ced4da;
+                    border-radius: 0.25rem;
+                }
+            </style>
+
+            <script>
+                $(document).ready( function () {
+                    $('.myTable').DataTable(
+                        {
+                            language: {
+                                "sEmptyTable":     "Aucune donnée disponible dans le tableau",
+                                "sInfo":           "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                                "sInfoEmpty":      "Affichage de l'élément 0 à 0 sur 0 élément",
+                                "sInfoFiltered":   "(filtré à partir de _MAX_ éléments au total)",
+                                "sInfoPostFix":    "",
+                                "sInfoThousands":  ",",
+                                "sLengthMenu":     "Afficher _MENU_ éléments",
+                                "sLoadingRecords": "Chargement...",
+                                "sProcessing":     "Traitement...",
+                                "sSearch":         "Rechercher :",
+                                "sZeroRecords":    "Aucun élément correspondant trouvé",
+                                "oPaginate": {
+                                    "sFirst":    "Premier",
+                                    "sLast":     "Dernier",
+                                    "sNext":     "Suivant",
+                                    "sPrevious": "Précédent"
+                                },
+                                "oAria": {
+                                    "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+                                    "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                                },
+                                "select": {
+                                    "rows": {
+                                        "_": "%d lignes sélectionnées",
+                                        "0": "Aucune ligne sélectionnée",
+                                        "1": "1 ligne sélectionnée"
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
-                $('select[name="DataTables_Table_0_length"]')
-            });
-        $('select').select2();
+                        });
+                        $('select[name="DataTables_Table_0_length"]')
+                    });
+                $('select').select2();
 
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-            toolbar_mode: 'floating',
-            language:'fr_FR',
-            menubar: 'file edit view format table tools help'
-        });
-    </script>
 
-    </script>
 
-    {% block javascripts %}{% endblock %}
-</body>
+            </script>
+
+
+            {% block javascripts %}{% endblock %}
+        </div>
+    </body>
 </html>

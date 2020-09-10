@@ -50,7 +50,7 @@ class AdRepository extends ServiceEntityRepository
      * @param AdSearch $search
      * @return Query
      */
-    public function findAllVisibleQuery(AdSearch $search):Query
+    public function findAllVisibleQuery(AdSearch $search ):Query
     {
         /** $query = $this->createQueryBuilder('a')
                       ->select('a')
@@ -86,6 +86,18 @@ class AdRepository extends ServiceEntityRepository
             }
         }
 
+        if ($search->getOrderby()){
+            if ($search->getOrderby() === 'pDESC'){
+                $query = $query->orderBy('a.price', 'DESC');
+            }elseif ($search->getOrderby() === 'aASC'){
+                $query = $query->orderBy('a.price', 'ASC');
+            }elseif ($search->getOrderby() === 'rASC'){
+                $query = $query->orderBy('a.rooms', 'ASC');
+            }elseif ($search->getOrderby() === 'rDESC'){
+                $query = $query->orderBy('a.rooms', 'DESC');
+            }
+        }
+
         return $query->getQuery();
     }
 
@@ -105,7 +117,7 @@ class AdRepository extends ServiceEntityRepository
     public function findSuggestQuery($request)
     {
         $array = unserialize($request->cookies->get('suggest'));
-        if ($array){
+        if (count($array) > 1){
             $minPrice = 1000;
             $maxPrice = 0;
             $minRooms = 100;

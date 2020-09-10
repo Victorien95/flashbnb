@@ -127,16 +127,14 @@ class BookingController extends AbstractController
             $manager->flush();
 
             $mailerService->relance($this->getUser(), $promoCode);
+            
 
         }
-
-
-
-
-
         return $this->redirectToRoute('ads_show',
             [
                 'slug' => $ad->getSlug(),
             ]);
     }
+
+
 }
