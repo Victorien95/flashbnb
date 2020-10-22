@@ -1,0 +1,44 @@
+# BEGIN SecuPress bad_url_access
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_URI} !wp-includes/js/tinymce/wp-tinymce\.php$
+    RewriteRule ^(php\.ini|wp-config\.php|wp-includes/.+\.php|wp-admin/(admin-functions|install|menu-header|setup-config|([^/]+/)?menu|upgrade-functions|includes/.+)\.php)$ [R=404,L,NC]
+</IfModule>
+# END SecuPress
+
+# BEGIN SecuPress directory_listing
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+# END SecuPress
+
+# BEGIN SecuPress no_x_powered_by
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+</IfModule>
+# END SecuPress
+
+# BEGIN SecuPress wp_version
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^readme\.html$ - [R=404,L,NC]
+</IfModule>
+# END SecuPress
+
+
+# BEGIN WordPress
+# Les directives (lignes) entre « BEGIN WordPress » et « END WordPress » sont générées
+# dynamiquement, et doivent être modifiées uniquement via les filtres WordPress.
+# Toute modification des directives situées entre ces marqueurs sera surchargée.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress
