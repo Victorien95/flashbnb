@@ -117,7 +117,7 @@ class AdRepository extends ServiceEntityRepository
     public function findSuggestQuery($request)
     {
         $array = unserialize($request->cookies->get('suggest'));
-        if (count($array) > 1){
+        if ($array && count($array) > 1){
             $minPrice = 1000;
             $maxPrice = 0;
             $minRooms = 100;

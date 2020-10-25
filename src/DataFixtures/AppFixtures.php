@@ -12,7 +12,7 @@ use App\Entity\PromoCode;
 use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
             ->setLastName('Faton')
             ->setEmail('admin@gmail.com')
             ->setHash($this->encoder->encodePassword($adminUser, 'admin'))
-            ->setPicture('https://randomuser.me/api/portraits/men/67.jpg')
+            ->setPicture('http://randomuser.me/api/portraits/men/67.jpg')
             ->setIntroduction('Administrateur de FlashBNB')
             ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(random_int(2, 4) )) . '</p>')
             ->setUpdatedAt($faker->dateTime('now'))
@@ -126,7 +126,7 @@ class AppFixtures extends Fixture
 
             for($j = 1; $j <= mt_rand(2, 5); $j++){
                 $image = new Image();
-                $image->setUrl($faker->imageUrl())
+                $image->setUrl("http://placeimg.com/640/480/nature")
                     ->setCaption($faker->sentence)
                     ->setAd($ad);
                 $manager->persist($image);

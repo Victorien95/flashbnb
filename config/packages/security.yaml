@@ -48,6 +48,8 @@ security:
     access_control:
          - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/admin, roles: ROLE_ADMIN }
+         #- { path: \.(png|jpg|gif|jpeg|bmp)$, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+         #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
         # - { path: ^/profile, roles: ROLE_USER }
     encoders:
         App\Entity\User:

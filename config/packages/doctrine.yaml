@@ -18,9 +18,9 @@ doctrine:
                 alias: App
         dql:
             numeric_functions:
+                rand: DoctrineExtensions\Query\Mysql\Rand
                 ASIN: DoctrineExtensions\Query\Mysql\Asin
                 POWER: DoctrineExtensions\Query\Mysql\Power
-                SIN: DoctrineExtensions\Query\Mysql\Sin
-                PI: DoctrineExtensions\Query\Mysql\Pi
+                pi: DoctrineExtensions\Query\Mysql\Pi
                 COS: DoctrineExtensions\Query\Mysql\Cos
-                RAND: DoctrineExtensions\Query\Mysql\Rand
+                SIN: DoctrineExtensions\Query\Mysql\Sin
