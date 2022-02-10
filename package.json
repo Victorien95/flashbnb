@@ -23,7 +23,7 @@
         "jquery-bridget": "^2.0.1",
         "leaflet": "^1.6.0",
         "maildev": "^1.1.0",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.0",
         "places.js": "^1.19.0",
         "sass": "^1.26.9",
         "sass-loader": "^8.0.2",
